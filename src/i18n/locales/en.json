@@ -1,0 +1,88 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "actions": "Actions",
+    "status": "Status",
+    "date": "Date",
+    "price": "Price",
+    "total": "Total",
+    "available": "Available",
+    "reserved": "Reserved",
+    "sold": "Sold",
+    "published": "Published",
+    "unpublished": "Unpublished"
+  },
+  "auth": {
+    "accessCode": "Access Code",
+    "enterAccessCode": "Enter company code",
+    "continue": "Continue",
+    "secureConnection": "Secure SSL Connection",
+    "email": "Email address",
+    "password": "Password",
+    "login": "Login",
+    "invalidCredentials": "Invalid credentials",
+    "invalidAccessCode": "Invalid access code"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "briefing": "Briefing",
+    "countries": "Countries",
+    "projects": "Projects",
+    "residences": "Residences",
+    "paliers": "Floors",
+    "properties": "Properties",
+    "clients": "Clients",
+    "acquisitions": "Acquisitions",
+    "contracts": "Contracts",
+    "statistics": "Statistics",
+    "users": "Users",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "briefing": {
+    "title": "Real Estate Briefing",
+    "subtitle": "RELIANCE WEST AFRICA Portfolio Status",
+    "filters": {
+      "country": "Country",
+      "project": "Project",
+      "residence": "Residence",
+      "palier": "Floor",
+      "property": "Apartment/Villa"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome to DOMAINS",
+    "stats": {
+      "projects": "Projects",
+      "properties": "Properties",
+      "clients": "Clients",
+      "acquisitions": "Acquisitions",
+      "revenue": "Revenue"
+    },
+    "recentActivities": "Recent Activities",
+    "quickActions": "Quick Actions"
+  },
+  "properties": {
+    "title": "Property Management",
+    "addProperty": "Add Property",
+    "propertyDetails": "Property Details",
+    "type": "Type",
+    "rooms": "Rooms",
+    "surface": "Surface (m²)",
+    "furnished": "Furnished",
+    "balcony": "Balcony",
+    "types": {
+      "appartement": "Apartment",
+      "villa": "Villa",
+      "magasin": "Shop"
+    }
+  }
+}

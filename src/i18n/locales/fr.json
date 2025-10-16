@@ -1,0 +1,179 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "actions": "Actions",
+    "status": "Statut",
+    "date": "Date",
+    "price": "Prix",
+    "total": "Total",
+    "available": "Disponible",
+    "reserved": "Réservé(e)",
+    "sold": "Soldé(e)",
+    "published": "Publié",
+    "unpublished": "Non publié"
+  },
+  "auth": {
+    "accessCode": "Code d'accès",
+    "enterAccessCode": "Entrez le code d'entreprise",
+    "continue": "Continuer",
+    "secureConnection": "Connexion sécurisée SSL",
+    "email": "Adresse email",
+    "password": "Mot de passe",
+    "login": "Se connecter",
+    "invalidCredentials": "Identifiants invalides",
+    "invalidAccessCode": "Code d'accès invalide",
+    "signin": "Connexion",
+    "forgotPassword": "Mot de passe oublé?",
+    "resetPassword": "Reinitialiser le mot de passe",
+    "reset": "Reinitialiser",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+    "passwordsTooShort": "Le mot de passe doit contenir au moins 8 caractères",
+    "passwordsTooLong": "Le mot de passe doit contenir moins de 32 caractères",
+    "passwordsTooWeak": "Le mot de passe est trop faible",
+    "passwordsTooCommon": "Le mot de passe est trop commun",
+    "passwordsTooSimilar": "Le mot de passe est trop similaire au mot de passe d'origine",
+    "passwordsTooOld": "Le mot de passe est trop vieux",
+    "passwordsTooRecent": "Le mot de passe est trop recent"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "briefing": "Briefing",
+    "countries": "Pays",
+    "projects": "Projets",
+    "residences": "Résidences",
+    "summary": "Bilan visuel",
+    "paliers": "Paliers",
+    "properties": "Propriétés",
+    "clients": "Clients",
+    "acquisitions": "Acquisitions",
+    "contracts": "Contrats",
+    "statistics": "Statistiques",
+    "users": "Utilisateurs",
+    "settings": "Paramètres",
+    "profile": "Profil",
+    "logout": "Déconnexion"
+  },
+  "briefing": {
+    "title": "Briefing Immobilier",
+    "subtitle": "État du patrimoine RELIANCE WEST AFRICA",
+    "premium": "Premium",
+    "projects": "Projets",
+    "properties": "Propriétés",
+    "countries": "Pays",
+    "findProperty": "Trouvez votre propriété idéale",
+    "filterDescription": "Utilisez nos filtres avancés pour découvrir les meilleures opportunités",
+    "selectCountry": "Sélectionner un pays",
+    "selectProject": "Sélectionner un projet",
+    "selectResidence": "Sélectionner une résidence",
+    "selectFloor": "Sélectionner un palier",
+    "selectPropertyType": "Sélectionner un type",
+    "activeFilters": "Filtres actifs",
+    "clearAll": "Tout effacer",
+    "featuredProjects": "Projets en Vedette",
+    "projectsDescription": "Découvrez nos développements immobiliers d'exception",
+    "featured": "En Vedette",
+    "residences": "résidences",
+    "availableProperties": "Propriétés Disponibles",
+    "propertiesDescription": "Explorez notre sélection de propriétés premium",
+    "propertiesFound": "propriétés trouvées",
+    "rooms": "chambres",
+    "balcony": "Balcon",
+    "noProperties": "Aucune propriété trouvée",
+    "noPropertiesDescription": "Aucune propriété ne correspond à vos critères de recherche",
+    "resetFilters": "Réinitialiser les filtres",
+    "filters": {
+      "country": "Pays",
+      "project": "Projet",
+      "residence": "Résidence",
+      "palier": "Palier",
+      "property": "Appartement/Villa"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bienvenue sur DOMAINS",
+    "stats": {
+      "projects": "Projets",
+      "properties": "Propriétés",
+      "clients": "Clients",
+      "acquisitions": "Acquisitions",
+      "revenue": "Chiffre d'affaires"
+    },
+    "recentActivities": "Activités récentes",
+    "quickActions": "Actions rapides"
+  },
+  "properties": {
+    "title": "Gestion des Propriétés",
+    "addProperty": "Ajouter une propriété",
+    "propertyDetails": "Détails de la propriété",
+    "type": "Type",
+    "rooms": "Chambres",
+    "surface": "Surface (m²)",
+    "furnished": "Meublé",
+    "balcony": "Balcon",
+    "types": {
+      "appartement": "Appartement",
+      "villa": "Villa",
+      "magasin": "Magasin"
+    },
+    "status": {
+      "available": "Disponible",
+      "discussion": "Sous discussion cliente",
+      "reserved": "Réservé(e)",
+      "sold": "Soldé(e)",
+      "rental": "Sous mandat de gestion locative",
+      "outbid": "Offre surclassée"
+    }
+  },
+  "clients": {
+    "title": "Gestion des Clients",
+    "addClient": "Ajouter un client",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "gender": "Genre",
+    "phone": "Téléphone",
+    "email": "Email",
+    "address": "Adresse",
+    "nationality": "Nationalité",
+    "idDocument": "Pièce d'identité"
+  },
+  "acquisitions": {
+    "title": "Gestion des Acquisitions",
+    "addAcquisition": "Nouvelle acquisition",
+    "property": "Propriété",
+    "client": "Client",
+    "amount": "Montant",
+    "amountType": "Type de montant",
+    "paymentMethod": "Moyen de paiement",
+    "note": "Note",
+    "amountTypes": {
+      "advance": "Avance",
+      "total": "Total",
+      "other": "Autres"
+    },
+    "status": {
+      "discussion": "Sous discussion",
+      "reserved": "Réservée",
+      "sold": "Soldée",
+      "outbid": "Offre surclassée"
+    }
+  },
+  "contracts": {
+    "title": "Gestion des Contrats",
+    "generateContract": "Générer un contrat",
+    "contractType": "Type de contrat",
+    "types": {
+      "reservation": "Contrat de réservation",
+      "rental": "Contrat de gestion locative",
+      "sale": "Contrat de vente"
+    }
+  }
+}
