@@ -10,7 +10,9 @@ import type {
   Acquisition,
   Contract,
   BriefingSlide,
-  DashboardStats
+  DashboardStats,
+  Apartment,
+  Domain
 } from '@/types';
 
 export type Language = 'en' | 'fr' | 'zh';
@@ -81,25 +83,79 @@ export const useAppStore = defineStore('app', () => {
     }
   ]);
 
+  const domains = ref<Domain[]>([
+    {
+      id: '1',
+      title: 'Diamond Residences',
+      domain_type: 'residential',
+      project_id: '1',
+      description: 'Complexe résidentiel haut de gamme avec 3 bâtiments modernes',
+      residences_count: 3,
+      image_url: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800',
+      published: true,
+      created_at: new Date(),
+      updated_at: new Date()
+    },
+    {
+      id: '2',
+      title: 'Emerald Towers',
+      domain_type: 'mixed',
+      project_id: '1',
+      description: 'Tours mixtes avec résidences et commerces',
+      residences_count: 2,
+      image_url: 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
+      published: true,
+      created_at: new Date(),
+      updated_at: new Date()
+    }
+  ]);
+
   const residences = ref<Residence[]>([
     {
       id: '1',
       projectId: '1',
-      title: 'Bâtiment A - Les Palmiers',
-      residenceType: 'Immeuble',
-      floorsCount: 8,
-      unitsCount: 32,
-      description: 'Immeuble principal avec ascenseur',
+      title: 'Bâtiment A - Diamond Residences',
+      residenceType: 'Immeuble Résidentiel',
+      floorsCount: 6,
+      unitsCount: 27,
+      description: 'Bâtiment A avec 3 étages résidentiels (4ème, 5ème et 6ème), 9 appartements par étage. Immeuble moderne avec ascenseur, parking souterrain et espaces verts.',
       photoUrl: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800',
+      published: true,
+      createdAt: new Date()
+    },
+    {
+      id: '2',
+      projectId: '1',
+      title: 'Bâtiment B - Diamond Residences',
+      residenceType: 'Immeuble Résidentiel',
+      floorsCount: 6,
+      unitsCount: 27,
+      description: 'Bâtiment B avec 3 étages résidentiels, même configuration que le Bâtiment A. Vue panoramique sur la ville.',
+      photoUrl: 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
+      published: true,
+      createdAt: new Date()
+    },
+    {
+      id: '3',
+      projectId: '1',
+      title: 'Tour Emerald Nord',
+      residenceType: 'Tour Résidentielle',
+      floorsCount: 12,
+      unitsCount: 48,
+      description: 'Tour résidentielle de standing avec 12 étages. Appartements de luxe avec vue imprenable.',
+      photoUrl: 'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800',
       published: true,
       createdAt: new Date()
     }
   ]);
 
   const paliers = ref<Palier[]>([
-    { id: '1', residenceId: '1', title: 'Rez-de-chaussée', unitCount: 4, description: 'Niveau 0' },
-    { id: '2', residenceId: '1', title: '1er étage', unitCount: 4, description: 'Niveau 1' },
-    { id: '3', residenceId: '1', title: '2ème étage', unitCount: 4, description: 'Niveau 2' }
+    { id: '1', residenceId: '1', title: 'QUATRIEME ETAGE', unitCount: 9, description: '4ème étage - 9 appartements' },
+    { id: '2', residenceId: '1', title: 'CINQUIEME ETAGE', unitCount: 9, description: '5ème étage - 9 appartements' },
+    { id: '3', residenceId: '1', title: 'SIXIEME ETAGE', unitCount: 9, description: '6ème étage - 9 appartements' },
+    { id: '4', residenceId: '2', title: 'QUATRIEME ETAGE', unitCount: 9, description: '4ème étage - 9 appartements' },
+    { id: '5', residenceId: '2', title: 'CINQUIEME ETAGE', unitCount: 9, description: '5ème étage - 9 appartements' },
+    { id: '6', residenceId: '2', title: 'SIXIEME ETAGE', unitCount: 9, description: '6ème étage - 9 appartements' }
   ]);
 
   const properties = ref<Property[]>([
@@ -175,6 +231,41 @@ export const useAppStore = defineStore('app', () => {
   ]);
 
   const contracts = ref<Contract[]>([]);
+
+  const apartments = ref<Apartment[]>([
+    // SIXIEME ETAGE - Bâtiment A
+    { id: 'a601', code: 'A601', floor: 'SIXIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'temp_reserved', client_name: 'Mohamed Keita', position: 1, created_at: new Date(), updated_at: new Date() },
+    { id: 'a602', code: 'A602', floor: 'SIXIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'temp_reserved', client_name: 'Aisha Diop', position: 2, created_at: new Date(), updated_at: new Date() },
+    { id: 'a603', code: 'A603', floor: 'SIXIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Kofi Mensah', position: 3, created_at: new Date(), updated_at: new Date() },
+    { id: 'a604', code: 'A604', floor: 'SIXIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Fatou Sow', position: 4, created_at: new Date(), updated_at: new Date() },
+    { id: 'a605', code: 'A605', floor: 'SIXIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Jean-Paul Kouassi', position: 5, created_at: new Date(), updated_at: new Date() },
+    { id: 'a606', code: 'A606', floor: 'SIXIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Marie Touré', position: 6, created_at: new Date(), updated_at: new Date() },
+    { id: 'a607', code: 'A607', floor: 'SIXIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'reserved_unsigned', client_name: 'Ibrahim Ba', position: 7, created_at: new Date(), updated_at: new Date() },
+    { id: 'a608', code: 'A608', floor: 'SIXIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'reserved_unsigned', client_name: 'Aminata Traoré', position: 8, created_at: new Date(), updated_at: new Date() },
+    { id: 'a609', code: 'A609', floor: 'SIXIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'temp_reserved', client_name: 'Kwame Asante', position: 9, created_at: new Date(), updated_at: new Date() },
+
+    // CINQUIEME ETAGE - Bâtiment A
+    { id: 'a501', code: 'A501', floor: 'CINQUIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'reserved_unsigned', client_name: 'Yao N\'Guessan', position: 1, created_at: new Date(), updated_at: new Date() },
+    { id: 'a502', code: 'A502', floor: 'CINQUIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Mariam Sanogo', position: 2, created_at: new Date(), updated_at: new Date() },
+    { id: 'a503', code: 'A503', floor: 'CINQUIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Eric Bamba', position: 3, created_at: new Date(), updated_at: new Date() },
+    { id: 'a504', code: 'A504', floor: 'CINQUIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Khadija Camara', position: 4, created_at: new Date(), updated_at: new Date() },
+    { id: 'a505', code: 'A505', floor: 'CINQUIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Ousmane Diallo', position: 5, created_at: new Date(), updated_at: new Date() },
+    { id: 'a506', code: 'A506', floor: 'CINQUIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'reserved_signed', client_name: 'Sophie Koné', position: 6, created_at: new Date(), updated_at: new Date() },
+    { id: 'a507', code: 'A507', floor: 'CINQUIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Mamadou Sylla', position: 7, created_at: new Date(), updated_at: new Date() },
+    { id: 'a508', code: 'A508', floor: 'CINQUIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'reserved_unsigned', client_name: 'Grace Obi', position: 8, created_at: new Date(), updated_at: new Date() },
+    { id: 'a509', code: 'A509', floor: 'CINQUIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'temp_reserved', client_name: 'Daniel Kouadio', position: 9, created_at: new Date(), updated_at: new Date() },
+
+    // QUATRIEME ETAGE - Bâtiment A
+    { id: 'a401', code: 'A401', floor: 'QUATRIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'temp_reserved', client_name: 'Alice Mensah', position: 1, created_at: new Date(), updated_at: new Date() },
+    { id: 'a402', code: 'A402', floor: 'QUATRIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'temp_reserved', client_name: 'Pierre Diabaté', position: 2, created_at: new Date(), updated_at: new Date() },
+    { id: 'a403', code: 'A403', floor: 'QUATRIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Nadia Cissé', position: 3, created_at: new Date(), updated_at: new Date() },
+    { id: 'a404', code: 'A404', floor: 'QUATRIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Samuel Konaté', position: 4, created_at: new Date(), updated_at: new Date() },
+    { id: 'a405', code: 'A405', floor: 'QUATRIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Hawa Doumbia', position: 5, created_at: new Date(), updated_at: new Date() },
+    { id: 'a406', code: 'A406', floor: 'QUATRIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'signed', client_name: 'Christian Yao', position: 6, created_at: new Date(), updated_at: new Date() },
+    { id: 'a407', code: 'A407', floor: 'QUATRIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'reserved_unsigned', client_name: 'Awa Traoré', position: 7, created_at: new Date(), updated_at: new Date() },
+    { id: 'a408', code: 'A408', floor: 'QUATRIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'available', position: 8, created_at: new Date(), updated_at: new Date() },
+    { id: 'a409', code: 'A409', floor: 'QUATRIEME ETAGE', building: 'BATIMENT A', residence_id: '1', status: 'temp_reserved', client_name: 'Lamine Coulibaly', position: 9, created_at: new Date(), updated_at: new Date() }
+  ]);
 
   const dashboardStats = ref<DashboardStats>({
     totalProjects: 2,
@@ -306,6 +397,15 @@ export const useAppStore = defineStore('app', () => {
     return newAcquisition;
   }
 
+  function updateApartmentStatus(apartmentId: string, status: string, clientName?: string) {
+    const apartment = apartments.value.find(a => a.id === apartmentId);
+    if (apartment) {
+      apartment.status = status as any;
+      apartment.client_name = clientName;
+      apartment.updated_at = new Date();
+    }
+  }
+
   return {
     loading,
     sidebarOpen,
@@ -313,12 +413,14 @@ export const useAppStore = defineStore('app', () => {
     briefingSlides,
     countries,
     projects,
+    domains,
     residences,
     paliers,
     properties,
     clients,
     acquisitions,
     contracts,
+    apartments,
     dashboardStats,
     publishedProjects,
     availableProperties,
@@ -331,6 +433,7 @@ export const useAppStore = defineStore('app', () => {
     addProperty,
     updateProperty,
     addClient,
-    addAcquisition
+    addAcquisition,
+    updateApartmentStatus
   };
 });

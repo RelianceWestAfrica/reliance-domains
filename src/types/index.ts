@@ -166,3 +166,37 @@ export interface Activity {
   userName: string;
   createdAt: Date;
 }
+
+export type ApartmentStatus =
+  | 'available'
+  | 'temp_reserved'
+  | 'reserved_unsigned'
+  | 'reserved_signed'
+  | 'signed';
+
+export interface Apartment {
+  id: string;
+  code: string;
+  floor: string;
+  building: string;
+  residence_id: string;
+  status: ApartmentStatus;
+  client_name?: string;
+  client_info?: any;
+  position: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface Domain {
+  id: string;
+  title: string;
+  domain_type: 'residential' | 'hospital' | 'commercial' | 'mixed' | 'industrial' | 'villa' | 'office';
+  project_id: string;
+  description: string;
+  residences_count: number;
+  image_url?: string;
+  published: boolean;
+  created_at: Date;
+  updated_at: Date;
+}

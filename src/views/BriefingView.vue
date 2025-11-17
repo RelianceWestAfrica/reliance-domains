@@ -168,7 +168,7 @@
       </div>
 
       <!-- Hero Content -->
-      <div class="relative z-10 text-center px-6 max-w-6xl mx-auto">
+      <div class="relative z-10 text-center px-6 max-w-8xl mx-auto">
         <!-- Premium Badge -->
         <!-- <div class="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm border border-gold-400/30 rounded-full px-6 py-2 mb-8" data-aos="fade-down">
           <svg class="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
@@ -179,11 +179,11 @@
 
         <!-- Main Title with Gold Gradient -->
         <br><h1 class="text-5xl md:text-6xl font-bold mb-10 leading-tight" data-aos="fade-up" data-aos-delay="200">
-          <span class="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-500 bg-clip-text text-transparent">
+          <span class="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-500 bg-clip-text text-transparent outfit-title">
             Bienvenue sur l'espace
           </span>
           <br>
-          <span class="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-500 bg-clip-text text-transparent">
+          <span class="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-500 bg-clip-text text-transparent outfit-title">
             Reliance Domains
           </span>
         </h1>
@@ -201,7 +201,7 @@
           <div class="flex flex-wrap justify-center items-center gap-4">
             <!-- Country Filter -->
             <div class="filter-item">
-              <label class="block text-white/80 text-sm font-medium mb-2">Pays</label>
+              <label class="block text-white/80 text-sm font-medium mb-2 outfit-lay">Pays</label>
               <select
                 v-model="filters.country"
                 @change="onCountryChange"
@@ -217,7 +217,7 @@
 
             <!-- Project Filter -->
             <div class="filter-item">
-              <label class="block text-white/80 text-sm font-medium mb-2">Projet</label>
+              <label class="block text-white/80 text-sm font-medium mb-2 outfit-lay">Projet</label>
               <select
                 v-model="filters.project"
                 @change="onProjectChange"
@@ -231,13 +231,29 @@
               </select>
             </div>
 
-            <!-- Residence Filter -->
+            <!-- Domain Filter -->
+            <div class="filter-item">
+              <label class="block text-white/80 text-sm font-medium mb-2">Domaine</label>
+              <select
+                v-model="filters.domain"
+                @change="onDomainChange"
+                :disabled="!filters.project"
+                class="filter-select"
+              >
+                <option value="">Tous les domaines</option>
+                <option v-for="domain in availableDomains" :key="domain.id" :value="domain.id">
+                  {{ domain.title }}
+                </option>
+              </select>
+            </div>
+
+             <!-- Residence Filter -->
             <div class="filter-item">
               <label class="block text-white/80 text-sm font-medium mb-2">Résidence</label>
               <select
                 v-model="filters.residence"
                 @change="onResidenceChange"
-                :disabled="!filters.project"
+                :disabled="!filters.domain"
                 class="filter-select"
               >
                 <option value="">Toutes les résidences</option>
@@ -249,7 +265,7 @@
 
             <!-- Floor Filter -->
             <div class="filter-item">
-              <label class="block text-white/80 text-sm font-medium mb-2">Palier</label>
+              <label class="block text-white/80 text-sm font-medium mb-2 outfit-lay">Palier</label>
               <select
                 v-model="filters.palier"
                 @change="onPalierChange"
@@ -265,7 +281,7 @@
 
             <!-- Property Type Filter -->
             <div class="filter-item">
-              <label class="block text-white/80 text-sm font-medium mb-2">Type</label>
+              <label class="block text-white/80 text-sm font-medium mb-2 outfit-lay">Type</label>
               <select
                 v-model="filters.propertyType"
                 class="filter-select"
@@ -281,7 +297,7 @@
           <!-- Active Filters -->
           <div v-if="activeFilters.length > 0" class="mt-6 pt-6 border-t border-white/20">
             <div class="flex flex-wrap items-center gap-2 justify-center">
-              <span class="text-white/80 text-sm font-medium">Filtres actifs:</span>
+              <span class="text-white/80 text-sm font-medium outfit-lay">Filtres actifs:</span>
               <div
                 v-for="filter in activeFilters"
                 :key="filter.key"
@@ -353,10 +369,10 @@
       <div v-if="currentView === 'projects'" class="space-y-12">
         <div class="text-center mb-16" data-aos="fade-up">
           <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4">
-            <span class="text-navy-800">Projets immobiliers</span> 
+            <span class="text-navy-800 outfit-title">Projets immobiliers</span> 
             <!-- Projets <span class="bg-gradient-to-r from-gold-700 to-navy-800/70 bg-clip-text text-transparent">Premium</span> -->
           </h2>
-          <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto outfit-lay">
             Découvrez tous les projets de développement immobiliers
           </p>
         </div>
@@ -375,7 +391,7 @@
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
               <div class="absolute top-4 left-4">
-                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 outfit-mid">
                   Publié
                 </span>
               </div>
@@ -385,13 +401,14 @@
             </div>
 
             <div class="p-6">
-              <h3 class="text-lg font-semibold text-navy-900 group-hover:text-navy-600 transition-colors mb-2">
+              <h3 class="text-lg font-semibold text-navy-900 group-hover:text-navy-600 transition-colors mb-2 outfit-mid">
                 {{ project.title }}
               </h3>
-              <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ project.description }}</p>
+              <p class="text-gray-600 text-md mb-4 line-clamp-2 outfit-tin">{{ project.description }}</p>
               <div class="flex items-center justify-between text-sm text-gray-500">
-                <span>{{ project.city }}</span>
-                <span>{{ project.residencesCount }} résidences</span>
+                <span class="outfit-lay">{{ project.city }}</span>
+                <span class="outfit-lay">{{ project.domainsCount }} domaines</span>
+                <!-- <span class="outfit-lay">{{ project.residencesCount }} résidences</span> -->
               </div>
             </div>
           </div>
@@ -427,9 +444,13 @@
                     <span class="text-gray-600">Type:</span>
                     <span class="font-medium">{{ selectedProject.type }}</span>
                   </div>
-                  <div class="flex justify-between">
+                  <!-- <div class="flex justify-between">
                     <span class="text-gray-600">Résidences:</span>
                     <span class="font-medium">{{ selectedProject.residencesCount }}</span>
+                  </div> -->
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Domaines:</span>
+                    <span class="font-medium">{{ selectedProject.domainsCount }}</span>
                   </div>
                   <div class="flex justify-between">
                     <span class="text-gray-600">Propriétés:</span>
@@ -441,12 +462,92 @@
           </div>
         </div>
 
-        <!-- Residences List -->
+
+
+
+        <!-- Domains List -->
         <div class="space-y-8">
-          <h2 class="text-2xl font-bold text-navy-900">Résidences du projet</h2>
+          <h2 class="text-2xl font-bold text-navy-900">Domaines du projet</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div
-              v-for="residence in projectResidences"
+              v-for="domain in projectDomains"
+              :key="domain.id"
+              class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
+              @click="selectDomain(domain)"
+            >
+              <div class="relative h-40">
+                <img
+                  :src="domain.image"
+                  :alt="domain.title"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute top-3 right-3">
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                    {{ domain.domainType }}
+                  </span>
+                </div>
+              </div>
+              <div class="p-4">
+                <h3 class="font-semibold text-navy-900 mb-2">{{ domain.title }}</h3>
+                <p class="text-sm text-gray-600 mb-3">{{ domain.description }}</p>
+                <div class="flex justify-between text-sm text-gray-500">
+                  <span>{{ domain.residencesCount }} résidences</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Domain Detail View -->
+      <div v-else-if="currentView === 'domain-detail'" class="space-y-12">
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden" data-aos="fade-up">
+          <div class="relative h-64">
+            <img
+              :src="selectedDomain.image"
+              :alt="selectedDomain.title"
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            <div class="absolute bottom-6 left-6 text-white">
+              <h1 class="text-3xl font-bold mb-2">{{ selectedDomain.title }}</h1>
+              <p class="text-lg opacity-90">{{ selectedDomain.domainType }}</p>
+            </div>
+          </div>
+
+          <div class="p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <h3 class="text-xl font-semibold text-navy-900 mb-4">Description</h3>
+                <p class="text-gray-600 leading-relaxed">{{ selectedDomain.description }}</p>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-navy-900 mb-4">Caractéristiques</h3>
+                <div class="space-y-3">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Type:</span>
+                    <span class="font-medium">{{ selectedDomain.domainType }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Résidences:</span>
+                    <span class="font-medium">{{ selectedDomain.residencesCount }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <!-- Residences List -->
+        <div class="space-y-8">
+          <h2 class="text-2xl font-bold text-navy-900">Résidences du domaine</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div
+              v-for="residence in domainResidences"
               :key="residence.id"
               class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
               @click="selectResidence(residence)"
@@ -682,19 +783,19 @@
               </div>
               <span class="text-xl font-black tracking-wider" style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">DOMAINS</span>
             </div>
-            <p class="text-gray-400 text-sm">
+            <p class="text-gray-400 text-sm outfit-tin">
               La plateforme de gestion moderne, cenralisée et simplifiée du suivi des patrimoines immobiliers <br>Reliance West Africa
             </p>
           </div>
 
           <div class="footer-section space-y-4">
-            <h4 class="text-lg font-bold">Contact</h4>
+            <h4 class="text-lg outfit-title">Contact</h4>
             <p class="text-gray-400 text-sm">Email: contact@reliancewestafrica.com</p>
             <p class="text-gray-400 text-sm">Tél: +228 98 74 26 26</p>
           </div>
 
           <div class="footer-section space-y-4">
-            <h4 class="text-lg font-bold">Liens Rapides</h4>
+            <h4 class="text-lg outfit-title">Liens Rapides</h4>
             <button @click="router.push('/dashboard')" class="block text-gray-400 text-sm hover:text-white transition-colors">
               Tableau de bord
             </button>
@@ -707,7 +808,7 @@
           </div>
 
           <div class="footer-section space-y-4">
-            <h4 class="text-lg font-bold">Suivez-nous</h4>
+            <h4 class="text-lg outfit-title">Suivez-nous</h4>
             <div class="flex flex-col gap-2">
               <a href="#" class="text-gray-400 text-sm hover:text-white transition-colors">Instagram</a>
               <a href="#" class="text-gray-400 text-sm hover:text-white transition-colors">Facebook</a>
@@ -716,7 +817,7 @@
           </div>
         </div>
 
-        <div class="pt-8 border-t border-gray-700 text-center text-gray-400 text-sm">
+        <div class="pt-8 border-t border-gray-700 text-center text-gray-400 text-sm outfit-lay">
           <p>&copy; 2025 Domains Reliance West Africa. Tous droits réservés.</p>
         </div>
       </div>
@@ -745,6 +846,7 @@ const showUserDropdown = ref(false)
 const currentLanguage = ref('fr')
 const currentView = ref('projects')
 const selectedProject = ref(null)
+const selectedDomain = ref(null)
 const selectedResidence = ref(null)
 const selectedProperty = ref(null)
 
@@ -752,6 +854,7 @@ const selectedProperty = ref(null)
 const filters = ref({
   country: '',
   project: '',
+  domain: '',
   residence: '',
   palier: '',
   propertyType: ''
@@ -840,9 +943,53 @@ const allProjects = ref([
   }
 ])
 
+const allDomains = ref([
+  {
+    id: '1',
+    projectId: '1',
+    title: 'Domaine Résidentiel Étoile Nord',
+    domainType: 'Résidentiel',
+    residencesCount: 2,
+    description: 'Domaine résidentiel haut de gamme avec tours modernes et espaces verts.',
+    image: 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
+    published: true
+  },
+  {
+    id: '2',
+    projectId: '1',
+    title: 'Domaine Commercial Étoile Sud',
+    domainType: 'Commercial',
+    residencesCount: 1,
+    description: 'Espace commercial avec boutiques et restaurants de prestige.',
+    image: 'https://images.pexels.com/photos/2467285/pexels-photo-2467285.jpeg?auto=compress&cs=tinysrgb&w=800',
+    published: true
+  },
+  {
+    id: '3',
+    projectId: '2',
+    title: 'Domaine Villa Paradise',
+    domainType: 'Villa',
+    residencesCount: 1,
+    description: 'Domaine exclusif de villas de luxe avec jardins privés et piscines.',
+    image: 'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800',
+    published: true
+  },
+  {
+    id: '4',
+    projectId: '3',
+    title: 'Domaine Mixte Marina',
+    domainType: 'Mixte',
+    residencesCount: 2,
+    description: 'Domaine combinant espaces résidentiels et commerciaux face à la mer.',
+    image: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800',
+    published: true
+  }
+])
+
 const allResidences = ref([
   {
     id: '1',
+    domainId: '1',
     projectId: '1',
     title: 'Tour A - Résidence Étoile',
     residenceType: 'Immeuble',
@@ -854,6 +1001,7 @@ const allResidences = ref([
   },
   {
     id: '2',
+    domainId: '1',
     projectId: '1',
     title: 'Tour B - Résidence Étoile',
     residenceType: 'Immeuble',
@@ -865,13 +1013,50 @@ const allResidences = ref([
   },
   {
     id: '3',
+    domainId: '2',
+    projectId: '1',
+    title: 'Centre Commercial Étoile',
+    residenceType: 'Commercial',
+    floorsCount: 3,
+    unitsCount: 12,
+    description: 'Centre commercial moderne avec boutiques et espaces de restauration.',
+    image: 'https://images.pexels.com/photos/2467285/pexels-photo-2467285.jpeg?auto=compress&cs=tinysrgb&w=800',
+    published: true
+  },
+  {
+    id: '4',
+    domainId: '3',
     projectId: '2',
-    title: 'Villas Premium',
+    title: 'Villas Premium Golden',
     residenceType: 'Villas',
     floorsCount: 2,
     unitsCount: 8,
-    description: 'Ensemble de villas individuelles avec jardins privés.',
+    description: 'Ensemble de villas individuelles avec jardins privés et vue océan.',
+    image: 'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800',
+    published: true
+  },
+  {
+    id: '5',
+    domainId: '4',
+    projectId: '3',
+    title: 'Résidence Marina Bay A',
+    residenceType: 'Immeuble',
+    floorsCount: 10,
+    unitsCount: 20,
+    description: 'Immeuble résidentiel avec vue sur la baie.',
     image: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800',
+    published: true
+  },
+  {
+    id: '6',
+    domainId: '4',
+    projectId: '3',
+    title: 'Espace Commercial Marina',
+    residenceType: 'Commercial',
+    floorsCount: 2,
+    unitsCount: 15,
+    description: 'Espace commercial en bord de mer avec boutiques et restaurants.',
+    image: 'https://images.pexels.com/photos/2467285/pexels-photo-2467285.jpeg?auto=compress&cs=tinysrgb&w=800',
     published: true
   }
 ])
@@ -1000,9 +1185,14 @@ const availableProjects = computed(() => {
   return projects
 })
 
-const availableResidences = computed(() => {
+const availableDomains = computed(() => {
   if (!filters.value.project) return []
-  return allResidences.value.filter(r => r.projectId === filters.value.project && r.published)
+  return allDomains.value.filter(d => d.projectId === filters.value.project && d.published)
+})
+
+const availableResidences = computed(() => {
+  if (!filters.value.domain) return []
+  return allResidences.value.filter(r => r.domainId === filters.value.domain && r.published)
 })
 
 const availablePaliers = computed(() => {
@@ -1025,9 +1215,14 @@ const displayedProjects = computed(() => {
   return projects
 })
 
-const projectResidences = computed(() => {
+const projectDomains = computed(() => {
   if (!selectedProject.value) return []
-  return allResidences.value.filter(r => r.projectId === selectedProject.value.id && r.published)
+  return allDomains.value.filter(d => d.projectId === selectedProject.value.id && d.published)
+})
+
+const domainResidences = computed(() => {
+  if (!selectedDomain.value) return []
+  return allResidences.value.filter(r => r.domainId === selectedDomain.value.id && r.published)
 })
 
 const residenceProperties = computed(() => {
@@ -1051,7 +1246,12 @@ const activeFilters = computed(() => {
     const project = allProjects.value.find(p => p.id === filters.value.project)
     if (project) active.push({ key: 'project', label: project.title })
   }
-  
+
+  if (filters.value.domain) {
+    const domain = allDomains.value.find(d => d.id === filters.value.domain)
+    if (domain) active.push({ key: 'domain', label: domain.title })
+  }
+
   if (filters.value.residence) {
     const residence = allResidences.value.find(r => r.id === filters.value.residence)
     if (residence) active.push({ key: 'residence', label: residence.title })
@@ -1076,19 +1276,23 @@ const activeFilters = computed(() => {
 
 const breadcrumbs = computed(() => {
   const crumbs = [{ title: 'Projets', view: 'projects' }]
-  
+
   if (selectedProject.value) {
     crumbs.push({ title: selectedProject.value.title, view: 'project-detail' })
   }
-  
+
+  if (selectedDomain.value) {
+    crumbs.push({ title: selectedDomain.value.title, view: 'domain-detail' })
+  }
+
   if (selectedResidence.value) {
     crumbs.push({ title: selectedResidence.value.title, view: 'residence-detail' })
   }
-  
+
   if (selectedProperty.value) {
     crumbs.push({ title: selectedProperty.value.title, view: 'property-detail' })
   }
-  
+
   return crumbs
 })
 
@@ -1106,11 +1310,18 @@ const logout = () => {
 
 const onCountryChange = () => {
   filters.value.project = ''
+  filters.value.domain = ''
   filters.value.residence = ''
   filters.value.palier = ''
 }
 
 const onProjectChange = () => {
+  filters.value.domain = ''
+  filters.value.residence = ''
+  filters.value.palier = ''
+}
+
+const onDomainChange = () => {
   filters.value.residence = ''
   filters.value.palier = ''
 }
@@ -1125,13 +1336,18 @@ const onPalierChange = () => {
 
 const removeFilter = (key: string) => {
   filters.value[key] = ''
-  
+
   // Handle cascading
   if (key === 'country') {
     filters.value.project = ''
+    filters.value.domain = ''
     filters.value.residence = ''
     filters.value.palier = ''
   } else if (key === 'project') {
+    filters.value.domain = ''
+    filters.value.residence = ''
+    filters.value.palier = ''
+  } else if (key === 'domain') {
     filters.value.residence = ''
     filters.value.palier = ''
   } else if (key === 'residence') {
@@ -1143,6 +1359,7 @@ const clearAllFilters = () => {
   filters.value = {
     country: '',
     project: '',
+    domain: '',
     residence: '',
     palier: '',
     propertyType: ''
@@ -1151,9 +1368,17 @@ const clearAllFilters = () => {
 
 const selectProject = (project: any) => {
   selectedProject.value = project
+  selectedDomain.value = null
   selectedResidence.value = null
   selectedProperty.value = null
   currentView.value = 'project-detail'
+}
+
+const selectDomain = (domain: any) => {
+  selectedDomain.value = domain
+  selectedResidence.value = null
+  selectedProperty.value = null
+  currentView.value = 'domain-detail'
 }
 
 const selectResidence = (residence: any) => {
@@ -1170,15 +1395,20 @@ const selectProperty = (property: any) => {
 const navigateToBreadcrumb = (index: number) => {
   const crumb = breadcrumbs.value[index]
   currentView.value = crumb.view
-  
+
   if (index === 0) {
     selectedProject.value = null
+    selectedDomain.value = null
     selectedResidence.value = null
     selectedProperty.value = null
   } else if (index === 1) {
+    selectedDomain.value = null
     selectedResidence.value = null
     selectedProperty.value = null
   } else if (index === 2) {
+    selectedResidence.value = null
+    selectedProperty.value = null
+  } else if (index === 3) {
     selectedProperty.value = null
   }
 }
