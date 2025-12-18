@@ -37,15 +37,19 @@
         </div>
         <select v-model="projectFilter" class="filter-select">
           <option value="">Tous les projets</option>
-          <option value="1">Résidence Étoile</option>
-          <option value="2">Villa Paradise</option>
-          <option value="3">Golden Heights</option>
+          <option
+              v-for="project in projects"
+              :key="project.id"
+              :value="project.id"
+          >
+            {{ project.name }}
+          </option>
         </select>
         <select v-model="typeFilter" class="filter-select">
           <option value="">Tous les types</option>
-          <option value="Immeuble">Immeuble</option>
-          <option value="Villas">Villas</option>
-          <option value="Commercial">Commercial</option>
+          <option value="IMMEUBLE">IMMEUBLE</option>
+          <option value="VILLAS">VILLAS</option>
+          <option value="AUTRE">AUTRE</option>
         </select>
       </div>
     </div>
@@ -60,7 +64,7 @@
       >
         <div class="residence-image">
           <img
-            :src="residence.image"
+            :src="residence.imageUrl"
             :alt="residence.title"
             class="residence-img"
           />
@@ -73,7 +77,7 @@
             </span>
           </div>
           <div class="residence-type">
-            <span class="type-badge">{{ residence.residenceType }}</span>
+            <span class="type-badge">{{ residence.type }}</span>
           </div>
         </div>
         
@@ -184,12 +188,11 @@
             </div>
             <div class="form-group">
               <label class="form-label">Type de résidence *</label>
-              <select v-model="formData.residenceType" class="form-input" required>
+              <select v-model="formData.type" class="form-input" required>
                 <option value="">Sélectionner un type</option>
-                <option value="Immeuble">Immeuble</option>
-                <option value="Villas">Villas</option>
-                <option value="Commercial">Commercial</option>
-                <option value="Mixte">Mixte</option>
+                <option value="IMMEUBLE">IMMEUBLE</option>
+                <option value="VILLAS">VILLAS</option>
+                <option value="AUTRE">AUTRE</option>
               </select>
             </div>
           </div>
@@ -260,7 +263,7 @@
           <div class="form-group">
             <label class="form-label">URL de l'image</label>
             <input
-              v-model="formData.photoUrl"
+              v-model="formData.imageUrl"
               type="url"
               class="form-input"
               placeholder="https://example.com/image.jpg"
@@ -308,7 +311,7 @@
             <img :src="selectedResidence.image" :alt="selectedResidence.title" class="residence-image-large"/>
             <div class="residence-info-large">
               <h4 class="residence-title-large">{{ selectedResidence.title }}</h4>
-              <p class="residence-type-large">{{ selectedResidence.residenceType }}</p>
+              <p class="residence-type-large">{{ selectedResidence.type }}</p>
               <p class="residence-project-large">{{ selectedResidence.projectTitle }}</p>
               <div class="residence-status-large">
                 <span
@@ -341,7 +344,7 @@
               <div class="detail-grid">
                 <div class="detail-item">
                   <label>Type</label>
-                  <span>{{ selectedResidence.residenceType }}</span>
+                  <span>{{ selectedResidence.type }}</span>
                 </div>
                 <div class="detail-item">
                   <label>Projet</label>
@@ -444,12 +447,12 @@ const isDeleting = ref(false)
 // Form data
 const formData = ref({
   title: '',
-  residenceType: '',
+  type: '',
   projectId: '',
   description: '',
   floorsCount: 1,
   unitsCount: 1,
-  photoUrl: '',
+  imageUrl: '',
   published: false
 })
 
@@ -484,26 +487,27 @@ const fetchProjects = async () => {
 
 // Computed properties
 const filteredResidences = computed(() => {
-  let filtered = residences.value
+  let result = [...residences.value]
 
-  if (searchQuery.value) {
+  if (searchQuery.value?.trim()) {
     const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(residence =>
-      residence.title.toLowerCase().includes(query) ||
-      residence.description.toLowerCase().includes(query) ||
-      residence.projectTitle.toLowerCase().includes(query)
+
+    result = result.filter(r =>
+        (r.title ?? '').toLowerCase().includes(query) ||
+        (r.description ?? '').toLowerCase().includes(query) ||
+        (r.projectTitle ?? '').toLowerCase().includes(query)
     )
   }
 
   if (projectFilter.value) {
-    filtered = filtered.filter(residence => residence.projectId === projectFilter.value)
+    result = result.filter(r => r.projectId === projectFilter.value)
   }
 
   if (typeFilter.value) {
-    filtered = filtered.filter(residence => residence.residenceType === typeFilter.value)
+    result = result.filter(r => r.type === typeFilter.value)
   }
 
-  return filtered
+  return result
 })
 
 // Methods
@@ -523,12 +527,12 @@ const editResidence = (residence: any) => {
   selectedResidence.value = residence
   formData.value = {
     title: residence.title,
-    residenceType: residence.residenceType,
+    type: residence.type,
     projectId: residence.projectId,
     description: residence.description,
     floorsCount: residence.floorsCount,
     unitsCount: residence.unitsCount,
-    photoUrl: residence.image,
+    imageUrl: residence.imageUrl,
     published: residence.published
   }
   showEditModal.value = true
@@ -586,12 +590,12 @@ const closeModals = () => {
   selectedResidence.value = null
   formData.value = {
     title: '',
-    residenceType: '',
+    type: '',
     projectId: '',
     description: '',
     floorsCount: 1,
     unitsCount: 1,
-    photoUrl: '',
+    imageUrl: '',
     published: false
   }
 }
