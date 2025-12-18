@@ -9,6 +9,7 @@
     <template v-else-if="$route.meta.layout === 'admin'">
       <AdminLayout>
         <router-view />
+        <Notivue />
       </AdminLayout>
     </template>
 
@@ -28,6 +29,7 @@ import { onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useAppStore } from '@/stores/app';
 import AdminLayout from '@/components/layout/AdminLayout.vue';
+import { Notivue } from 'notivue'
 
 const authStore = useAuthStore();
 const appStore = useAppStore();

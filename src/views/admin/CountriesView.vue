@@ -55,12 +55,12 @@
           <tbody>
             <tr
               v-for="country in filteredCountries"
-              :key="country.id"
+              :key="country?.id"
               class="table-row"
             >
               <td class="table-cell">
                 <div class="country-info">
-                  <span class="country-flag">{{ country.flag }}</span>
+                  <span class="country-flag">{{ flag(country.iso_2) }}</span>
                   <div class="country-details">
                     <div class="country-name">{{ country.name }}</div>
                     <div class="country-code">{{ country.iso2 }}</div>
@@ -71,7 +71,7 @@
                 <span class="iso-code">{{ country.iso2 }}</span>
               </td>
               <td class="table-cell">
-                <span class="dial-code">{{ country.dialCode }}</span>
+                <span class="dial-code">{{ country.phoneCode }}</span>
               </td>
               <td class="table-cell">
                 <div class="projects-count">
@@ -165,9 +165,9 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Code ISO2 *</label>
+              <label class="form-label">Code iso_2 *</label>
               <input
-                v-model="formData.iso2"
+                v-model="formData.iso_2"
                 type="text"
                 class="form-input"
                 placeholder="Ex: CI"
@@ -178,7 +178,7 @@
             <div class="form-group">
               <label class="form-label">Indicatif téléphonique *</label>
               <input
-                v-model="formData.dialCode"
+                v-model="formData.phoneCode"
                 type="text"
                 class="form-input"
                 placeholder="Ex: +225"
@@ -228,7 +228,7 @@
             <span class="country-flag-large">{{ selectedCountry.flag }}</span>
             <div>
               <h4 class="country-name-large">{{ selectedCountry.name }}</h4>
-              <p class="country-code-large">{{ selectedCountry.iso2 }} • {{ selectedCountry.dialCode }}</p>
+              <p class="country-code-large">{{ selectedCountry.iso_2 }} • {{ selectedCountry.phoneCode }}</p>
             </div>
           </div>
 
@@ -303,8 +303,23 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import {CountriesService} from "@/services/countries.service.ts";
+import type { Country } from '@/types/country'
+import { push } from 'notivue'
+
+const getFlag = (iso2: string): string => {
+    if (!iso2) return ''
+    const codePoints = iso2
+        .toUpperCase()
+        .split('')
+        .map(c => 127397 + c.charCodeAt(0))
+    return String.fromCodePoint(...codePoints)
+  }
+
 
 const authStore = useAuthStore()
+
+const flag = (iso: string) => getFlag(iso)
 
 // Reactive data
 const searchQuery = ref('')
@@ -319,64 +334,92 @@ const isDeleting = ref(false)
 // Form data
 const formData = ref({
   name: '',
-  iso2: '',
-  dialCode: '',
+  iso_2: '',
+  phoneCode: '',
   flag: ''
 })
 
 // Mock data
-const countries = ref([
-  {
-    id: '1',
-    name: 'Côte d\'Ivoire',
-    iso2: 'CI',
-    dialCode: '+225',
-    flag: '🇨🇮',
-    projectsCount: 5,
-    createdAt: new Date('2024-01-15')
-  },
-  {
-    id: '2',
-    name: 'Ghana',
-    iso2: 'GH',
-    dialCode: '+233',
-    flag: '🇬🇭',
-    projectsCount: 3,
-    createdAt: new Date('2024-01-20')
-  },
-  {
-    id: '3',
-    name: 'Sénégal',
-    iso2: 'SN',
-    dialCode: '+221',
-    flag: '🇸🇳',
-    projectsCount: 2,
-    createdAt: new Date('2024-01-25')
-  },
-  {
-    id: '4',
-    name: 'Nigeria',
-    iso2: 'NG',
-    dialCode: '+234',
-    flag: '🇳🇬',
-    projectsCount: 4,
-    createdAt: new Date('2024-02-01')
-  }
-])
+const countries = ref<Country[]>([])
+
 
 // Computed properties
 const filteredCountries = computed(() => {
-  if (!searchQuery.value) return countries.value
-  
+  if (!searchQuery.value) return countries.value.map(c => ({ ...c, flag: getFlag(c.iso_2) }))
+
   const query = searchQuery.value.toLowerCase()
-  return countries.value.filter(country =>
-    country.name.toLowerCase().includes(query) ||
-    country.iso2.toLowerCase().includes(query) ||
-    country.dialCode.includes(query)
-  )
+
+  return countries.value
+      .filter(country =>
+          Object.values(country).some(value =>
+              String(value).toLowerCase().includes(query)
+          )
+      )
+      .map(c => ({ ...c, flag: getFlag(c.iso_2) }))
 })
 
 // Methods
+
+const fetchCountries = async () => {
+  try {
+    const response = await CountriesService.all()
+    countries.value = response.data
+  } catch (error) {
+    console.error('Erreur lors du chargement des pays:', error)
+  }
+}
+
+const submitForm = async () => {
+  isSubmitting.value = true
+
+  try {
+    if (showCreateModal.value) {
+      const response = await CountriesService.create(formData.value)
+
+      countries.value.unshift(response.data.data)
+      push.success('Pays chargés avec succès')
+    } else {
+      const response = await CountriesService.update(
+          selectedCountry.value.id,
+          formData.value
+      )
+
+      const index = countries.value.findIndex(
+          c => c.id === selectedCountry.value.id
+      )
+
+      if (index !== -1) {
+        countries.value[index] = response.data.data
+      }
+    }
+
+    closeModals()
+  } catch (error) {
+    console.error('Erreur lors de la soumission:', error)
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+const confirmDelete = async () => {
+  isDeleting.value = true
+
+  try {
+    await CountriesService.delete(selectedCountry.value.id)
+
+    countries.value = countries.value.filter(
+        c => c.id !== selectedCountry.value.id
+    )
+
+    closeModals()
+  } catch (error) {
+    console.error('Erreur lors de la suppression:', error)
+  } finally {
+    isDeleting.value = false
+  }
+}
+
+
 const viewCountry = (country: any) => {
   selectedCountry.value = country
   showViewModal.value = true
@@ -386,8 +429,8 @@ const editCountry = (country: any) => {
   selectedCountry.value = country
   formData.value = {
     name: country.name,
-    iso2: country.iso2,
-    dialCode: country.dialCode,
+    iso_2: country.iso_2,
+    phoneCode: country.phoneCode,
     flag: country.flag
   }
   showEditModal.value = true
@@ -398,61 +441,6 @@ const deleteCountry = (country: any) => {
   showDeleteModal.value = true
 }
 
-const submitForm = async () => {
-  isSubmitting.value = true
-  
-  try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    if (showCreateModal.value) {
-      // Create new country
-      const newCountry = {
-        id: Date.now().toString(),
-        ...formData.value,
-        projectsCount: 0,
-        createdAt: new Date()
-      }
-      countries.value.push(newCountry)
-    } else {
-      // Update existing country
-      const index = countries.value.findIndex(c => c.id === selectedCountry.value.id)
-      if (index !== -1) {
-        countries.value[index] = {
-          ...countries.value[index],
-          ...formData.value
-        }
-      }
-    }
-    
-    closeModals()
-  } catch (error) {
-    console.error('Error submitting form:', error)
-  } finally {
-    isSubmitting.value = false
-  }
-}
-
-const confirmDelete = async () => {
-  isDeleting.value = true
-  
-  try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    const index = countries.value.findIndex(c => c.id === selectedCountry.value.id)
-    if (index !== -1) {
-      countries.value.splice(index, 1)
-    }
-    
-    closeModals()
-  } catch (error) {
-    console.error('Error deleting country:', error)
-  } finally {
-    isDeleting.value = false
-  }
-}
-
 const closeModals = () => {
   showCreateModal.value = false
   showEditModal.value = false
@@ -461,8 +449,8 @@ const closeModals = () => {
   selectedCountry.value = null
   formData.value = {
     name: '',
-    iso2: '',
-    dialCode: '',
+    iso_2: '',
+    phoneCode: '',
     flag: ''
   }
 }
@@ -479,9 +467,14 @@ const getClientsCount = (countryId: string) => {
   return counts[countryId] || 0
 }
 
+
+
 // Lifecycle
 onMounted(() => {
   // Initialize component
+  fetchCountries()
+  const country = getFlag('CI')
+  console.log(country) // 🇨🇮
 })
 </script>
 
@@ -758,23 +751,23 @@ onMounted(() => {
   .countries-management {
     @apply p-4;
   }
-  
+
   .header-content {
     @apply flex-col items-start space-y-4;
   }
-  
+
   .search-container {
     @apply flex-col space-y-4 space-x-0;
   }
-  
+
   .search-input-wrapper {
     @apply max-w-none;
   }
-  
+
   .action-buttons {
     @apply flex-col space-y-2 space-x-0;
   }
-  
+
   .btn-action {
     @apply w-full justify-center;
   }

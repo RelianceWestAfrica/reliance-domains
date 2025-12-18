@@ -9,13 +9,10 @@
               <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M3 3a1 1 0 011-1h6a1 1 0 011 1v4h6a1 1 0 011 1v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3zm7 1H5v14h10V9h-5V4zM7 10h2v2H7v-2zm4 0h2v2h-2v-2zM7 13h2v2H7v-2zm4 0h2v2h-2v-2z"/>
               </svg>
-
             </div>
             <div>
               <h1 class="text-xl font-bold">DOMAINS</h1>
               <p class="text-sm text-gray-300">Reliance West Africa</p>
-              <!-- <h1 class="text-xl font-bold">{{ $t('app.title') }}</h1>
-              <p class="text-sm text-gray-300">{{ $t('app.subtitle') }}</p> -->
             </div>
           </div>
           <LanguageSwitcher />
@@ -40,13 +37,13 @@
 
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <AppInput
-            v-model="credentials.email"
-            type="email"
-            :label="$t('auth.email')"
-            placeholder="admin@example.com"
-            :error="errors.email"
-            required
-            autocomplete="email"
+              v-model="credentials.email"
+              type="email"
+              :label="$t('auth.email')"
+              placeholder="admin@example.com"
+              :error="errors.email"
+              required
+              autocomplete="email"
           >
             <template #icon>
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,13 +53,13 @@
           </AppInput>
 
           <AppInput
-            v-model="credentials.password"
-            type="password"
-            :label="$t('auth.password')"
-            placeholder="••••••••"
-            :error="errors.password"
-            required
-            autocomplete="current-password"
+              v-model="credentials.password"
+              type="password"
+              :label="$t('auth.password')"
+              placeholder="••••••••"
+              :error="errors.password"
+              required
+              autocomplete="current-password"
           >
             <template #icon>
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,16 +68,17 @@
             </template>
           </AppInput>
 
+          <!-- Erreur générale (du store ou validation locale) -->
           <div v-if="generalError" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3 animate-slide-up">
             {{ generalError }}
           </div>
 
           <AppButton
-            type="submit"
-            variant="primary"
-            :loading="authStore.loading"
-            full-width
-            class="group"
+              type="submit"
+              variant="primary"
+              :loading="authStore.loading"
+              full-width
+              class="group"
           >
             {{ $t('auth.signin') }}
             <svg class="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,25 +93,19 @@
           </a>
         </div>
 
-        <!-- Demo credentials info -->
+        <!-- Demo credentials -->
         <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
           <p class="text-xs text-gray-600 mb-2 font-semibold">Identifiants de démonstration :</p>
           <p class="text-xs text-gray-600">Email: admin@example.com</p>
           <p class="text-xs text-gray-600">Mot de passe: password123</p>
         </div>
-
-        <!-- Security Badge -->
-        <!-- <div class="mt-6 flex items-center justify-center text-sm text-green-600">
-          <div class="pulse-dot mr-2"></div>
-          {{ $t('auth.secureConnection') }}
-        </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
@@ -142,32 +134,46 @@ const validateForm = () => {
   errors.password = ''
   generalError.value = ''
 
+  let valid = true
+
   if (!credentials.email) {
-    errors.email = 'L\'email est requis'
-    return false
+    errors.email = t('validation.required', { field: t('auth.email') })
+    valid = false
+  } else if (!/\S+@\S+\.\S+/.test(credentials.email)) {
+    errors.email = t('validation.email')
+    valid = false
   }
 
   if (!credentials.password) {
-    errors.password = 'Le mot de passe est requis'
-    return false
+    errors.password = t('validation.required', { field: t('auth.password') })
+    valid = false
+  } else if (credentials.password.length < 6) {
+    errors.password = t('validation.min', { field: t('auth.password'), min: 6 })
+    valid = false
   }
 
-  if (credentials.password.length < 6) {
-    errors.password = 'Le mot de passe doit contenir au moins 6 caractères'
-    return false
-  }
-
-  return true
+  return valid
 }
 
 const handleSubmit = async () => {
   if (!validateForm()) return
 
   const success = await authStore.login(credentials.email, credentials.password)
+
   if (success) {
-    router.push('/briefing')
+    // Optionnel : re-fetch user pour être sûr d'avoir les données fraîches
+    // await authStore.fetchUser()
+    router.push('/dashboard')
   } else {
     generalError.value = authStore.error || t('auth.invalidCredentials')
   }
 }
+
+// Si l'utilisateur est déjà connecté, rediriger directement
+onMounted(() => {
+  authStore.initializeAuth()
+  if (authStore.isAuthenticated) {
+    router.push('/briefing')
+  }
+})
 </script>

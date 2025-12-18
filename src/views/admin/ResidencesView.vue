@@ -196,11 +196,28 @@
 
           <div class="form-group">
             <label class="form-label">Projet *</label>
-            <select v-model="formData.projectId" class="form-input" required>
-              <option value="">Sélectionner un projet</option>
-              <option value="1">Résidence Étoile</option>
-              <option value="2">Villa Paradise</option>
-              <option value="3">Golden Heights</option>
+<!--            <select v-model="formData.projectId" class="form-input" required>-->
+<!--              <option value="">Sélectionner un projet</option>-->
+<!--              <option value="1">Résidence Étoile</option>-->
+<!--              <option value="2">Villa Paradise</option>-->
+<!--              <option value="3">Golden Heights</option>-->
+<!--            </select>-->
+            <select
+                v-model="formData.projectId"
+                class="tw-w-full tw-border form-input tw-rounded tw-px-3 tw-py-2"
+                :disabled="isLoadingProjects"
+            >
+              <option value="" disabled>
+                {{ isLoadingProjects ? 'Chargement...' : 'Sélectionner un projet' }}
+              </option>
+
+              <option
+                  v-for="project in projects"
+                  :key="project.id"
+                  :value="project.id"
+              >
+                {{ project.name }}
+              </option>
             </select>
           </div>
 
@@ -393,13 +410,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import {ref, computed, onMounted, watch} from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import FileUpload from '@/components/ui/FileUpload.vue'
+import {ResidencesService} from "@/services/residences.service.ts";
+import {ProjectsService} from "@/services/projects.service.ts";
 
 const router = useRouter()
 const authStore = useAuthStore()
+
+
+const projects = ref<any[]>([])
+const isLoadingProjects = ref(false)
 
 const canAccessBilanVisuel = computed(() => {
   const role = authStore.user?.role?.toLowerCase()
@@ -431,47 +454,33 @@ const formData = ref({
 })
 
 // Mock data
-const residences = ref([
-  {
-    id: '1',
-    projectId: '1',
-    title: 'Tour A - Résidence Étoile',
-    residenceType: 'Immeuble',
-    floorsCount: 15,
-    unitsCount: 32,
-    description: 'Tour résidentielle moderne de 15 étages avec appartements premium.',
-    image: 'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=800',
-    projectTitle: 'Résidence Étoile',
-    published: true,
-    createdAt: new Date('2024-01-15')
-  },
-  {
-    id: '2',
-    projectId: '1',
-    title: 'Tour B - Résidence Étoile',
-    residenceType: 'Immeuble',
-    floorsCount: 12,
-    unitsCount: 24,
-    description: 'Seconde tour avec vue panoramique sur la lagune.',
-    image: 'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=800',
-    projectTitle: 'Résidence Étoile',
-    published: true,
-    createdAt: new Date('2024-01-20')
-  },
-  {
-    id: '3',
-    projectId: '2',
-    title: 'Villas Premium',
-    residenceType: 'Villas',
-    floorsCount: 2,
-    unitsCount: 8,
-    description: 'Ensemble de villas individuelles avec jardins privés.',
-    image: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800',
-    projectTitle: 'Villa Paradise',
-    published: false,
-    createdAt: new Date('2024-01-25')
+const residences = ref<any[]>([])
+
+const fetchResidences = async () => {
+  try {
+    const { data } = await ResidencesService.all({
+      search: searchQuery.value || undefined,
+      projectId: projectFilter.value || undefined,
+      type: typeFilter.value || undefined,
+    })
+
+    residences.value = data
+  } catch (error) {
+    console.error('Erreur chargement résidences', error)
   }
-])
+}
+
+const fetchProjects = async () => {
+  isLoadingProjects.value = true
+  try {
+    const { data } = await ProjectsService.all()
+    projects.value = data
+  } catch (error) {
+    console.error('Erreur chargement projets', error)
+  } finally {
+    isLoadingProjects.value = false
+  }
+}
 
 // Computed properties
 const filteredResidences = computed(() => {
@@ -523,6 +532,7 @@ const editResidence = (residence: any) => {
     published: residence.published
   }
   showEditModal.value = true
+  fetchProjects()
 }
 
 const deleteResidence = (residence: any) => {
@@ -532,63 +542,37 @@ const deleteResidence = (residence: any) => {
 
 const submitForm = async () => {
   isSubmitting.value = true
-  
+
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    const projectTitles = {
-      '1': 'Résidence Étoile',
-      '2': 'Villa Paradise',
-      '3': 'Golden Heights'
-    }
-    
     if (showCreateModal.value) {
-      // Create new residence
-      const newResidence = {
-        id: Date.now().toString(),
-        ...formData.value,
-        image: formData.value.photoUrl || 'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=800',
-        projectTitle: projectTitles[formData.value.projectId] || 'Projet inconnu',
-        createdAt: new Date()
-      }
-      residences.value.push(newResidence)
-    } else {
-      // Update existing residence
-      const index = residences.value.findIndex(r => r.id === selectedResidence.value.id)
-      if (index !== -1) {
-        residences.value[index] = {
-          ...residences.value[index],
-          ...formData.value,
-          image: formData.value.photoUrl || residences.value[index].image,
-          projectTitle: projectTitles[formData.value.projectId] || 'Projet inconnu'
-        }
-      }
+      await ResidencesService.create(formData.value)
+    } else if (selectedResidence.value) {
+      await ResidencesService.update(
+          selectedResidence.value.id,
+          formData.value
+      )
     }
-    
+
+    await fetchResidences()
     closeModals()
   } catch (error) {
-    console.error('Error submitting form:', error)
+    console.error('Erreur sauvegarde résidence', error)
   } finally {
     isSubmitting.value = false
   }
 }
 
 const confirmDelete = async () => {
+  if (!selectedResidence.value) return
+
   isDeleting.value = true
-  
+
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    const index = residences.value.findIndex(r => r.id === selectedResidence.value.id)
-    if (index !== -1) {
-      residences.value.splice(index, 1)
-    }
-    
+    await ResidencesService.delete(selectedResidence.value.id)
+    await fetchResidences()
     closeModals()
   } catch (error) {
-    console.error('Error deleting residence:', error)
+    console.error('Erreur suppression', error)
   } finally {
     isDeleting.value = false
   }
@@ -615,6 +599,8 @@ const closeModals = () => {
 // Lifecycle
 onMounted(() => {
   // Initialize component
+  fetchResidences()
+  fetchProjects()
 })
 </script>
 

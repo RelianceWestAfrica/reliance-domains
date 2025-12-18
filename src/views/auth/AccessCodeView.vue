@@ -86,10 +86,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
+
 import AppInput from '@/components/ui/AppInput.vue'
 import AppButton from '@/components/ui/AppButton.vue'
 import LanguageSwitcher from '@/components/common/LanguageSwitcher.vue'
@@ -99,29 +100,22 @@ const authStore = useAuthStore()
 const { t } = useI18n()
 
 const accessCode = ref('')
-const error = ref('')
+const error = ref<string | null>(null)
 
 const handleSubmit = async () => {
-  error.value = ''
-  
-  try {
-    const isValid = await authStore.validateAccessCode(accessCode.value)
-    
-    if (isValid) {
-      router.push('/login')
-    } else {
-      error.value = t('auth.invalidCode')
-    }
-  } catch (err) {
+  error.value = null
+
+  if (!accessCode.value.trim()) {
     error.value = t('auth.invalidCode')
+    return
+  }
+
+  const success = await authStore.validateAccessCode(accessCode.value)
+
+  if (success) {
+    router.push('/login')
+  } else {
+    error.value = authStore.error || t('auth.invalidCode')
   }
 }
-
-onMounted(() => {
-  // Demo codes
-  console.log('Demo access codes:')
-  console.log('COMMERCIAL: COMMERCIAL2024')
-  console.log('ADMIN: ADMIN2024') 
-  console.log('SUPERADMIN: SUPER2024')
-})
 </script>

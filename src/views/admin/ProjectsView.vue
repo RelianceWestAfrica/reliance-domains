@@ -37,9 +37,13 @@
         </div>
         <select v-model="countryFilter" class="filter-select">
           <option value="">Tous les pays</option>
-          <option value="1">Côte d'Ivoire</option>
-          <option value="2">Ghana</option>
-          <option value="3">Sénégal</option>
+          <option
+              v-for="country in countries"
+              :key="country.id"
+              :value="country.id"
+          >
+            {{ country.name }}
+          </option>
         </select>
         <select v-model="statusFilter" class="filter-select">
           <option value="">Tous les statuts</option>
@@ -59,7 +63,7 @@
       >
         <div class="project-image">
           <img
-            :src="project.image"
+            :src="project.heroImageUrl"
             :alt="project.title"
             class="project-img"
           />
@@ -166,7 +170,7 @@
             <div class="form-group">
               <label class="form-label">Titre du projet *</label>
               <input
-                v-model="formData.title"
+                v-model="formData.name"
                 type="text"
                 class="form-input"
                 placeholder="Ex: Résidence Étoile"
@@ -177,10 +181,9 @@
               <label class="form-label">Type *</label>
               <select v-model="formData.type" class="form-input" required>
                 <option value="">Sélectionner un type</option>
-                <option value="Résidentiel">Résidentiel</option>
-                <option value="Commercial">Commercial</option>
-                <option value="Mixte">Mixte</option>
-                <option value="Villa">Villa</option>
+                <option value="RESIDENTIEL">RESIDENTIEL</option>
+                <option value="VILLA">VILLA</option>
+                <option value="MIXTE">MIXTE</option>
               </select>
             </div>
           </div>
@@ -190,9 +193,13 @@
               <label class="form-label">Pays *</label>
               <select v-model="formData.countryId" class="form-input" required>
                 <option value="">Sélectionner un pays</option>
-                <option value="1">Côte d'Ivoire</option>
-                <option value="2">Ghana</option>
-                <option value="3">Sénégal</option>
+                <option
+                    v-for="country in countries"
+                    :key="country.id"
+                    :value="country.id"
+                >
+                  {{ country.name }}
+                </option>
               </select>
             </div>
             <div class="form-group">
@@ -207,17 +214,23 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Adresse *</label>
-            <input
-            <FileUpload
-              v-model="formData.photoUrl"
-              label="Project Image"
-              accept="image/*"
-              :max-size="5"
-              upload-text="Upload project image"
-            />
-          </div>
+<!--          <div class="form-group">-->
+<!--            <label class="form-label">Adresse *</label>-->
+<!--            <input-->
+<!--                v-model="formData.city"-->
+<!--                type="text"-->
+<!--                class="form-input"-->
+<!--                placeholder="Ex: Abidjan"-->
+<!--                required-->
+<!--            />-->
+<!--            <FileUpload-->
+<!--              v-model="formData.heroImageUrl"-->
+<!--              label="Project Image"-->
+<!--              accept="image/*"-->
+<!--              :max-size="5"-->
+<!--              upload-text="Upload project image"-->
+<!--            />-->
+<!--          </div>-->
 
           <div class="form-group">
             <label class="form-label">Description *</label>
@@ -244,7 +257,7 @@
             <div class="form-group">
               <label class="form-label">URL de l'image</label>
               <input
-                v-model="formData.photoUrl"
+                v-model="formData.heroImageUrl"
                 type="url"
                 class="form-input"
                 placeholder="https://example.com/image.jpg"
@@ -290,11 +303,11 @@
 
         <div class="view-content">
           <div class="project-view-header">
-            <img :src="selectedProject.image" :alt="selectedProject.title" class="project-image-large"/>
+            <img :src="selectedProject.heroImageUrl" :alt="selectedProject.title" class="project-image-large"/>
             <div class="project-info-large">
-              <h4 class="project-title-large">{{ selectedProject.title }}</h4>
+              <h4 class="project-title-large">{{ selectedProject.name }}</h4>
               <p class="project-location-large">
-                <span class="country-flag-large">{{ selectedProject.countryFlag }}</span>
+                <span class="country-flag-large">{{ selectedProject.pay }}</span>
                 {{ selectedProject.city }}
               </p>
               <div class="project-status-large">
@@ -403,6 +416,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import FileUpload from '@/components/ui/FileUpload.vue'
+import {ProjectsService} from "@/services/projects.service.ts";
+import {CountriesService} from "@/services/countries.service.ts";
 
 // Reactive data
 const searchQuery = ref('')
@@ -418,68 +433,42 @@ const isDeleting = ref(false)
 
 // Form data
 const formData = ref({
-  title: '',
+  name: '',
   type: '',
   countryId: '',
   city: '',
   locationAddress: '',
   description: '',
   company: 'RELIANCE WEST AFRICA',
-  photoUrl: '',
+  heroImageUrl: '',
   published: false
 })
 
-// Mock data
-const projects = ref([
-  {
-    id: '1',
-    title: 'Résidence Étoile',
-    type: 'Résidentiel',
-    countryId: '1',
-    city: 'Abidjan',
-    locationAddress: 'Cocody, Riviera Golf',
-    description: 'Résidence haut de gamme avec vue sur le golf',
-    company: 'RELIANCE WEST AFRICA',
-    image: 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countryFlag: '🇨🇮',
-    published: true,
-    residencesCount: 3,
-    propertiesCount: 24,
-    createdAt: new Date('2024-01-15')
-  },
-  {
-    id: '2',
-    title: 'Villa Paradise',
-    type: 'Villa',
-    countryId: '1',
-    city: 'Abidjan',
-    locationAddress: 'Cocody, Angré',
-    description: 'Villas de luxe avec piscine privée',
-    company: 'RELIANCE WEST AFRICA',
-    image: 'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countryFlag: '🇨🇮',
-    published: true,
-    residencesCount: 1,
-    propertiesCount: 8,
-    createdAt: new Date('2024-01-20')
-  },
-  {
-    id: '3',
-    title: 'Golden Heights',
-    type: 'Mixte',
-    countryId: '2',
-    city: 'Accra',
-    locationAddress: 'East Legon',
-    description: 'Complexe résidentiel et commercial premium',
-    company: 'RELIANCE WEST AFRICA',
-    image: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800',
-    countryFlag: '🇬🇭',
-    published: false,
-    residencesCount: 2,
-    propertiesCount: 16,
-    createdAt: new Date('2024-01-25')
+const countries = ref<{id: string, name: string, iso2: string}[]>([])
+
+const fetchCountries = async () => {
+  try {
+    const response = await CountriesService.all()
+    countries.value = response.data
+  } catch (error) {
+    console.error('Erreur lors du chargement des pays', error)
   }
-])
+}
+
+// Mock data
+const projects = ref<any[]>([])
+
+const fetchProjects = async () => {
+  try {
+    const response = await ProjectsService.all()
+    projects.value = response.data.map((p: any) => ({
+      ...p,
+      countryFlag: getCountryFlag(p.countryId)
+    }))
+  } catch (error) {
+    console.error('Erreur lors du chargement des projets', error)
+  }
+}
 
 // Computed properties
 const filteredProjects = computed(() => {
@@ -487,23 +476,29 @@ const filteredProjects = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
+
     filtered = filtered.filter(project =>
-      project.title.toLowerCase().includes(query) ||
-      project.city.toLowerCase().includes(query) ||
-      project.description.toLowerCase().includes(query)
+        project.title?.toLowerCase().includes(query) ||
+        project.city?.toLowerCase().includes(query) ||
+        project.description?.toLowerCase().includes(query)
     )
   }
 
   if (countryFilter.value) {
-    filtered = filtered.filter(project => project.countryId === countryFilter.value)
+    filtered = filtered.filter(
+        project => project.countryId === countryFilter.value
+    )
   }
 
   if (statusFilter.value !== '') {
-    filtered = filtered.filter(project => project.published.toString() === statusFilter.value)
+    filtered = filtered.filter(
+        project => String(project.published) === statusFilter.value
+    )
   }
 
   return filtered
 })
+
 
 // Methods
 const viewProject = (project: any) => {
@@ -514,14 +509,14 @@ const viewProject = (project: any) => {
 const editProject = (project: any) => {
   selectedProject.value = project
   formData.value = {
-    title: project.title,
+    name: project.name,
     type: project.type,
     countryId: project.countryId,
     city: project.city,
     locationAddress: project.locationAddress,
     description: project.description,
     company: project.company,
-    photoUrl: project.image,
+    heroImageUrl: project.heroImageUrl,
     published: project.published
   }
   showEditModal.value = true
@@ -531,48 +526,29 @@ const deleteProject = (project: any) => {
   selectedProject.value = project
   showDeleteModal.value = true
 }
-
 const submitForm = async () => {
   isSubmitting.value = true
-  
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    const countryFlags = {
-      '1': '🇨🇮',
-      '2': '🇬🇭',
-      '3': '🇸🇳'
-    }
-    
+    const payload = { ...formData.value }
+
     if (showCreateModal.value) {
-      // Create new project
-      const newProject = {
-        id: Date.now().toString(),
-        ...formData.value,
-        image: formData.value.photoUrl || 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
-        countryFlag: countryFlags[formData.value.countryId] || '🏳️',
-        residencesCount: 0,
-        propertiesCount: 0,
-        createdAt: new Date()
-      }
-      projects.value.push(newProject)
-    } else {
-      // Update existing project
+      const response = await ProjectsService.create(payload)
+      projects.value.push({
+        ...response.data,
+        countryFlag: getCountryFlag(response.data.countryId)
+      })
+    } else if (showEditModal.value) {
+      const response = await ProjectsService.update(selectedProject.value.id, payload)
       const index = projects.value.findIndex(p => p.id === selectedProject.value.id)
-      if (index !== -1) {
-        projects.value[index] = {
-          ...projects.value[index],
-          ...formData.value,
-          image: formData.value.photoUrl || projects.value[index].image,
-          countryFlag: countryFlags[formData.value.countryId] || '🏳️'
-        }
+      projects.value[index] = {
+        ...response.data,
+        countryFlag: getCountryFlag(response.data.countryId)
       }
     }
-    
+
     closeModals()
   } catch (error) {
-    console.error('Error submitting form:', error)
+    console.error('Erreur lors de la soumission du formulaire', error)
   } finally {
     isSubmitting.value = false
   }
@@ -580,22 +556,37 @@ const submitForm = async () => {
 
 const confirmDelete = async () => {
   isDeleting.value = true
-  
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    const index = projects.value.findIndex(p => p.id === selectedProject.value.id)
-    if (index !== -1) {
-      projects.value.splice(index, 1)
-    }
-    
+    await ProjectsService.delete(selectedProject.value.id)
+    projects.value = projects.value.filter(p => p.id !== selectedProject.value.id)
     closeModals()
   } catch (error) {
-    console.error('Error deleting project:', error)
+    console.error('Erreur lors de la suppression', error)
   } finally {
     isDeleting.value = false
   }
+}
+
+const uploadImage = async (file: File) => {
+  const formData = new FormData()
+  formData.append('image', file)
+
+  try {
+    const response = await ProjectsService.uploadImages(selectedProject.value.id, formData)
+    // réponse = nouvelle image, tu peux mettre à jour ton projet
+    selectedProject.value.image = response.data.url
+  } catch (error) {
+    console.error('Erreur lors de l\'upload', error)
+  }
+}
+
+const getCountryFlag = (countryId: string) => {
+  const flags: Record<string, string> = {
+    '1': '🇨🇮',
+    '2': '🇬🇭',
+    '3': '🇸🇳'
+  }
+  return flags[countryId] || '🏳️'
 }
 
 const closeModals = () => {
@@ -605,14 +596,14 @@ const closeModals = () => {
   showDeleteModal.value = false
   selectedProject.value = null
   formData.value = {
-    title: '',
+    name: '',
     type: '',
     countryId: '',
     city: '',
     locationAddress: '',
     description: '',
     company: 'RELIANCE WEST AFRICA',
-    photoUrl: '',
+    heroImageUrl: '',
     published: false
   }
 }
@@ -620,6 +611,8 @@ const closeModals = () => {
 // Lifecycle
 onMounted(() => {
   // Initialize component
+  fetchProjects();
+  fetchCountries();
 })
 </script>
 
