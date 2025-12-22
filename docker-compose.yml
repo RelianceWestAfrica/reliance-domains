@@ -19,3 +19,7 @@ services:
        #- API_BASE_URL=http://160.242.199.14:8888
       networks:
         - my-srv-net
+
+networks:
+  my-srv-net:
+    name: my-ng-net
