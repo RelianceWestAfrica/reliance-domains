@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+    # trois_puissance:
+    trois_puissance:
+      container_name: trois_puissance
+      #hostname: dp-senyo
+      # image: esmc-web:v1
+      # image: perce26/entrersortie:trois_puissance
+      build:
+        context: .
+        dockerfile: Dockerfile
+      restart: always
+      #command: tail -F anyts
+      ports:
+       #- "3000:3000"
+       - "3000:80"
+      #environment:
+       #- API_BASE_URL=http://160.242.199.14:8888
+      networks:
+        - my-srv-net
+
+networks:
+  my-srv-net:
+    # external:
+        name: my-ng-net
