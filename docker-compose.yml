@@ -1,12 +1,12 @@
 version: "3.9"
 
 services:
-    # reliance_domains:
-    reliance_domains:
-      container_name: reliance_domains
+    # trois_puissance:
+    trois_puissance:
+      container_name: trois_puissance
       #hostname: dp-senyo
       # image: esmc-web:v1
-      # image: perce26/entrersortie:reliance_domains
+      # image: perce26/entrersortie:trois_puissance
       build:
         context: .
         dockerfile: Dockerfile
@@ -14,7 +14,7 @@ services:
       #command: tail -F anyts
       ports:
        #- "3000:3000"
-       - "5175:5175"
+       - "3307:80"
       #environment:
        #- API_BASE_URL=http://160.242.199.14:8888
       networks:
@@ -22,4 +22,5 @@ services:
 
 networks:
   my-srv-net:
-    name: my-ng-net
+    # external:
+        name: my-ng-net
