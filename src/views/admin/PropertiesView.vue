@@ -38,22 +38,28 @@
         </div>
         <select v-model="typeFilter" class="filter-select">
           <option value="">Tous les types</option>
-          <option value="appartement">Appartement</option>
-          <option value="villa">Villa</option>
-          <option value="magasin">Magasin</option>
+          <option value="APARTMENT">APARTMENT</option>
+          <option value="VILLA">VILLA</option>
+          <option value="SHOP">SHOP</option>
+          <option value="OFFICE">OFFICE</option>
+          <option value="OTHER">OTHER</option>
         </select>
         <select v-model="statusFilter" class="filter-select">
           <option value="">Tous les statuts</option>
-          <option value="Disponible">Disponible</option>
-          <option value="Sous discussion cliente">Sous discussion</option>
-          <option value="Réservé">Réservé</option>
-          <option value="Soldé">Vendu</option>
+          <option value="AVAILABLE">Disponible</option>
+          <option value="UNDER_DISCUSSION">Sous discussion</option>
+          <option value="RESERVED">Réservé</option>
+          <option value="SOLD">Vendu</option>
         </select>
         <select v-model="residenceFilter" class="filter-select">
           <option value="">Toutes les résidences</option>
-          <option value="1">Tour A - Résidence Étoile</option>
-          <option value="2">Tour B - Résidence Étoile</option>
-          <option value="3">Villas Premium</option>
+          <option
+              v-for="residence in residences"
+              :key="residence.id"
+              :value="residence.id"
+          >
+            {{ residence.title }}
+          </option>
         </select>
       </div>
     </div>
@@ -68,7 +74,7 @@
       >
         <div class="property-image">
           <img
-            :src="property.image"
+            :src="property.imageUrl"
             :alt="property.title"
             class="property-img"
           />
@@ -81,7 +87,7 @@
             </span>
           </div>
           <div class="property-type">
-            <span class="type-badge">{{ property.propertyType }}</span>
+            <span class="type-badge">{{ property.type }}</span>
           </div>
         </div>
         
@@ -93,7 +99,7 @@
               <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
               </svg>
-              <span>{{ property.rooms }} pièces</span>
+              <span>{{ property.roomsCount }} pièces</span>
             </div>
             <div class="detail-item">
               <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,11 +184,13 @@
             </div>
             <div class="form-group">
               <label class="form-label">Type de propriété *</label>
-              <select v-model="formData.propertyType" class="form-input" required>
-                <option value="">Sélectionner un type</option>
-                <option value="appartement">Appartement</option>
-                <option value="villa">Villa</option>
-                <option value="magasin">Magasin</option>
+              <select v-model="formData.type" class="form-input" required>
+                <option value="" disabled>Sélectionner un type</option>
+                <option value="APARTMENT">APARTMENT</option>
+                <option value="VILLA">VILLA</option>
+                <option value="SHOP">SHOP</option>
+                <option value="OFFICE">OFFICE</option>
+                <option value="OTHER">OTHER</option>
               </select>
             </div>
           </div>
@@ -190,21 +198,33 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Résidence *</label>
-              <select v-model="formData.residenceId" class="form-input" required>
-                <option value="">Sélectionner une résidence</option>
-                <option value="1">Tour A - Résidence Étoile</option>
-                <option value="2">Tour B - Résidence Étoile</option>
-                <option value="3">Villas Premium</option>
+              <select
+                  v-model="formData.residenceId"
+                  class="form-input"
+                  :disabled="isLoadingResidences"
+                  required
+              >
+                <option value="" disabled>Sélectionner une résidence</option>
+                <option v-if="isLoadingResidences" disabled>
+                  Chargement des résidences...
+                </option>
+                <option
+                    v-for="residence in residences"
+                    :key="residence.id"
+                    :value="residence.id"
+                >
+                  {{ residence.title }}
+                </option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label">Statut *</label>
               <select v-model="formData.status" class="form-input" required>
-                <option value="">Sélectionner un statut</option>
-                <option value="Disponible">Disponible</option>
-                <option value="Sous discussion cliente">Sous discussion cliente</option>
-                <option value="Réservé">Réservé</option>
-                <option value="Soldé">Soldé</option>
+                <option value="" disabled>Sélectionner un statut</option>
+                <option value="AVAILABLE">Disponible</option>
+                <option value="UNDER_DISCUSSION">Sous discussion</option>
+                <option value="RESERVED">Réservé</option>
+                <option value="SOLD">Vendu</option>
               </select>
             </div>
           </div>
@@ -213,7 +233,7 @@
             <div class="form-group">
               <label class="form-label">Nombre de pièces *</label>
               <input
-                v-model.number="formData.rooms"
+                v-model.number="formData.roomsCount"
                 type="number"
                 class="form-input"
                 placeholder="Ex: 3"
@@ -224,7 +244,7 @@
             <div class="form-group">
               <label class="form-label">Nombre de cuisines *</label>
               <input
-                v-model.number="formData.kitchens"
+                v-model.number="formData.kitchensCount"
                 type="number"
                 class="form-input"
                 placeholder="Ex: 1"
@@ -262,7 +282,7 @@
           <div class="form-group">
             <label class="form-label">URL de l'image</label>
             <input
-              v-model="formData.image"
+              v-model="formData.imageUrl"
               type="url"
               class="form-input"
               placeholder="https://example.com/image.jpg"
@@ -330,10 +350,10 @@
 
         <div class="view-content">
           <div class="property-view-header">
-            <img :src="selectedProperty.image" :alt="selectedProperty.title" class="property-image-large"/>
+            <img :src="selectedProperty.imageUrl" :alt="selectedProperty.title" class="property-image-large"/>
             <div class="property-info-large">
               <h4 class="property-title-large">{{ selectedProperty.title }}</h4>
-              <p class="property-type-large">{{ selectedProperty.propertyType }}</p>
+              <p class="property-type-large">{{ selectedProperty.type }}</p>
               <div class="property-status-large">
                 <span
                   class="status-badge-large"
@@ -355,11 +375,11 @@
               <div class="detail-grid">
                 <div class="detail-item">
                   <label>Pièces</label>
-                  <span>{{ selectedProperty.rooms }}</span>
+                  <span>{{ selectedProperty.roomsCount }}</span>
                 </div>
                 <div class="detail-item">
                   <label>Cuisines</label>
-                  <span>{{ selectedProperty.kitchens }}</span>
+                  <span>{{ selectedProperty.kitchensCount }}</span>
                 </div>
                 <div class="detail-item">
                   <label>Surface</label>
@@ -381,7 +401,7 @@
               <div class="detail-grid">
                 <div class="detail-item">
                   <label>Type</label>
-                  <span class="capitalize">{{ selectedProperty.propertyType }}</span>
+                  <span class="capitalize">{{ selectedProperty.type }}</span>
                 </div>
                 <div class="detail-item">
                   <label>Statut</label>
@@ -452,6 +472,11 @@
 import { ref, computed } from 'vue'
 import { Plus } from 'lucide-vue-next'
 import FileUpload from '@/components/ui/FileUpload.vue'
+import { onMounted } from 'vue'
+import { PropertiesService } from '@/services/properties.service'
+import type { Property, CreatePropertyPayload } from '@/types/properties.ts'
+import {ResidencesService} from "@/services/residences.service.ts";
+
 
 // Reactive data
 const searchQuery = ref('')
@@ -462,89 +487,32 @@ const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const showViewModal = ref(false)
 const showDeleteModal = ref(false)
-const selectedProperty = ref(null)
 const isSubmitting = ref(false)
 const isDeleting = ref(false)
+const selectedProperty = ref<Property | null>(null)
+const residences = ref<any[]>([])
+const isLoadingResidences = ref(false)
 
 // Form data
-const formData = ref({
+const formData = ref<CreatePropertyPayload>({
   title: '',
-  propertyType: '',
-  residenceId: '',
+  type: '',
+  residenceId: 0,
   status: '',
-  rooms: 1,
-  kitchens: 1,
+  roomsCount: 1,
+  kitchensCount: 1,
   surface: 1,
   price: 0,
-  image: '',
+  imageUrl: '',
   balcony: false,
   furnished: false,
   published: false
 })
 
+
 // Mock data
-const properties = ref([
-  {
-    id: '1',
-    title: 'Appartement 3P - A101',
-    propertyType: 'appartement',
-    residenceId: '1',
-    price: 45000000,
-    status: 'Disponible',
-    image: 'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=800',
-    rooms: 3,
-    kitchens: 1,
-    surface: 85,
-    balcony: true,
-    furnished: false,
-    published: true
-  },
-  {
-    id: '2',
-    title: 'Villa Premium - V001',
-    propertyType: 'villa',
-    residenceId: '3',
-    price: 125000000,
-    status: 'Sous discussion cliente',
-    image: 'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=800',
-    rooms: 5,
-    kitchens: 2,
-    surface: 250,
-    balcony: true,
-    furnished: false,
-    published: true
-  },
-  {
-    id: '3',
-    title: 'Appartement 2P - B205',
-    propertyType: 'appartement',
-    residenceId: '2',
-    price: 35000000,
-    status: 'Réservé',
-    image: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800',
-    rooms: 2,
-    kitchens: 1,
-    surface: 65,
-    balcony: true,
-    furnished: true,
-    published: true
-  },
-  {
-    id: '4',
-    title: 'Magasin Commercial - M001',
-    propertyType: 'magasin',
-    residenceId: '1',
-    price: 25000000,
-    status: 'Disponible',
-    image: 'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=800',
-    rooms: 1,
-    kitchens: 0,
-    surface: 45,
-    balcony: false,
-    furnished: false,
-    published: false
-  }
-])
+const properties = ref<Property[]>([])
+
 
 const filteredProperties = computed(() => {
   let filtered = properties.value
@@ -557,7 +525,7 @@ const filteredProperties = computed(() => {
   }
 
   if (typeFilter.value) {
-    filtered = filtered.filter(p => p.propertyType === typeFilter.value)
+    filtered = filtered.filter(p => p.type === typeFilter.value)
   }
 
   if (statusFilter.value) {
@@ -565,11 +533,37 @@ const filteredProperties = computed(() => {
   }
 
   if (residenceFilter.value) {
-    filtered = filtered.filter(p => p.residenceId === residenceFilter.value)
+    // filtered = filtered.filter(p => residenceFilter.value === p.residenceId)
   }
 
   return filtered
 })
+
+const fetchProperties = async () => {
+  try {
+    const { data } = await PropertiesService.all({
+      search: searchQuery.value || undefined,
+      type: typeFilter.value || undefined,
+      status: statusFilter.value || undefined,
+      residenceId: residenceFilter.value || undefined
+    })
+    properties.value = data
+  } catch (error) {
+    console.error('Erreur chargement propriétés', error)
+  }
+}
+
+const loadResidences = async () => {
+  isLoadingResidences.value = true
+  try {
+    const { data } = await ResidencesService.all()
+    residences.value = data
+  } catch (error) {
+    console.error('Erreur chargement résidences', error)
+  } finally {
+    isLoadingResidences.value = false
+  }
+}
 
 // Methods
 const viewProperty = (property: any) => {
@@ -581,14 +575,14 @@ const editProperty = (property: any) => {
   selectedProperty.value = property
   formData.value = {
     title: property.title,
-    propertyType: property.propertyType,
+    type: property.type,
     residenceId: property.residenceId,
     status: property.status,
-    rooms: property.rooms,
-    kitchens: property.kitchens,
+    roomsCount: property.roomsCount,
+    kitchensCount: property.kitchensCount,
     surface: property.surface,
     price: property.price,
-    image: property.image,
+    imageUrl: property.imageUrl,
     balcony: property.balcony,
     furnished: property.furnished,
     published: property.published
@@ -603,54 +597,35 @@ const deleteProperty = (property: any) => {
 
 const submitForm = async () => {
   isSubmitting.value = true
-  
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
     if (showCreateModal.value) {
-      // Create new property
-      const newProperty = {
-        id: Date.now().toString(),
-        ...formData.value,
-        image: formData.value.image || 'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=800'
-      }
-      properties.value.push(newProperty)
-    } else {
-      // Update existing property
-      const index = properties.value.findIndex(p => p.id === selectedProperty.value.id)
-      if (index !== -1) {
-        properties.value[index] = {
-          ...properties.value[index],
-          ...formData.value,
-          image: formData.value.image || properties.value[index].image
-        }
-      }
+      await PropertiesService.create(formData.value)
+    } else if (selectedProperty.value) {
+      await PropertiesService.update(
+          selectedProperty.value.id,
+          formData.value
+      )
     }
-    
+
+    await fetchProperties()
     closeModals()
   } catch (error) {
-    console.error('Error submitting form:', error)
+    console.error('Erreur sauvegarde propriété', error)
   } finally {
     isSubmitting.value = false
   }
 }
 
 const confirmDelete = async () => {
+  if (!selectedProperty.value) return
+
   isDeleting.value = true
-  
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    const index = properties.value.findIndex(p => p.id === selectedProperty.value.id)
-    if (index !== -1) {
-      properties.value.splice(index, 1)
-    }
-    
+    await PropertiesService.delete(selectedProperty.value.id)
+    await fetchProperties()
     closeModals()
   } catch (error) {
-    console.error('Error deleting property:', error)
+    console.error('Erreur suppression propriété', error)
   } finally {
     isDeleting.value = false
   }
@@ -664,14 +639,14 @@ const closeModals = () => {
   selectedProperty.value = null
   formData.value = {
     title: '',
-    propertyType: '',
-    residenceId: '',
+    type: '',
+    residenceId: null,
     status: '',
-    rooms: 1,
-    kitchens: 1,
+    roomsCount: 1,
+    kitchensCount: 1,
     surface: 1,
     price: 0,
-    image: '',
+    imageUrl: '',
     balcony: false,
     furnished: false,
     published: false
@@ -691,6 +666,12 @@ const getStatusClasses = (status: string) => {
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('fr-FR').format(price)
 }
+
+onMounted(() => {
+  fetchProperties()
+  loadResidences()
+})
+
 </script>
 
 <style scoped>

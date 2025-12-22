@@ -47,8 +47,8 @@
         </select>
         <select v-model="statusFilter" class="filter-select">
           <option value="">Tous les statuts</option>
-          <option value="true">Publié</option>
-          <option value="false">Brouillon</option>
+          <option value="DRAFT">Publié</option>
+          <option value="DRAFTs">Brouillon</option>
         </select>
       </div>
     </div>
@@ -82,7 +82,7 @@
         
         <div class="project-content">
           <div class="project-header">
-            <h3 class="project-title">{{ project.title }}</h3>
+            <h3 class="project-title">{{ project.name }}</h3>
             <div class="project-type">{{ project.type }}</div>
           </div>
           
@@ -478,7 +478,7 @@ const filteredProjects = computed(() => {
     const query = searchQuery.value.toLowerCase()
 
     filtered = filtered.filter(project =>
-        project.title?.toLowerCase().includes(query) ||
+        project.name?.toLowerCase().includes(query) ||
         project.city?.toLowerCase().includes(query) ||
         project.description?.toLowerCase().includes(query)
     )
@@ -492,7 +492,7 @@ const filteredProjects = computed(() => {
 
   if (statusFilter.value !== '') {
     filtered = filtered.filter(
-        project => String(project.published) === statusFilter.value
+        project =>  project.status === statusFilter.value
     )
   }
 

@@ -65,13 +65,13 @@
               <td class="table-cell">
                 <div class="client-info">
                   <img
-                    :src="client.avatar"
+                    :src="'https://ui-avatars.com/api/?background=1D49CB&color=fff&name=' + client.firstName + ' ' + client.lastName"
                     :alt="client.fullName"
                     class="client-avatar"
                   />
                   <div class="client-details">
-                    <div class="client-name">{{ client.fullName }}</div>
-                    <div class="client-gender">{{ client.gender === 'M' ? 'Homme' : 'Femme' }}</div>
+                    <div class="client-name">{{ client.firstName }} {{ client.lastName }}</div>
+                    <div class="client-gender">{{ client.gender }}</div>
                   </div>
                 </div>
               </td>
@@ -85,7 +85,7 @@
                 <span class="nationality">{{ client.nationality }}</span>
               </td>
               <td class="table-cell">
-                <span class="acquisitions-count">{{ client.acquisitionsCount }}</span>
+                <span class="acquisitions-count">{{ client.acquisitions }}</span>
               </td>
               <td class="table-cell text-right">
                 <div class="action-buttons">
@@ -187,8 +187,8 @@
             <label class="form-label">Genre *</label>
             <select v-model="formData.gender" class="form-input" required>
               <option value="">Sélectionner un genre</option>
-              <option value="M">Homme</option>
-              <option value="F">Femme</option>
+              <option value="Homme">Homme</option>
+              <option value="Femme">Femme</option>
             </select>
           </div>
 
@@ -229,12 +229,10 @@
           <div class="form-group">
             <label class="form-label">Nationalité *</label>
             <input
-            <FileUpload
-              v-model="formData.profileImage"
-              label="Photo de profil"
-              accept="image/*"
-              :max-size="2"
-              upload-text="Upload profile photo"
+                v-model="formData.nationality"
+                type="text"
+                class="form-input"
+                placeholder="Ex: Togolaise"
             />
           </div>
 
@@ -265,10 +263,14 @@
 
         <div class="view-content">
           <div class="client-header">
-            <img :src="selectedClient.avatar" :alt="selectedClient.fullName" class="client-avatar-large"/>
+            <img
+                :src="'https://ui-avatars.com/api/?background=1D49CB&color=fff&name=' + selectedClient.firstName + ' ' + selectedClient.lastName"
+                :alt="selectedClient.fullName"
+                class="client-avatar"
+            />
             <div>
-              <h4 class="client-name-large">{{ selectedClient.fullName }}</h4>
-              <p class="client-info-large">{{ selectedClient.gender === 'M' ? 'Homme' : 'Femme' }} • {{ selectedClient.nationality }}</p>
+              <h4 class="client-name-large">{{ selectedClient.firstName }} {{ selectedClient.lastName }}</h4>
+              <p class="client-info-large">{{ selectedClient.gender }} • {{ selectedClient.nationality }}</p>
             </div>
           </div>
 
@@ -287,15 +289,15 @@
             </div>
             <div class="detail-item">
               <label>Acquisitions</label>
-              <span>{{ selectedClient.acquisitionsCount }}</span>
+              <span>{{ selectedClient.acquisitions }}</span>
             </div>
           </div>
         </div>
 
         <div class="modal-actions">
-          <button @click="editClient(selectedClient)" class="btn-primary">
-            Modifier
-          </button>
+<!--          <button @click="editClient(selectedClient)" class="btn-primary">-->
+<!--            Modifier-->
+<!--          </button>-->
           <button @click="closeModals" class="btn-secondary">
             Fermer
           </button>
@@ -346,7 +348,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import FileUpload from '@/components/ui/FileUpload.vue'
+import {ClientService} from "@/services/client.service.ts";
 
 // Reactive data
 const searchQuery = ref('')
@@ -355,9 +357,10 @@ const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const showViewModal = ref(false)
 const showDeleteModal = ref(false)
-const selectedClient = ref(null)
+const selectedClient = ref<any>(null)
 const isSubmitting = ref(false)
 const isDeleting = ref(false)
+const clients = ref<any[]>([])
 
 // Form data
 const formData = ref({
@@ -368,54 +371,8 @@ const formData = ref({
   email: '',
   address: '',
   nationality: '',
-  profileImage: ''
+  profileImage: null as File | null
 })
-
-// Mock data
-const clients = ref([
-  {
-    id: '1',
-    firstName: 'Marie',
-    lastName: 'Dupont',
-    fullName: 'Marie Dupont',
-    gender: 'F',
-    phone: '+225 07 12 34 56 78',
-    email: 'marie.dupont@email.com',
-    address: 'Abidjan, Cocody',
-    nationality: 'Française',
-    avatar: 'https://ui-avatars.com/api/?name=Marie+Dupont&background=3b82f6&color=fff',
-    acquisitionsCount: 2,
-    createdAt: new Date('2024-01-15')
-  },
-  {
-    id: '2',
-    firstName: 'Jean',
-    lastName: 'Martin',
-    fullName: 'Jean Martin',
-    gender: 'M',
-    phone: '+233 24 123 4567',
-    email: 'jean.martin@email.com',
-    address: 'Accra, East Legon',
-    nationality: 'Ghanéenne',
-    avatar: 'https://ui-avatars.com/api/?name=Jean+Martin&background=10b981&color=fff',
-    acquisitionsCount: 1,
-    createdAt: new Date('2024-01-20')
-  },
-  {
-    id: '3',
-    firstName: 'Sophie',
-    lastName: 'Dubois',
-    fullName: 'Sophie Dubois',
-    gender: 'F',
-    phone: '+221 77 123 45 67',
-    email: 'sophie.dubois@email.com',
-    address: 'Dakar, Almadies',
-    nationality: 'Sénégalaise',
-    avatar: 'https://ui-avatars.com/api/?name=Sophie+Dubois&background=f59e0b&color=fff',
-    acquisitionsCount: 3,
-    createdAt: new Date('2024-01-25')
-  }
-])
 
 // Computed properties
 const filteredClients = computed(() => {
@@ -424,9 +381,9 @@ const filteredClients = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter(client =>
-      client.fullName.toLowerCase().includes(query) ||
-      client.email.toLowerCase().includes(query) ||
-      client.phone.includes(query)
+        client.fullName.toLowerCase().includes(query) ||
+        client.email.toLowerCase().includes(query) ||
+        client.phone.includes(query)
     )
   }
 
@@ -438,6 +395,15 @@ const filteredClients = computed(() => {
 })
 
 // Methods
+const loadClients = async () => {
+  try {
+    const { data } = await ClientService.all()
+    clients.value = data
+  } catch (error) {
+    console.error('Erreur lors du chargement des clients:', error)
+  }
+}
+
 const viewClient = (client: any) => {
   selectedClient.value = client
   showViewModal.value = true
@@ -453,7 +419,7 @@ const editClient = (client: any) => {
     email: client.email,
     address: client.address,
     nationality: client.nationality,
-    profileImage: client.profileImage || ''
+    profileImage: null
   }
   showEditModal.value = true
 }
@@ -465,58 +431,46 @@ const deleteClient = (client: any) => {
 
 const submitForm = async () => {
   isSubmitting.value = true
-  
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    if (showCreateModal.value) {
-      // Create new client
-      const newClient = {
-        id: Date.now().toString(),
-        ...formData.value,
-        fullName: `${formData.value.firstName} ${formData.value.lastName}`,
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.value.firstName + '+' + formData.value.lastName)}&background=3b82f6&color=fff`,
-        acquisitionsCount: 0,
-        createdAt: new Date()
-      }
-      clients.value.push(newClient)
-    } else {
-      // Update existing client
-      const index = clients.value.findIndex(c => c.id === selectedClient.value.id)
-      if (index !== -1) {
-        clients.value[index] = {
-          ...clients.value[index],
-          ...formData.value,
-          fullName: `${formData.value.firstName} ${formData.value.lastName}`,
-          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.value.firstName + '+' + formData.value.lastName)}&background=3b82f6&color=fff`
-        }
+    let clientData: any = { ...formData.value }
+
+    // Gestion de l'image
+    if (formData.value.profileImage) {
+      const uploadData = new FormData()
+      uploadData.append('image', formData.value.profileImage)
+      if (showEditModal.value && selectedClient.value) {
+        await ClientService.uploadImages(selectedClient.value.id, uploadData)
+      } else {
+        clientData.avatar = URL.createObjectURL(formData.value.profileImage)
       }
     }
-    
+
+    if (showCreateModal.value) {
+      const { data } = await ClientService.create(clientData)
+      clients.value.push(data)
+    } else if (showEditModal.value && selectedClient.value) {
+      const { data } = await ClientService.update(selectedClient.value.id, clientData)
+      const index = clients.value.findIndex(c => c.id === selectedClient.value.id)
+      if (index !== -1) clients.value[index] = data
+    }
+
     closeModals()
   } catch (error) {
-    console.error('Error submitting form:', error)
+    console.error('Erreur lors de la soumission du formulaire:', error)
   } finally {
     isSubmitting.value = false
   }
 }
 
 const confirmDelete = async () => {
+  if (!selectedClient.value) return
   isDeleting.value = true
-  
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    const index = clients.value.findIndex(c => c.id === selectedClient.value.id)
-    if (index !== -1) {
-      clients.value.splice(index, 1)
-    }
-    
+    await ClientService.delete(selectedClient.value.id)
+    clients.value = clients.value.filter(c => c.id !== selectedClient.value.id)
     closeModals()
   } catch (error) {
-    console.error('Error deleting client:', error)
+    console.error('Erreur lors de la suppression du client:', error)
   } finally {
     isDeleting.value = false
   }
@@ -536,15 +490,16 @@ const closeModals = () => {
     email: '',
     address: '',
     nationality: '',
-    profileImage: ''
+    profileImage: null
   }
 }
 
 // Lifecycle
 onMounted(() => {
-  // Initialize component
+  loadClients()
 })
 </script>
+
 
 <style scoped>
 /* Import shared admin styles */

@@ -60,7 +60,7 @@
             >
               <td class="table-cell">
                 <div class="country-info">
-                  <span class="country-flag">{{ flag(country.iso_2) }}</span>
+                  <span class="country-flag">{{ flag(country.iso2) }}</span>
                   <div class="country-details">
                     <div class="country-name">{{ country.name }}</div>
                     <div class="country-code">{{ country.iso2 }}</div>
@@ -228,7 +228,7 @@
             <span class="country-flag-large">{{ selectedCountry.flag }}</span>
             <div>
               <h4 class="country-name-large">{{ selectedCountry.name }}</h4>
-              <p class="country-code-large">{{ selectedCountry.iso_2 }} • {{ selectedCountry.phoneCode }}</p>
+              <p class="country-code-large">{{ selectedCountry.iso2 }} • {{ selectedCountry.phoneCode }}</p>
             </div>
           </div>
 
@@ -342,10 +342,9 @@ const formData = ref({
 // Mock data
 const countries = ref<Country[]>([])
 
-
 // Computed properties
 const filteredCountries = computed(() => {
-  if (!searchQuery.value) return countries.value.map(c => ({ ...c, flag: getFlag(c.iso_2) }))
+  if (!searchQuery.value) return countries.value.map(c => ({ ...c, flag: getFlag(c?.iso2) }))
 
   const query = searchQuery.value.toLowerCase()
 
@@ -355,7 +354,7 @@ const filteredCountries = computed(() => {
               String(value).toLowerCase().includes(query)
           )
       )
-      .map(c => ({ ...c, flag: getFlag(c.iso_2) }))
+      .map(c => ({ ...c, flag: getFlag(c.iso2) }))
 })
 
 // Methods
@@ -429,7 +428,7 @@ const editCountry = (country: any) => {
   selectedCountry.value = country
   formData.value = {
     name: country.name,
-    iso_2: country.iso_2,
+    iso_2: country.iso2,
     phoneCode: country.phoneCode,
     flag: country.flag
   }
@@ -453,6 +452,8 @@ const closeModals = () => {
     phoneCode: '',
     flag: ''
   }
+
+  fetchCountries()
 }
 
 const getPropertiesCount = (countryId: string) => {
