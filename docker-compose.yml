@@ -14,7 +14,7 @@ services:
       #command: tail -F anyts
       ports:
        #- "3000:3000"
-       - "3307:5175"
+       - "5175:5175"
       #environment:
        #- API_BASE_URL=http://160.242.199.14:8888
       networks:
