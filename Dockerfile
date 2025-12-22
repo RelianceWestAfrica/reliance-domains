@@ -14,9 +14,9 @@ RUN npm install --force
 COPY . .
 
 # Définir les variables d'environnement par défaut
-ENV HOST=0.0.0.0
-ENV PORT=5175
-ENV NODE_ENV=development
+#ENV HOST=0.0.0.0
+#ENV PORT=5175
+#ENV NODE_ENV=development
 
 # Exposer le port 4000
 EXPOSE 5175

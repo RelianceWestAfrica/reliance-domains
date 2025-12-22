@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "npm run dev -- --host 127.0.0.1 --port 5175",
+    "start": "npm run dev --port 5175",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview"
   },
