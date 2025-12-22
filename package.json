@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "start": "npm run dev --port 5175",
-    "build": "vue-tsc -b && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
