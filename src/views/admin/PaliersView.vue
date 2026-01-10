@@ -4,8 +4,8 @@
     <div class="luxury-header">
       <div class="header-content">
         <div class="header-text">
-          <h1 class="header-title">Floor Management</h1>
-          <p class="header-subtitle">Manage building floors and levels across all residences</p>
+          <h1 class="header-title text-white">Paliers</h1>
+          <p class="header-subtitle text-light">Manage building floors and levels across all residences</p>
         </div>
         <div class="header-actions">
           <button

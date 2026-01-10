@@ -35,16 +35,17 @@
             class="search-input"
           />
         </div>
-        <select v-model="projectFilter" class="filter-select">
-          <option value="">Tous les projets</option>
+        <select v-model="domainFilter" class="filter-select">
+          <option value="">Tous les domaines</option>
           <option
-              v-for="project in projects"
-              :key="project.id"
-              :value="project.id"
+              v-for="domain in domains"
+              :key="domain.id"
+              :value="domain.id"
           >
-            {{ project.name }}
+            {{ domain.title }}
           </option>
         </select>
+
         <select v-model="typeFilter" class="filter-select">
           <option value="">Tous les types</option>
           <option value="IMMEUBLE">IMMEUBLE</option>
@@ -198,7 +199,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Projet *</label>
+            <label class="form-label">Domaines *</label>
 <!--            <select v-model="formData.projectId" class="form-input" required>-->
 <!--              <option value="">Sélectionner un projet</option>-->
 <!--              <option value="1">Résidence Étoile</option>-->
@@ -206,22 +207,24 @@
 <!--              <option value="3">Golden Heights</option>-->
 <!--            </select>-->
             <select
-                v-model="formData.projectId"
-                class="tw-w-full tw-border form-input tw-rounded tw-px-3 tw-py-2"
-                :disabled="isLoadingProjects"
+                v-model="formData.domainId"
+                class="form-input"
+                :disabled="isLoadingDomains"
+                required
             >
               <option value="" disabled>
-                {{ isLoadingProjects ? 'Chargement...' : 'Sélectionner un projet' }}
+                {{ isLoadingDomains ? 'Chargement...' : 'Sélectionner un domaine' }}
               </option>
 
               <option
-                  v-for="project in projects"
-                  :key="project.id"
-                  :value="project.id"
+                  v-for="domain in domains"
+                  :key="domain.id"
+                  :value="domain.id"
               >
-                {{ project.name }}
+                {{ domain.title }}
               </option>
             </select>
+
           </div>
 
           <div class="form-group">
@@ -418,14 +421,17 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import FileUpload from '@/components/ui/FileUpload.vue'
 import {ResidencesService} from "@/services/residences.service.ts";
-import {ProjectsService} from "@/services/projects.service.ts";
+import { DomainsService } from '@/services/domains.service'
+
 
 const router = useRouter()
 const authStore = useAuthStore()
 
+const domains = ref<any[]>([])
+const isLoadingDomains = ref(false)
 
-const projects = ref<any[]>([])
-const isLoadingProjects = ref(false)
+const domainFilter = ref('')
+
 
 const canAccessBilanVisuel = computed(() => {
   const role = authStore.user?.role?.toLowerCase()
@@ -448,7 +454,7 @@ const isDeleting = ref(false)
 const formData = ref({
   title: '',
   type: '',
-  projectId: '',
+  domainId: '',
   description: '',
   floorsCount: 1,
   unitsCount: 1,
@@ -456,14 +462,28 @@ const formData = ref({
   published: false
 })
 
+
 // Mock data
 const residences = ref<any[]>([])
+
+const fetchDomains = async () => {
+  isLoadingDomains.value = true
+  try {
+    const { data } = await DomainsService.all()
+    domains.value = data
+  } catch (error) {
+    console.error('Erreur chargement domaines', error)
+  } finally {
+    isLoadingDomains.value = false
+  }
+}
+
 
 const fetchResidences = async () => {
   try {
     const { data } = await ResidencesService.all({
       search: searchQuery.value || undefined,
-      projectId: projectFilter.value || undefined,
+      domainId: domainFilter.value || undefined,
       type: typeFilter.value || undefined,
     })
 
@@ -473,17 +493,6 @@ const fetchResidences = async () => {
   }
 }
 
-const fetchProjects = async () => {
-  isLoadingProjects.value = true
-  try {
-    const { data } = await ProjectsService.all()
-    projects.value = data
-  } catch (error) {
-    console.error('Erreur chargement projets', error)
-  } finally {
-    isLoadingProjects.value = false
-  }
-}
 
 // Computed properties
 const filteredResidences = computed(() => {
@@ -528,7 +537,7 @@ const editResidence = (residence: any) => {
   formData.value = {
     title: residence.title,
     type: residence.type,
-    projectId: residence.projectId,
+    domainId: residence.domainId,
     description: residence.description,
     floorsCount: residence.floorsCount,
     unitsCount: residence.unitsCount,
@@ -536,7 +545,7 @@ const editResidence = (residence: any) => {
     published: residence.published
   }
   showEditModal.value = true
-  fetchProjects()
+  fetchDomains()
 }
 
 const deleteResidence = (residence: any) => {
@@ -591,7 +600,7 @@ const closeModals = () => {
   formData.value = {
     title: '',
     type: '',
-    projectId: '',
+    domainId: '',
     description: '',
     floorsCount: 1,
     unitsCount: 1,
@@ -604,7 +613,7 @@ const closeModals = () => {
 onMounted(() => {
   // Initialize component
   fetchResidences()
-  fetchProjects()
+  fetchDomains()
 })
 </script>
 

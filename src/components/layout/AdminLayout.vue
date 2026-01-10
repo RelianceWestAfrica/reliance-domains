@@ -122,6 +122,7 @@ import { useI18n } from 'vue-i18n'
 
 import LanguageSwitcher from '@/components/common/LanguageSwitcher.vue'
 import UserDropdown from '@/components/common/UserDropdown.vue'
+import {Domains} from "@/types";
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -176,12 +177,28 @@ const navigationItems = computed(() => {
     label: 'navigation.projects'
   })
 
+  baseItems.push({
+    name: 'Domains',
+    to: '/domains',
+    icon: SquareDashed,
+    label: 'Domaines'
+  })
+
   if (authStore.canAccess.residences) {
     baseItems.push({
       name: 'Residences',
       to: '/residences',
       icon: Building2,
       label: 'navigation.residences'
+    })
+  }
+
+  if (authStore.canAccess.paliers) {
+    baseItems.push({
+      name: 'Paliers',
+      to: '/paliers',
+      icon: Layers,
+      label: 'navigation.paliers'
     })
   }
 
@@ -194,14 +211,6 @@ const navigationItems = computed(() => {
     })
   }
 
-  if (authStore.canAccess.paliers) {
-    baseItems.push({
-      name: 'Paliers',
-      to: '/paliers',
-      icon: Layers,
-      label: 'navigation.paliers'
-    })
-  }
 
   baseItems.push({
     name: 'Properties',

@@ -1,10 +1,14 @@
 <template>
+  <div v-if="isLoading" class="text-center py-12 text-gray-500">
+    Chargement des domaines...
+  </div>
+
   <div class="domains-management">
     <!-- Header Section -->
     <div class="page-header">
       <div class="header-content">
         <div class="header-text">
-          <h1 class="page-title">{{ $t('navigation.domains') }}</h1>
+          <h1 class="page-title">Domaines</h1>
           <p class="page-subtitle">Administrez les domaines immobiliers</p>
         </div>
         <div class="header-actions">
@@ -37,10 +41,16 @@
         </div>
         <select v-model="projectFilter" class="filter-select">
           <option value="">Tous les projets</option>
-          <option value="1">Résidence Étoile</option>
-          <option value="2">Villa Paradise</option>
-          <option value="3">Golden Heights</option>
+
+          <option
+              v-for="project in projects"
+              :key="project.id"
+              :value="project.id"
+          >
+            {{ project.name }}
+          </option>
         </select>
+
         <select v-model="typeFilter" class="filter-select">
           <option value="">Tous les types</option>
           <option value="residential">Résidentiel</option>
@@ -55,14 +65,14 @@
     <!-- Domains Grid -->
     <div class="domains-grid">
       <div
-        v-for="domain in filteredDomains"
+        v-for="domain in domains"
         :key="domain.id"
         class="domain-card"
         @click="viewDomain(domain)"
       >
         <div class="domain-image">
           <img
-            :src="domain.image"
+            :src="domain.imageUrl"
             :alt="domain.title"
             class="domain-img"
           />
@@ -125,7 +135,7 @@
     </div>
 
     <!-- Empty State -->
-    <div v-if="filteredDomains.length === 0" class="empty-state">
+    <div v-if="domains.length === 0" class="empty-state">
       <div class="empty-icon">
         <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
@@ -146,11 +156,12 @@
 
     <!-- Create/Edit Modal -->
     <DomainModal
-      v-if="showCreateModal || showEditModal"
-      :domain="selectedDomain"
-      :is-edit="showEditModal"
-      @close="closeModals"
-      @submit="submitForm"
+        v-if="showCreateModal || showEditModal"
+        :domain="selectedDomain"
+        :projects="projects"
+        :is-edit="showEditModal"
+        @close="closeModals"
+        @submit="submitForm"
     />
 
     <!-- View Modal -->
@@ -268,8 +279,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import DomainModal from '@/components/modals/DomainModal.vue'
+import { DomainsService } from '@/services/domains.service.ts'
+import { ProjectsService } from '@/services/projects.service.ts'
+
+
 
 const searchQuery = ref('')
 const projectFilter = ref('')
@@ -281,44 +296,37 @@ const showDeleteModal = ref(false)
 const selectedDomain = ref(null)
 const isDeleting = ref(false)
 
-const domains = ref([
-  {
-    id: '1',
-    title: 'Domaine Résidentiel Étoile',
-    domainType: 'residential',
-    projectId: '1',
-    projectTitle: 'Résidence Étoile',
-    description: 'Domaine résidentiel haut de gamme comprenant plusieurs tours modernes avec vue panoramique.',
-    residencesCount: 3,
-    image: 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true,
-    createdAt: new Date('2024-01-15')
-  },
-  {
-    id: '2',
-    title: 'Domaine Villa Paradise',
-    domainType: 'villa',
-    projectId: '2',
-    projectTitle: 'Villa Paradise',
-    description: 'Domaine de villas de luxe avec jardins privés et piscines individuelles.',
-    residencesCount: 1,
-    image: 'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true,
-    createdAt: new Date('2024-01-20')
-  },
-  {
-    id: '3',
-    title: 'Domaine Mixte Golden',
-    domainType: 'mixed',
-    projectId: '3',
-    projectTitle: 'Golden Heights',
-    description: 'Domaine mixte combinant espaces résidentiels et commerciaux premium.',
-    residencesCount: 2,
-    image: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: false,
-    createdAt: new Date('2024-01-25')
+const domains = ref<any[]>([])
+const isLoading = ref(false)
+const error = ref<string | null>(null)
+
+const projects = ref<any[]>([])
+const isProjectsLoading = ref(false)
+
+
+const viewDomain = async (domain: any) => {
+  try {
+    const { data } = await DomainsService.get(domain.id)
+    selectedDomain.value = data
+    showViewModal.value = true
+  } catch (e) {
+    console.error(e)
   }
-])
+}
+
+const fetchProjects = async () => {
+  isProjectsLoading.value = true
+
+  try {
+    const { data } = await ProjectsService.all()
+    // ⚠️ adapte si backend retourne data.data
+    projects.value = data
+  } catch (error) {
+    console.error('Erreur chargement projets', error)
+  } finally {
+    isProjectsLoading.value = false
+  }
+}
 
 const filteredDomains = computed(() => {
   let filtered = domains.value
@@ -343,6 +351,30 @@ const filteredDomains = computed(() => {
   return filtered
 })
 
+const fetchDomains = async () => {
+  isLoading.value = true
+  error.value = null
+
+  try {
+    const params: any = {}
+
+    if (searchQuery.value) params.search = searchQuery.value
+    if (projectFilter.value) params.projectId = projectFilter.value
+    if (typeFilter.value) params.domainType = typeFilter.value
+
+    const { data } = await DomainsService.all(params)
+
+    // ⚠️ adapte si ton backend enveloppe la réponse (ex: data.data)
+    domains.value = data
+  } catch (err: any) {
+    console.error(err)
+    error.value = 'Erreur lors du chargement des domaines'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+
 const getDomainTypeLabel = (type: string): string => {
   const labels: Record<string, string> = {
     'residential': 'Résidentiel',
@@ -356,11 +388,6 @@ const getDomainTypeLabel = (type: string): string => {
   return labels[type] || type
 }
 
-const viewDomain = (domain: any) => {
-  selectedDomain.value = domain
-  showViewModal.value = true
-}
-
 const editDomain = (domain: any) => {
   selectedDomain.value = domain
   showViewModal.value = false
@@ -372,53 +399,29 @@ const deleteDomain = (domain: any) => {
   showDeleteModal.value = true
 }
 
-const submitForm = async (formData: any) => {
+const submitForm = async (payload: any) => {
   try {
-    const projectTitles: Record<string, string> = {
-      '1': 'Résidence Étoile',
-      '2': 'Villa Paradise',
-      '3': 'Golden Heights'
-    }
-
-    if (!selectedDomain.value) {
-      const newDomain = {
-        id: Date.now().toString(),
-        ...formData,
-        image: formData.imageUrl || 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
-        projectTitle: projectTitles[formData.projectId] || 'Projet inconnu',
-        createdAt: new Date()
-      }
-      domains.value.push(newDomain)
+    if (showEditModal.value && selectedDomain.value) {
+      await DomainsService.update(selectedDomain.value.id, payload)
     } else {
-      const index = domains.value.findIndex(d => d.id === selectedDomain.value.id)
-      if (index !== -1) {
-        domains.value[index] = {
-          ...domains.value[index],
-          ...formData,
-          image: formData.imageUrl || domains.value[index].image,
-          projectTitle: projectTitles[formData.projectId] || 'Projet inconnu'
-        }
-      }
+      await DomainsService.create(payload)
     }
 
+    await fetchDomains()
     closeModals()
-  } catch (error) {
-    console.error('Error submitting form:', error)
+  } catch (e) {
+    console.error('Erreur sauvegarde domaine', e)
   }
 }
+
 
 const confirmDelete = async () => {
   isDeleting.value = true
 
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    const index = domains.value.findIndex(d => d.id === selectedDomain.value.id)
-    if (index !== -1) {
-      domains.value.splice(index, 1)
-    }
-
+    await DomainsService.delete(selectedDomain.value.id)
     closeModals()
+    fetchDomains()
   } catch (error) {
     console.error('Error deleting domain:', error)
   } finally {
@@ -435,6 +438,12 @@ const closeModals = () => {
 }
 
 onMounted(() => {
+  fetchDomains()
+  fetchProjects()
+})
+
+watch([searchQuery, projectFilter, typeFilter], () => {
+  fetchDomains();
 })
 </script>
 

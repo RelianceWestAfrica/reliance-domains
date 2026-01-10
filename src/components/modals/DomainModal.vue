@@ -41,12 +41,23 @@
 
           <div class="form-group">
             <label class="form-label">Projet *</label>
-            <select v-model="formData.projectId" class="form-input" required>
+            <select
+                v-model="formData.project_id"
+                class="form-input"
+                required
+            >
               <option value="">Sélectionner un projet</option>
-              <option value="1">Résidence Étoile</option>
-              <option value="2">Villa Paradise</option>
-              <option value="3">Golden Heights</option>
+
+              <option
+                  v-for="project in projects"
+                  :key="project.id"
+                  :value="project.id"
+              >
+                {{ project.name }}
+              </option>
             </select>
+
+
           </div>
         </div>
 
@@ -75,16 +86,22 @@
 
         <div class="form-group">
           <label class="form-label">Image illustrative *</label>
-          <FileUpload
-            v-model="formData.imageUrl"
-            label="Image du domaine"
-            accept="image/*"
-            :max-size="5"
-            upload-text="Télécharger une image"
+          <input
+              v-model="formData.image_url"
+              type="url"
+              class="form-input"
+              placeholder="https://example.com/image.jpg"
           />
-          <p class="text-sm text-gray-500 mt-1">
-            Formats acceptés: JPG, PNG. Taille max: 5MB
-          </p>
+<!--          <FileUpload-->
+<!--            v-model="formData.imageUrl"-->
+<!--            label="Image du domaine"-->
+<!--            accept="image/*"-->
+<!--            :max-size="5"-->
+<!--            upload-text="Télécharger une image"-->
+<!--          />-->
+<!--          <p class="text-sm text-gray-500 mt-1">-->
+<!--            Formats acceptés: JPG, PNG. Taille max: 5MB-->
+<!--          </p>-->
         </div>
 
         <div class="form-group">
@@ -113,18 +130,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import {ref, watch} from 'vue'
 import FileUpload from '@/components/ui/FileUpload.vue'
 
 interface Props {
   domain?: any
+  projects: any[]
   isEdit?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   domain: null,
+  projects: () => [],
   isEdit: false
 })
+
 
 const emit = defineEmits(['close', 'submit'])
 
@@ -133,10 +153,10 @@ const isSubmitting = ref(false)
 const formData = ref({
   title: '',
   domainType: '',
-  projectId: '',
+  project_id: '',
   description: '',
   residencesCount: 0,
-  imageUrl: '',
+  image_url: '',
   published: false
 })
 
@@ -145,10 +165,10 @@ watch(() => props.domain, (newDomain) => {
     formData.value = {
       title: newDomain.title,
       domainType: newDomain.domainType,
-      projectId: newDomain.projectId,
+      project_id: newDomain.project_id,
       description: newDomain.description,
       residencesCount: newDomain.residencesCount,
-      imageUrl: newDomain.image,
+      image_url: newDomain.image,
       published: newDomain.published
     }
   }
@@ -166,6 +186,7 @@ const handleSubmit = async () => {
     isSubmitting.value = false
   }
 }
+
 </script>
 
 <style scoped>

@@ -46,6 +46,21 @@ export interface Project {
   createdAt: Date;
 }
 
+export interface Domains {
+  id: string;
+  title: string;
+  type: string;
+  countryId: string;
+  city: string;
+  locationAddress: string;
+  description: string;
+  company: string;
+  photoUrl: string;
+  published: boolean;
+  createdBy: string;
+  createdAt: Date;
+}
+
 export interface Residence {
   id: string;
   projectId: string;
@@ -139,6 +154,7 @@ export interface BriefingSlide {
 export interface FilterOptions {
   countries: Country[];
   projects: Project[];
+  domains: Domains[];
   residences: Residence[];
   paliers: Palier[];
   properties: Property[];
