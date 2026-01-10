@@ -1,12 +1,12 @@
 version: "3.9"
 
 services:
-    # trois_puissance:
-    trois_puissance:
-      container_name: trois_puissance
+    # reliance_domains:
+    reliance_domains:
+      container_name: reliance_domains
       #hostname: dp-senyo
       # image: esmc-web:v1
-      # image: perce26/entrersortie:trois_puissance
+      # image: perce26/entrersortie:reliance_domains
       build:
         context: .
         dockerfile: Dockerfile
