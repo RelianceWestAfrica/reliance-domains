@@ -16,7 +16,7 @@
             <div class="btn-icon">
               <Plus class="w-5 h-5" />
             </div>
-            <span>Add New Floor</span>
+            <span>Ajouter les paliers</span>
             <div class="btn-shine"></div>
           </button>
         </div>

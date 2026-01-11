@@ -17,44 +17,44 @@ const handleViewDetails = (residenceId: string) => {
 <template>
   <div class="residence-card">
     <div class="card-image">
-      <img :src="residence.image" :alt="residence.name" />
-      <div class="card-badge">{{ residence.totalApartments }} appartements</div>
+      <img :src="residence.imageUrl" :alt="residence.title" />
+      <div class="card-badge">{{ residence.type }}</div>
     </div>
 
     <div class="card-content">
-      <h3 class="residence-name">{{ residence.name }}</h3>
+      <h3 class="residence-name">{{ residence.title }}</h3>
 
-      <div class="residence-location">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-          <circle cx="12" cy="10" r="3"></circle>
-        </svg>
-        <span>{{ residence.address }}, {{ residence.city }}</span>
-      </div>
+<!--      <div class="residence-location">-->
+<!--        <svg-->
+<!--          xmlns="http://www.w3.org/2000/svg"-->
+<!--          width="16"-->
+<!--          height="16"-->
+<!--          viewBox="0 0 24 24"-->
+<!--          fill="none"-->
+<!--          stroke="currentColor"-->
+<!--          stroke-width="2"-->
+<!--          stroke-linecap="round"-->
+<!--          stroke-linejoin="round"-->
+<!--        >-->
+<!--          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>-->
+<!--          <circle cx="12" cy="10" r="3"></circle>-->
+<!--        </svg>-->
+<!--        <span>{{ residence.address }}, {{ residence.city }}</span>-->
+<!--      </div>-->
 
       <p class="residence-description">{{ residence.description }}</p>
 
       <div class="residence-stats">
         <div class="stat-item">
-          <span class="stat-value">{{ residence.availableCount }}</span>
-          <span class="stat-label">Disponibles</span>
+          <span class="stat-value">{{ residence.floorsCount }}</span>
+          <span class="stat-label">Etages</span>
         </div>
         <div class="stat-item">
-          <span class="stat-value">{{ residence.reservedCount }}</span>
-          <span class="stat-label">Réservés</span>
+          <span class="stat-value">{{ residence.unitsCount }}</span>
+          <span class="stat-label">Unité</span>
         </div>
         <div class="stat-item">
-          <span class="stat-value">{{ residence.soldCount }}</span>
+          <span class="stat-value">{{ residence.soldCount ?? 0 }}</span>
           <span class="stat-label">Vendus</span>
         </div>
       </div>

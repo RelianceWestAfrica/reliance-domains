@@ -244,12 +244,12 @@ const navigationItems = computed(() => {
     })
   }
 
-  baseItems.push({
-    name: 'Statistics',
-    to: '/statistics',
-    icon: BarChart3,
-    label: 'navigation.statistics'
-  })
+  // baseItems.push({
+  //   name: 'Statistics',
+  //   to: '/statistics',
+  //   icon: BarChart3,
+  //   label: 'navigation.statistics'
+  // })
 
   if (authStore.canAccess.users) {
     baseItems.push({
@@ -260,14 +260,14 @@ const navigationItems = computed(() => {
     })
   }
 
-  if (authStore.canAccess.settings) {
-    baseItems.push({
-      name: 'Settings',
-      to: '/settings',
-      icon: Settings,
-      label: 'navigation.settings'
-    })
-  }
+  // if (authStore.canAccess.settings) {
+  //   baseItems.push({
+  //     name: 'Settings',
+  //     to: '/settings',
+  //     icon: Settings,
+  //     label: 'navigation.settings'
+  //   })
+  // }
 
   return baseItems
 })

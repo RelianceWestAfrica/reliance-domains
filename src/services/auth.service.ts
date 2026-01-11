@@ -13,6 +13,10 @@ export const AuthService = {
         return api.get('/auth/me')
     },
 
+    userList() {
+        return api.get('/auth/user/list')
+    },
+
     logout() {
         return api.post('/auth/logout')
     },

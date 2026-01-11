@@ -30,17 +30,18 @@ export interface Floor {
 
 export interface Residence {
   id: string;
-  name: string;
+  title: string;
   address: string;
   city: string;
   postalCode: string;
-  totalFloors: number;
-  totalApartments: number;
+  floorsCount: number;
+  unitsCount: number;
   description: string;
-  image: string;
+  imageUrl: string;
   availableCount: number;
   reservedCount: number;
   soldCount: number;
+  type: string;
 }
 
 export interface StatusColorMap {

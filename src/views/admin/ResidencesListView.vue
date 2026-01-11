@@ -23,36 +23,50 @@
       </div>
 
       <!-- Filters -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="search-input-wrapper">
-            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Rechercher une résidence..."
-              class="search-input"
-            />
-          </div>
-          <select v-model="nameFilter" class="filter-select">
-            <option value="">Toutes les résidences</option>
-            <option value="1">Bâtiment A - Sika Resort</option>
-            <option value="2">Bâtiment B - Sika Resort</option>
-            <option value="3">Golden Heights</option>
-            <option value="4">Résidence étoile</option>
-            <option value="5">Villa Paradise</option>
+<!--      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">-->
+<!--        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">-->
+<!--          <div class="search-input-wrapper">-->
+<!--            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>-->
+<!--            </svg>-->
+<!--            <input-->
+<!--              v-model="searchQuery"-->
+<!--              type="text"-->
+<!--              placeholder="Rechercher une résidence..."-->
+<!--              class="search-input"-->
+<!--            />-->
+<!--          </div>-->
+<!--          <select v-model="nameFilter" class="filter-select">-->
+<!--            <option value="">Toutes les résidences</option>-->
+<!--            <option value="1">Bâtiment A - Sika Resort</option>-->
+<!--            <option value="2">Bâtiment B - Sika Resort</option>-->
+<!--            <option value="3">Golden Heights</option>-->
+<!--            <option value="4">Résidence étoile</option>-->
+<!--            <option value="5">Villa Paradise</option>-->
 
-          </select>
-          <input 
-            v-model="cityFilter"
-            type="text"
-            placeholder="Rechercher par ville"
-            class="search-input"/>
-        </div>
+<!--          </select>-->
+<!--          <input -->
+<!--            v-model="cityFilter"-->
+<!--            type="text"-->
+<!--            placeholder="Rechercher par ville"-->
+<!--            class="search-input"/>-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <div v-if="loading" class="py-12 text-center text-gray-500">
+        Chargement des résidences...
       </div>
-      <ResidenceList @select-residence="handleSelectResidence" :residences="filteredResidences"/>
+
+      <!-- Error -->
+      <div v-if="error" class="py-12 text-center text-red-600">
+        {{ error }}
+      </div>
+
+      <ResidenceList
+          v-if="!loading"
+          @select-residence="handleSelectResidence"
+          :residences="filteredResidences"
+      />
     </div>
 
     <!-- Empty State -->
@@ -71,11 +85,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import ResidenceList from '@/components/bilan/ResidenceList.vue'
-import { useApartmentStore } from '@/stores/apartmentStore'
-import { Building2 } from 'lucide-vue-next'
+import { ResidencesService } from '@/services/residences.service.ts'
 
 const router = useRouter()
 
@@ -83,42 +96,72 @@ const handleSelectResidence = (residenceId: string) => {
   router.push(`/admin/summary/${residenceId}`)
 }
 
-// Reactive data
-const apartmentStore = useApartmentStore()
+/* =========================
+   STATE
+========================= */
+const residences = ref<any[]>([])
+const loading = ref(false)
+const error = ref<string | null>(null)
+
 const searchQuery = ref('')
 const nameFilter = ref('')
 const cityFilter = ref('')
 
-// Liste complète (store)
-const residences = computed(() => apartmentStore.getAllResidences)
+/* =========================
+   FETCH RESIDENCES
+========================= */
+const fetchResidences = async () => {
+  loading.value = true
+  error.value = null
 
-// Computed properties
+  try {
+    const { data } = await ResidencesService.all()
+    residences.value = data.data ?? data
+  } catch (e) {
+    console.error(e)
+    error.value = 'Impossible de charger les résidences'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(fetchResidences)
+
 const filteredResidences = computed(() => {
   let filtered = residences.value
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter(r =>
-      r.name.toLowerCase().includes(query) ||
-      r.description.toLowerCase().includes(query) ||
-      r.city.toLowerCase().includes(query)
+        r.name?.toLowerCase().includes(query) ||
+        r.description?.toLowerCase().includes(query) ||
+        r.city?.toLowerCase().includes(query)
     )
   }
 
   if (nameFilter.value) {
     const query = nameFilter.value.toLowerCase()
-    filtered = filtered.filter(r => r.name.toLowerCase().includes(query))
+    filtered = filtered.filter(r =>
+        r.name?.toLowerCase().includes(query)
+    )
   }
 
   if (cityFilter.value) {
     const query = cityFilter.value.toLowerCase()
-    filtered = filtered.filter(r => r.city.toLowerCase().includes(query))
+    filtered = filtered.filter(r =>
+        r.city?.toLowerCase().includes(query)
+    )
   }
 
   return filtered
 })
 
+watch([searchQuery, cityFilter], () => {
+  fetchResidences()
+})
+
 </script>
+
 
 
 <style scoped>

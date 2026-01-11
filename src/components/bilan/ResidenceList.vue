@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import ResidenceCard from '@/components/bilan/ResidenceCard.vue';
-import { useApartmentStore } from '@/stores/apartmentStore';
+import ResidenceCard from '@/components/bilan/ResidenceCard.vue'
 
 const emit = defineEmits<{
-  selectResidence: [residenceId: string];
-}>();
+  selectResidence: [residenceId: string]
+}>()
 
-const apartmentStore = useApartmentStore();
-
-const residences = computed(() => apartmentStore.getAllResidences);
+const props = defineProps<{
+  residences: any[]
+}>()
 
 const handleViewDetails = (residenceId: string) => {
-  emit('selectResidence', residenceId);
-};
+  emit('selectResidence', residenceId)
+}
 </script>
 
 <template>
@@ -21,20 +19,21 @@ const handleViewDetails = (residenceId: string) => {
     <div class="list-header">
       <h2 class="page-title">Gestion des Résidences</h2>
       <p class="page-subtitle">
-        Explorez nos {{ residences.length }}  résidences et consultez l'état de chaque appartement
+        Explorez nos {{ residences.length }} résidences et consultez l'état de chaque appartement
       </p>
     </div>
 
     <div class="residence-grid">
       <ResidenceCard
-        v-for="residence in residences"
-        :key="residence.id"
-        :residence="residence"
-        @view-details="handleViewDetails"
+          v-for="residence in residences"
+          :key="residence.id"
+          :residence="residence"
+          @view-details="handleViewDetails"
       />
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .residence-list-container {

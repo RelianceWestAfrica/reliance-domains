@@ -469,7 +469,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import {ref, computed, watch} from 'vue'
 import { Plus } from 'lucide-vue-next'
 import FileUpload from '@/components/ui/FileUpload.vue'
 import { onMounted } from 'vue'
@@ -542,14 +542,15 @@ const filteredProperties = computed(() => {
 const fetchProperties = async () => {
   try {
     const { data } = await PropertiesService.all({
-      search: searchQuery.value || undefined,
-      type: typeFilter.value || undefined,
-      status: statusFilter.value || undefined,
-      residenceId: residenceFilter.value || undefined
+      search: searchQuery.value || null,
+      type: typeFilter.value || null,
+      status: statusFilter.value || null,
+      residenceId: residenceFilter.value || null
     })
-    properties.value = data
-  } catch (error) {
-    console.error('Erreur chargement propriétés', error)
+
+    properties.value = data.data || data   // support backend paginé ou non
+  } catch (e) {
+    console.error("Erreur API properties", e)
   }
 }
 
@@ -557,13 +558,14 @@ const loadResidences = async () => {
   isLoadingResidences.value = true
   try {
     const { data } = await ResidencesService.all()
-    residences.value = data
-  } catch (error) {
-    console.error('Erreur chargement résidences', error)
+    residences.value = data.data || data
+  } catch (e) {
+    console.error("Erreur API residences", e)
   } finally {
     isLoadingResidences.value = false
   }
 }
+
 
 // Methods
 const viewProperty = (property: any) => {
@@ -571,8 +573,9 @@ const viewProperty = (property: any) => {
   showViewModal.value = true
 }
 
-const editProperty = (property: any) => {
+const editProperty = (property: Property) => {
   selectedProperty.value = property
+
   formData.value = {
     title: property.title,
     type: property.type,
@@ -582,13 +585,15 @@ const editProperty = (property: any) => {
     kitchensCount: property.kitchensCount,
     surface: property.surface,
     price: property.price,
-    imageUrl: property.imageUrl,
+    imageUrl: property.imageUrl || '',
     balcony: property.balcony,
     furnished: property.furnished,
     published: property.published
   }
+
   showEditModal.value = true
 }
+
 
 const deleteProperty = (property: any) => {
   selectedProperty.value = property
@@ -601,35 +606,34 @@ const submitForm = async () => {
     if (showCreateModal.value) {
       await PropertiesService.create(formData.value)
     } else if (selectedProperty.value) {
-      await PropertiesService.update(
-          selectedProperty.value.id,
-          formData.value
-      )
+      await PropertiesService.update(selectedProperty.value.id, formData.value)
     }
 
     await fetchProperties()
     closeModals()
-  } catch (error) {
-    console.error('Erreur sauvegarde propriété', error)
+  } catch (e) {
+    console.error("Erreur API save property", e)
   } finally {
     isSubmitting.value = false
   }
 }
 
+
 const confirmDelete = async () => {
   if (!selectedProperty.value) return
-
   isDeleting.value = true
+
   try {
     await PropertiesService.delete(selectedProperty.value.id)
     await fetchProperties()
     closeModals()
-  } catch (error) {
-    console.error('Erreur suppression propriété', error)
+  } catch (e) {
+    console.error("Erreur API delete", e)
   } finally {
     isDeleting.value = false
   }
 }
+
 
 const closeModals = () => {
   showCreateModal.value = false
@@ -672,6 +676,8 @@ onMounted(() => {
   loadResidences()
 })
 
+
+watch([searchQuery, typeFilter, statusFilter, residenceFilter], fetchProperties)
 </script>
 
 <style scoped>
