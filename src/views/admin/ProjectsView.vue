@@ -214,36 +214,6 @@
             </div>
           </div>
 
-<!--          <div class="form-group">-->
-<!--            <label class="form-label">Adresse *</label>-->
-<!--            <input-->
-<!--                v-model="formData.city"-->
-<!--                type="text"-->
-<!--                class="form-input"-->
-<!--                placeholder="Ex: Abidjan"-->
-<!--                required-->
-<!--            />-->
-<!--            <FileUpload-->
-<!--              v-model="formData.heroImageUrl"-->
-<!--              label="Project Image"-->
-<!--              accept="image/*"-->
-<!--              :max-size="5"-->
-<!--              upload-text="Upload project image"-->
-<!--            />-->
-<!--          </div>-->
-
-          <div class="form-group">
-            <label class="form-label">Description *</label>
-            <textarea
-              v-model="formData.description"
-              class="form-input"
-              rows="4"
-              placeholder="Description détaillée du projet..."
-              required
-            ></textarea>
-          </div>
-
-          <div class="form-row">
             <div class="form-group">
               <label class="form-label">Entreprise *</label>
               <input
@@ -254,14 +224,23 @@
                 required
               />
             </div>
+
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Description *</label>
+              <textarea
+                  v-model="formData.description"
+                  class="form-input"
+                  rows="6"
+                  placeholder="Description détaillée du projet..."
+                  required
+              ></textarea>
+            </div>
+
             <div class="form-group">
               <label class="form-label">URL de l'image</label>
-              <input
-                v-model="formData.heroImageUrl"
-                type="url"
-                class="form-input"
-                placeholder="https://example.com/image.jpg"
-              />
+              <Upload @uploaded="handleUploaded" />
             </div>
           </div>
 
@@ -272,7 +251,7 @@
                 type="checkbox"
                 class="checkbox-input"
               />
-              <span class="checkbox-label">Publier le projet</span>
+              <span class="checkbox-label w-100">Publier le projet</span>
             </label>
           </div>
 
@@ -418,6 +397,7 @@ import { ref, computed, onMounted } from 'vue'
 import FileUpload from '@/components/ui/FileUpload.vue'
 import {ProjectsService} from "@/services/projects.service.ts";
 import {CountriesService} from "@/services/countries.service.ts";
+import Upload from "@/components/Upload.vue";
 
 // Reactive data
 const searchQuery = ref('')
@@ -454,6 +434,10 @@ const fetchCountries = async () => {
     console.error('Erreur lors du chargement des pays', error)
   }
 }
+
+const handleUploaded = (url: string) => {
+  console.log('Fichier uploadé :', url);
+};
 
 // Mock data
 const projects = ref<any[]>([])

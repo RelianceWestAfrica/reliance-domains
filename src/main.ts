@@ -6,6 +6,10 @@ import { i18n } from './i18n'
 import App from './App.vue'
 import './style.css'
 
+import Antd from 'ant-design-vue';
+
+import 'ant-design-vue/dist/reset.css';
+
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 
@@ -21,6 +25,7 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(i18n)
+app.use(Antd)
 
 const notivue = createNotivue({
     position: 'top-right',
