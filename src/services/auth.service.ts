@@ -24,4 +24,9 @@ export const AuthService = {
     loginWithAccessCode(code: string) {
         return api.post('/access-code/login', { code })
     },
+
+    listAccessCode() {
+        return api.get('/access-code/list')
+    }
+
 }
