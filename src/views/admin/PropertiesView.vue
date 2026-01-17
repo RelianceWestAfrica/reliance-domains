@@ -196,12 +196,36 @@
           </div>
 
           <div class="form-row">
+
+            <!-- Projet -->
+            <div class="form-group">
+              <label class="form-label">Projet *</label>
+              <select
+                  v-model="formData.projectId"
+                  class="form-input"
+                  :disabled="isLoadingProjects"
+                  required
+              >
+                <option value="" disabled>Sélectionner un projet</option>
+                <option v-if="isLoadingProjects" disabled>
+                  Chargement des projets...
+                </option>
+                <option
+                    v-for="project in projects"
+                    :key="project.id"
+                    :value="project.id"
+                >
+                  {{ project.title || project.name }}
+                </option>
+              </select>
+            </div>
+
             <div class="form-group">
               <label class="form-label">Résidence *</label>
               <select
                   v-model="formData.residenceId"
                   class="form-input"
-                  :disabled="isLoadingResidences"
+                  :disabled="isVilla || isLoadingResidences"
                   required
               >
                 <option value="" disabled>Sélectionner une résidence</option>
@@ -217,6 +241,33 @@
                 </option>
               </select>
             </div>
+          </div>
+
+
+          <div class="form-row">
+            <!-- Palier / Étage -->
+            <div class="form-group">
+              <label class="form-label">Palier / Étage *</label>
+              <select
+                  v-model="formData.residenceFloorId"
+                  class="form-input"
+                  :disabled="isVilla || isLoadingFloors"
+                  required
+              >
+                <option value="" disabled>Sélectionner un palier</option>
+                <option v-if="isLoadingFloors" disabled>
+                  Chargement des paliers...
+                </option>
+                <option
+                    v-for="floor in floors"
+                    :key="floor.id"
+                    :value="floor.id"
+                >
+                  {{ floor.title || floor.name || floor.level }}
+                </option>
+              </select>
+            </div>
+
             <div class="form-group">
               <label class="form-label">Statut *</label>
               <select v-model="formData.status" class="form-input" required>
@@ -279,9 +330,16 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">URL de l'image</label>
-            <Upload @uploaded="handleUploaded" />
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Image de la propriété</label>
+              <Upload @uploaded="handleUploaded" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Image plan</label>
+              <Upload @uploaded="handleUploadedPlan" />
+            </div>
           </div>
 
           <div class="form-row">
@@ -473,6 +531,8 @@ import type { Property, CreatePropertyPayload } from '@/types/properties.ts'
 import {ResidencesService} from "@/services/residences.service.ts";
 import Upload from "@/components/Upload.vue";
 
+import { FloorsService } from '@/services/floors.service'
+import { ProjectsService } from '@/services/projects.service'
 
 // Reactive data
 const searchQuery = ref('')
@@ -489,17 +549,26 @@ const selectedProperty = ref<Property | null>(null)
 const residences = ref<any[]>([])
 const isLoadingResidences = ref(false)
 
+const floors = ref<any[]>([])
+const projects = ref<any[]>([])
+
+const isLoadingFloors = ref(false)
+const isLoadingProjects = ref(false)
+
 // Form data
-const formData = ref<CreatePropertyPayload>({
+const formData = ref<any>({
   title: '',
   type: '',
   residenceId: 0,
+  residenceFloorId: 0,
+  projectId: 0,
   status: '',
   roomsCount: 1,
   kitchensCount: 1,
   surface: 1,
   price: 0,
   imageUrl: '',
+  imagePlan: '',
   balcony: false,
   furnished: false,
   published: false
@@ -535,6 +604,31 @@ const filteredProperties = computed(() => {
   return filtered
 })
 
+const loadFloors = async () => {
+  isLoadingFloors.value = true
+  try {
+    const { data } = await FloorsService.all()
+    floors.value = data.data || data
+  } catch (e) {
+    console.error('Erreur API floors', e)
+  } finally {
+    isLoadingFloors.value = false
+  }
+}
+
+const loadProjects = async () => {
+  isLoadingProjects.value = true
+  try {
+    const { data } = await ProjectsService.all()
+    projects.value = data.data || data
+  } catch (e) {
+    console.error('Erreur API projects', e)
+  } finally {
+    isLoadingProjects.value = false
+  }
+}
+
+
 const fetchProperties = async () => {
   try {
     const { data } = await PropertiesService.all({
@@ -553,6 +647,11 @@ const fetchProperties = async () => {
 const handleUploaded = (url: string) => {
   console.log('Fichier uploadé :', url);
   formData.value.imageUrl = url;
+};
+
+const handleUploadedPlan = (url: string) => {
+  console.log('Fichier uploadé :', url);
+  formData.value.imagePlan = url;
 };
 
 const loadResidences = async () => {
@@ -672,9 +771,13 @@ const formatPrice = (price: number) => {
   return new Intl.NumberFormat('fr-FR').format(price)
 }
 
+const isVilla = computed(() => formData.value.type === 'VILLA')
+
 onMounted(() => {
   fetchProperties()
   loadResidences()
+  loadFloors()
+  loadProjects()
 })
 
 

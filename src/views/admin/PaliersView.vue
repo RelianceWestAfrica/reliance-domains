@@ -56,16 +56,16 @@
                     </svg>
                   </div>
                   <div>
-                    <div class="text-sm font-medium text-gray-900">{{ palier.title }}</div>
+                    <div class="text-sm font-medium text-gray-900">{{ palier.name }}</div>
                     <div class="text-sm text-gray-500">{{ palier.description }}</div>
                   </div>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ palier.residenceTitle }}
+                {{ palier.residence.title }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ palier.unitCount }}
+                {{ palier.unitsCount }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -109,14 +109,121 @@
       </div>
     </div>
 
-
     <!-- Create/Edit Modal -->
     <div v-if="showCreateModal || showEditModal" class="modal-overlay" @click="closeModals">
       <div class="modal-container modal-lg" @click.stop>
         <div class="modal-header">
           <h3 class="modal-title">
-            {{ showCreateModal ? 'Nouvelle Résidence' : 'Modifier la Résidence' }}
+            {{ showCreateModal ? 'Nouveau palier' : 'Modifier le palier' }}
           </h3>
+          <button @click="closeModals" class="modal-close">
+            ✕
+          </button>
+        </div>
+
+        <form @submit.prevent="submitForm" class="modal-form">
+
+          <!-- Nom du palier -->
+
+          <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nom du palier *</label>
+            <input
+                v-model="formData.name"
+                type="text"
+                class="form-input"
+                placeholder="Ex: Palier A"
+                required
+            />
+          </div>
+
+          <!-- Niveau -->
+          <div class="form-group">
+            <label class="form-label">Niveau *</label>
+            <input
+                v-model.number="formData.level"
+                type="number"
+                class="form-input"
+                placeholder="Ex: 3"
+                required
+            />
+          </div>
+          </div>
+
+          <!-- Résidence -->
+          <div class="form-group">
+            <label class="form-label">Résidence *</label>
+            <select
+                v-model="formData.residenceId"
+                class="form-input"
+                required
+            >
+              <option value="" disabled>Sélectionner une résidence</option>
+              <option
+                  v-for="residence in residences"
+                  :key="residence.id"
+                  :value="residence.id"
+              >
+                {{ residence.title }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea
+                v-model="formData.description"
+                class="form-input"
+                rows="3"
+                placeholder="Description du palier"
+            />
+          </div>
+
+          <!-- Unités -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre total d’unités *</label>
+              <input
+                  v-model.number="formData.unitsCount"
+                  type="number"
+                  class="form-input"
+                  min="0"
+                  required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Unités disponibles *</label>
+              <input
+                  v-model.number="formData.availableUnits"
+                  type="number"
+                  class="form-input"
+                  min="0"
+                  :max="formData.unitsCount"
+                  required
+              />
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="modal-actions">
+            <button type="button" @click="closeModals" class="btn-secondary">
+              Annuler
+            </button>
+            <button type="submit" class="btn-primary" :disabled="isSubmitting">
+              {{ showCreateModal ? 'Créer' : 'Modifier' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <div v-if="showDeleteModal && selectedPalier" class="modal-overlay" @click="closeModals">
+      <div class="modal-container modal-sm" @click.stop>
+        <div class="modal-header">
+          <h3 class="modal-title text-red-600">Confirmer la suppression</h3>
           <button @click="closeModals" class="modal-close">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -124,123 +231,30 @@
           </button>
         </div>
 
-        <form @submit.prevent="submitForm" class="modal-form">
-<!--          <div class="form-row">-->
-<!--            <div class="form-group">-->
-<!--              <label class="form-label">Titre de la résidence *</label>-->
-<!--              <input-->
-<!--                  v-model="formData.title"-->
-<!--                  type="text"-->
-<!--                  class="form-input"-->
-<!--                  placeholder="Ex: Tour A - Résidence Étoile"-->
-<!--                  required-->
-<!--              />-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--              <label class="form-label">Type de résidence *</label>-->
-<!--              <select v-model="formData.type" class="form-input" required>-->
-<!--                <option value="">Sélectionner un type</option>-->
-<!--                <option value="IMMEUBLE">IMMEUBLE</option>-->
-<!--                <option value="VILLAS">VILLAS</option>-->
-<!--                <option value="AUTRE">AUTRE</option>-->
-<!--              </select>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="form-group">-->
-<!--            <label class="form-label">Projet *</label>-->
-<!--            &lt;!&ndash;            <select v-model="formData.projectId" class="form-input" required>&ndash;&gt;-->
-<!--            &lt;!&ndash;              <option value="">Sélectionner un projet</option>&ndash;&gt;-->
-<!--            &lt;!&ndash;              <option value="1">Résidence Étoile</option>&ndash;&gt;-->
-<!--            &lt;!&ndash;              <option value="2">Villa Paradise</option>&ndash;&gt;-->
-<!--            &lt;!&ndash;              <option value="3">Golden Heights</option>&ndash;&gt;-->
-<!--            &lt;!&ndash;            </select>&ndash;&gt;-->
-<!--            <select-->
-<!--                v-model="formData.projectId"-->
-<!--                class="tw-w-full tw-border form-input tw-rounded tw-px-3 tw-py-2"-->
-<!--                :disabled="isLoadingProjects"-->
-<!--            >-->
-<!--              <option value="" disabled>-->
-<!--                {{ isLoadingProjects ? 'Chargement...' : 'Sélectionner un projet' }}-->
-<!--              </option>-->
-
-<!--              <option-->
-<!--                  v-for="project in projects"-->
-<!--                  :key="project.id"-->
-<!--                  :value="project.id"-->
-<!--              >-->
-<!--                {{ project.name }}-->
-<!--              </option>-->
-<!--            </select>-->
-<!--          </div>-->
-
-<!--          <div class="form-group">-->
-<!--            <label class="form-label">Description *</label>-->
-<!--            <textarea-->
-<!--                v-model="formData.description"-->
-<!--                class="form-input"-->
-<!--                rows="4"-->
-<!--                placeholder="Description détaillée de la résidence..."-->
-<!--                required-->
-<!--            ></textarea>-->
-<!--          </div>-->
-
-<!--          <div class="form-row">-->
-<!--            <div class="form-group">-->
-<!--              <label class="form-label">Nombre d'étages *</label>-->
-<!--              <input-->
-<!--                  v-model.number="formData.floorsCount"-->
-<!--                  type="number"-->
-<!--                  class="form-input"-->
-<!--                  placeholder="Ex: 15"-->
-<!--                  min="1"-->
-<!--                  required-->
-<!--              />-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--              <label class="form-label">Nombre d'unités *</label>-->
-<!--              <input-->
-<!--                  v-model.number="formData.unitsCount"-->
-<!--                  type="number"-->
-<!--                  class="form-input"-->
-<!--                  placeholder="Ex: 32"-->
-<!--                  min="1"-->
-<!--                  required-->
-<!--              />-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="form-group">-->
-<!--            <label class="form-label">URL de l'image</label>-->
-<!--            <input-->
-<!--                v-model="formData.imageUrl"-->
-<!--                type="url"-->
-<!--                class="form-input"-->
-<!--                placeholder="https://example.com/image.jpg"-->
-<!--            />-->
-<!--          </div>-->
-
-<!--          <div class="form-group">-->
-<!--            <label class="form-checkbox">-->
-<!--              <input-->
-<!--                  v-model="formData.published"-->
-<!--                  type="checkbox"-->
-<!--                  class="checkbox-input"-->
-<!--              />-->
-<!--              <span class="checkbox-label">Publier la résidence</span>-->
-<!--            </label>-->
-<!--          </div>-->
-
-          <div class="modal-actions">
-            <button type="button" @click="closeModals" class="btn-secondary">
-              Annuler
-            </button>
-            <button type="submit" class="btn-primary" :disabled="isSubmitting">
-              <span v-if="isSubmitting" class="loading-spinner"></span>
-              {{ showCreateModal ? 'Créer' : 'Modifier' }}
-            </button>
+        <div class="modal-content">
+          <div class="delete-warning">
+            <svg class="w-12 h-12 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+            </svg>
+            <p class="text-center text-gray-700">
+              Êtes-vous sûr de vouloir supprimer la propriété
+              <strong>{{ selectedPalier.name }}</strong> ?
+            </p>
+            <p class="text-center text-sm text-red-600 mt-2">
+              Cette action est irréversible.
+            </p>
           </div>
-        </form>
+        </div>
+
+        <div class="modal-actions">
+          <button @click="closeModals" class="btn-secondary">
+            Annuler
+          </button>
+          <button @click="confirmDelete" class="btn-danger" :disabled="isDeleting">
+            <span v-if="isDeleting" class="loading-spinner"></span>
+            Supprimer
+          </button>
+        </div>
       </div>
     </div>
 
@@ -253,6 +267,8 @@
   import { Plus } from 'lucide-vue-next'
   import { FloorsService } from '@/services/floors.service'
   import type { Floor, CreateFloorPayload } from '@/types/floor'
+  import AppButton from "@/components/ui/AppButton.vue";
+  import {ResidencesService} from "@/services/residences.service.ts";
 
   const authStore = useAuthStore()
 
@@ -266,17 +282,24 @@
   const showEditModal = ref(false)
   const showDeleteModal = ref(false)
 
+  const residences = ref<any[]>([])
+  const isLoadingResidences = ref(false)
+
   const isSubmitting = ref(false)
   const isDeleting = ref(false)
 
   /* =======================
      Form
   ======================= */
-  const formData = ref<CreateFloorPayload>({
-    title: '',
+  const formData = ref({
+    name: '',
+    level: 1,
     description: '',
-    residenceId: 0
+    unitsCount: 0,
+    availableUnits: 0,
+    residenceId: null as number | null,
   })
+
 
   /* =======================
      API Calls
@@ -290,6 +313,18 @@
     }
   }
 
+  const loadResidences = async () => {
+    isLoadingResidences.value = true
+    try {
+      const { data } = await ResidencesService.all()
+      residences.value = data.data || data
+    } catch (e) {
+      console.error("Erreur API residences", e)
+    } finally {
+      isLoadingResidences.value = false
+    }
+  }
+
   /* =======================
      CRUD Actions
   ======================= */
@@ -298,10 +333,13 @@
     showCreateModal.value = true
   }
 
-  const editPalier = (palier: Floor) => {
+  const editPalier = (palier: any) => {
     selectedPalier.value = palier
     formData.value = {
-      title: palier.title,
+      name: palier.name,
+      level: palier.level,
+      unitsCount: palier.unitsCount,
+      availableUnits: palier.availableUnits,
       description: palier.description,
       residenceId: palier.residenceId
     }
@@ -311,20 +349,23 @@
   const submitForm = async () => {
     isSubmitting.value = true
     try {
+      const payload = { ...formData.value }
+
       if (showCreateModal.value) {
-        await FloorsService.create(formData.value)
-      } else if (selectedPalier.value) {
-        await FloorsService.update(selectedPalier.value.id, formData.value)
+        await FloorsService.create(payload)
+      } else if (showEditModal.value && selectedPalier.value) {
+        await FloorsService.update(selectedPalier.value.id, payload)
       }
 
       await fetchPaliers()
       closeModals()
-    } catch (error) {
-      console.error('Erreur sauvegarde palier', error)
+    } catch (e) {
+      console.error(e)
     } finally {
       isSubmitting.value = false
     }
   }
+
 
   const deletePalier = (palier: Floor) => {
     selectedPalier.value = palier
@@ -351,9 +392,12 @@
   ======================= */
   const resetForm = () => {
     formData.value = {
-      title: '',
+      name: '',
       description: '',
-      residenceId: 0
+      residenceId: 0,
+      level: 0,
+      unitsCount: 0,
+      availableUnits: 0,
     }
   }
 
@@ -370,6 +414,7 @@
   ======================= */
   onMounted(() => {
     fetchPaliers()
+        loadResidences()
   })
 </script>
 

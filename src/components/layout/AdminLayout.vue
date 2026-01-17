@@ -202,6 +202,14 @@ const navigationItems = computed(() => {
     })
   }
 
+  baseItems.push({
+    name: 'Properties',
+    to: '/properties',
+    icon: Grid,
+    label: 'navigation.properties'
+  })
+
+
   if (authStore.canAccess.summary) {
     baseItems.push({
       name: 'Bilan Visuel',
@@ -210,14 +218,6 @@ const navigationItems = computed(() => {
       label: 'navigation.summary'
     })
   }
-
-
-  baseItems.push({
-    name: 'Properties',
-    to: '/properties',
-    icon: Grid,
-    label: 'navigation.properties'
-  })
 
   baseItems.push({
     name: 'Clients',
@@ -235,14 +235,14 @@ const navigationItems = computed(() => {
     })
   }
 
-  if (authStore.canAccess.contracts) {
-    baseItems.push({
-      name: 'Contracts',
-      to: '/contracts',
-      icon: FileContract,
-      label: 'navigation.contracts'
-    })
-  }
+  // if (authStore.canAccess.contracts) {
+  //   baseItems.push({
+  //     name: 'Contracts',
+  //     to: '/contracts',
+  //     icon: FileContract,
+  //     label: 'navigation.contracts'
+  //   })
+  // }
 
   // baseItems.push({
   //   name: 'Statistics',

@@ -1,6 +1,6 @@
 export interface Floor {
     id: number
-    title: string
+    name: string
     description?: string
     residenceId: number
     residenceTitle?: string

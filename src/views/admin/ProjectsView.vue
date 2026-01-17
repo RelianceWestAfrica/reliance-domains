@@ -70,13 +70,13 @@
           <div class="project-status">
             <span
               class="status-badge"
-              :class="project.published ? 'status-published' : 'status-draft'"
+              :class="project.status == 'DRAFT' ? 'status-published' : 'status-draft'"
             >
-              {{ project.published ? 'Publié' : 'Brouillon' }}
+              {{ project.status == "DRAFT" ? 'Publié' : 'Brouillon' }}
             </span>
           </div>
           <div class="project-country">
-            <span class="country-flag">{{ project.countryFlag }}</span>
+<!--            <span class="country-flag">{{ project.countryFlag }}</span>-->
           </div>
         </div>
         
@@ -96,16 +96,16 @@
             <span>{{ project.city }}</span>
           </div>
           
-          <div class="project-stats">
-            <div class="stat-item">
-              <span class="stat-value">{{ project.residencesCount }}</span>
-              <span class="stat-label">résidences</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-value">{{ project.propertiesCount }}</span>
-              <span class="stat-label">propriétés</span>
-            </div>
-          </div>
+<!--          <div class="project-stats">-->
+<!--            <div class="stat-item">-->
+<!--              <span class="stat-value">{{ project.residencesCount }}</span>-->
+<!--              <span class="stat-label">résidences</span>-->
+<!--            </div>-->
+<!--            <div class="stat-item">-->
+<!--              <span class="stat-value">{{ project.propertiesCount }}</span>-->
+<!--              <span class="stat-label">propriétés</span>-->
+<!--            </div>-->
+<!--          </div>-->
 
           <div class="project-actions">
             <button
@@ -214,16 +214,29 @@
             </div>
           </div>
 
+          <div class="form-row">
             <div class="form-group">
               <label class="form-label">Entreprise *</label>
               <input
-                v-model="formData.company"
+                v-model="formData.entreprise"
                 type="text"
                 class="form-input"
                 placeholder="Ex: RELIANCE WEST AFRICA"
                 required
               />
             </div>
+
+            <div class="form-group">
+              <label class="form-label">Adresse *</label>
+              <input
+                  v-model="formData.adresse"
+                  type="text"
+                  class="form-input"
+                  placeholder="Ex: Lomé, nom loin de ...."
+                  required
+              />
+            </div>
+          </div>
 
 
           <div class="form-row">
@@ -310,28 +323,28 @@
                 </div>
                 <div class="detail-item">
                   <label>Entreprise</label>
-                  <span>{{ selectedProject.company }}</span>
+                  <span>{{ selectedProject.entreprise }}</span>
                 </div>
                 <div class="detail-item">
                   <label>Adresse</label>
-                  <span>{{ selectedProject.locationAddress }}</span>
+                  <span>{{ selectedProject.adresse }}</span>
                 </div>
               </div>
             </div>
 
-            <div class="detail-section">
-              <h5 class="detail-title">Statistiques</h5>
-              <div class="stats-grid">
-                <div class="stat-card">
-                  <div class="stat-value">{{ selectedProject.residencesCount }}</div>
-                  <div class="stat-label">Résidences</div>
-                </div>
-                <div class="stat-card">
-                  <div class="stat-value">{{ selectedProject.propertiesCount }}</div>
-                  <div class="stat-label">Propriétés</div>
-                </div>
-              </div>
-            </div>
+<!--            <div class="detail-section">-->
+<!--              <h5 class="detail-title">Statistiques</h5>-->
+<!--              <div class="stats-grid">-->
+<!--                <div class="stat-card">-->
+<!--                  <div class="stat-value">{{ selectedProject.residencesCount }}</div>-->
+<!--                  <div class="stat-label">Résidences</div>-->
+<!--                </div>-->
+<!--                <div class="stat-card">-->
+<!--                  <div class="stat-value">{{ selectedProject.propertiesCount }}</div>-->
+<!--                  <div class="stat-label">Propriétés</div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
           </div>
 
           <div class="project-description-section">
@@ -417,9 +430,9 @@ const formData = ref({
   type: '',
   countryId: '',
   city: '',
-  locationAddress: '',
   description: '',
-  company: 'RELIANCE WEST AFRICA',
+  entreprise: '',
+  adresse: '',
   heroImageUrl: '',
   published: false
 })
@@ -498,9 +511,9 @@ const editProject = (project: any) => {
     type: project.type,
     countryId: project.countryId,
     city: project.city,
-    locationAddress: project.locationAddress,
+    adresse: project.adresse,
     description: project.description,
-    company: project.company,
+    entreprise: project.entreprise,
     heroImageUrl: project.heroImageUrl,
     published: project.published
   }
@@ -585,9 +598,9 @@ const closeModals = () => {
     type: '',
     countryId: '',
     city: '',
-    locationAddress: '',
+    adresse: '',
     description: '',
-    company: 'RELIANCE WEST AFRICA',
+    entreprise: '',
     heroImageUrl: '',
     published: false
   }
