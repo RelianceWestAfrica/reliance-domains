@@ -15,6 +15,48 @@
       </div>
     </div>
 
+    <div class="properties-stats-grid">
+      <div class="property-stat-card stat-available">
+        <div class="stat-card-icon">
+          <CheckCircle class="w-7 h-7" />
+        </div>
+        <div class="stat-card-content">
+          <div class="stat-card-label">Properties Available</div>
+          <div class="stat-card-value">{{ propertyStats.available }}</div>
+        </div>
+      </div>
+
+      <div class="property-stat-card stat-reserved">
+        <div class="stat-card-icon">
+          <Clock class="w-7 h-7" />
+        </div>
+        <div class="stat-card-content">
+          <div class="stat-card-label">Properties Reserved</div>
+          <div class="stat-card-value">{{ propertyStats.reserved }}</div>
+        </div>
+      </div>
+
+      <div class="property-stat-card stat-sold">
+        <div class="stat-card-icon">
+          <ShoppingBag class="w-7 h-7" />
+        </div>
+        <div class="stat-card-content">
+          <div class="stat-card-label">Properties Sold</div>
+          <div class="stat-card-value">{{ propertyStats.sold }}</div>
+        </div>
+      </div>
+
+      <div class="property-stat-card stat-discussion">
+        <div class="stat-card-icon">
+          <MessageCircle class="w-7 h-7" />
+        </div>
+        <div class="stat-card-content">
+          <div class="stat-card-label">Properties in Discussion</div>
+          <div class="stat-card-value">{{ propertyStats.discussion }}</div>
+        </div>
+      </div>
+    </div>
+
     <!-- <div class="stats-grid">
       <div class="stat-card stat-blue">
         <div class="stat-icon">
@@ -434,6 +476,79 @@ function viewAcquisitionDetails(acquisition: any) {
 
 .welcome-icon {
   @apply hidden md:block;
+}
+
+.properties-stats-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5;
+}
+
+.property-stat-card {
+  @apply bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300;
+  @apply flex items-center gap-4;
+}
+
+.stat-card-icon {
+  @apply w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0;
+}
+
+.property-stat-card.stat-available {
+  @apply border-gray-100;
+}
+
+.property-stat-card.stat-available .stat-card-icon {
+  @apply bg-gradient-to-br from-green-50 to-green-100 text-green-600;
+}
+
+.property-stat-card.stat-reserved {
+  @apply border-gray-100;
+}
+
+.property-stat-card.stat-reserved .stat-card-icon {
+  @apply bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600;
+}
+
+.property-stat-card.stat-sold {
+  @apply border-gray-100;
+}
+
+.property-stat-card.stat-sold .stat-card-icon {
+  @apply bg-gradient-to-br from-red-50 to-red-100 text-red-600;
+}
+
+.property-stat-card.stat-discussion {
+  @apply border-gray-100;
+}
+
+.property-stat-card.stat-discussion .stat-card-icon {
+  @apply bg-gradient-to-br from-amber-50 to-amber-100 text-amber-600;
+}
+
+.stat-card-content {
+  @apply flex-1;
+}
+
+.stat-card-label {
+  @apply text-sm font-medium text-gray-600 mb-1;
+}
+
+.stat-card-value {
+  @apply text-3xl font-bold text-gray-900;
+}
+
+.property-stat-card.stat-available:hover {
+  @apply border-green-200;
+}
+
+.property-stat-card.stat-reserved:hover {
+  @apply border-blue-200;
+}
+
+.property-stat-card.stat-sold:hover {
+  @apply border-red-200;
+}
+
+.property-stat-card.stat-discussion:hover {
+  @apply border-amber-200;
 }
 
 .stats-grid {
