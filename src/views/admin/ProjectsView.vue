@@ -437,6 +437,7 @@ const fetchCountries = async () => {
 
 const handleUploaded = (url: string) => {
   console.log('Fichier uploadé :', url);
+  formData.value.heroImageUrl = url;
 };
 
 // Mock data

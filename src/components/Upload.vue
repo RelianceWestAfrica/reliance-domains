@@ -4,7 +4,7 @@
         v-model:fileList="fileList"
         name="file"
         :multiple="true"
-        action="http://localhost:3000/upload"
+        :action="url_upload"
         @change="handleChange"
         @drop="handleDrop"
     >
@@ -30,6 +30,8 @@ import type { UploadChangeParam } from 'ant-design-vue';
 const emit = defineEmits<{
   (e: 'uploaded', url: string): void
 }>();
+
+const url_upload = ref(import.meta.env.VITE_API_UPLOAD_URL);
 
 const fileList = ref([]);
 

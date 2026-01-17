@@ -86,12 +86,14 @@
 
         <div class="form-group">
           <label class="form-label">Image illustrative *</label>
-          <input
-              v-model="formData.image_url"
-              type="url"
-              class="form-input"
-              placeholder="https://example.com/image.jpg"
-          />
+<!--          <input-->
+<!--              v-model="formData.image_url"-->
+<!--              type="url"-->
+<!--              class="form-input"-->
+<!--              placeholder="https://example.com/image.jpg"-->
+<!--          />-->
+
+          <Upload @uploaded="handleUploaded" />
 <!--          <FileUpload-->
 <!--            v-model="formData.imageUrl"-->
 <!--            label="Image du domaine"-->
@@ -132,6 +134,7 @@
 <script setup lang="ts">
 import {ref, watch} from 'vue'
 import FileUpload from '@/components/ui/FileUpload.vue'
+import Upload from "@/components/Upload.vue";
 
 interface Props {
   domain?: any
@@ -173,6 +176,11 @@ watch(() => props.domain, (newDomain) => {
     }
   }
 }, { immediate: true })
+
+const handleUploaded = (url: string) => {
+  console.log('Fichier uploadé :', url);
+  formData.value.image_url = url;
+};
 
 const handleSubmit = async () => {
   isSubmitting.value = true

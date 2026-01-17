@@ -324,7 +324,8 @@
         </div>
 
         <!-- Scroll Indicator -->
-        </br><div class="animate-bounce" data-aos="fade-up" data-aos-delay="800">
+        <br/>
+        <div class="animate-bounce" data-aos="fade-up" data-aos-delay="800">
           <svg class="w-6 h-6 text-white/60 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
           </svg>
@@ -477,7 +478,7 @@
             >
               <div class="relative h-40">
                 <img
-                  :src="domain.image"
+                  :src="domain.imageUrl"
                   :alt="domain.title"
                   class="w-full h-full object-cover"
                 />
@@ -504,7 +505,7 @@
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden" data-aos="fade-up">
           <div class="relative h-64">
             <img
-              :src="selectedDomain.image"
+              :src="selectedDomain.imageUrl"
               :alt="selectedDomain.title"
               class="w-full h-full object-cover"
             />
@@ -554,7 +555,7 @@
             >
               <div class="relative h-40">
                 <img
-                  :src="residence.image"
+                  :src="residence.imageUrl"
                   :alt="residence.title"
                   class="w-full h-full object-cover"
                 />
@@ -833,6 +834,9 @@ import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import { ProjectsService } from '@/services/projects.service'
+import {DomainsService} from "@/services/domains.service.ts";
+import {ResidencesService} from "@/services/residences.service.ts";
 
 const router = useRouter()
 const appStore = useAppStore()
@@ -844,11 +848,19 @@ const currentSlide = ref(0)
 const showLanguageDropdown = ref(false)
 const showUserDropdown = ref(false)
 const currentLanguage = ref('fr')
+
 const currentView = ref('projects')
-const selectedProject = ref(null)
-const selectedDomain = ref(null)
-const selectedResidence = ref(null)
-const selectedProperty = ref(null)
+const selectedProject = ref<any>(null)
+const selectedDomain = ref<any>(null)
+const selectedResidence = ref<any>(null)
+const selectedProperty = ref<any>(null)
+
+const allProjects = ref<any[]>([])
+const projectDomains = ref<any[]>([])
+const domainResidences = ref<any[]>([])
+const residenceProperties = ref<any[]>([])
+const loading = ref(false)
+const error = ref<string | null>(null)
 
 // Filters
 const filters = ref({
@@ -895,53 +907,8 @@ const allCountries = ref([
   { id: '5', name: 'Togo', flag: '🇹🇬' }
 ])
 
-const allProjects = ref([
-  {
-    id: '1',
-    title: 'East Lake Park',
-    countryId: '1',
-    city: 'Lomé',
-    country: 'Togo',
-    countryFlag: '🇹🇬',
-    type: 'Résidentiel',
-    description: 'Un projet résidentiel moderne au cœur de Lomé avec des appartements haut de gamme et des équipements premium.',
-    image: '/public/photo 21 copie.png',
-    published: true,
-    residencesCount: 3,
-    propertiesCount: 24,
-    createdBy: '1'
-  },
-  {
-    id: '2',
-    title: 'Ocean Eyes',
-    countryId: '2',
-    city: 'Lomé',
-    country: 'Togo',
-    countryFlag: '🇹🇬',
-    type: 'Premium',
-    description: 'Complexe résidentiel premium avec vue sur l\'océan à Accra, offrant luxe et tranquillité.',
-    image: '/public/wqwq copie.png',
-    published: true,
-    residencesCount: 2,
-    propertiesCount: 18,
-    createdBy: '1'
-  },
-  {
-    id: '3',
-    title: 'Marina Bay',
-    countryId: '3',
-    city: 'Dakar',
-    country: 'Sénégal',
-    countryFlag: '🇸🇳',
-    type: 'Mixte',
-    description: 'Développement mixte avec résidences et commerces à Dakar, dans un cadre exceptionnel.',
-    image: '/public/bgfd copie.png',
-    published: true,
-    residencesCount: 1,
-    propertiesCount: 12,
-    createdBy: '2'
-  }
-])
+const loadingProjects = ref(false)
+const errorProjects = ref<string | null>(null)
 
 const allDomains = ref([
   {
@@ -1201,7 +1168,24 @@ const availablePaliers = computed(() => {
 })
 
 const displayedProjects = computed(() => {
-  let projects = availableProjects.value
+  let projects = allProjects.value.map((p) => ({
+    id: p.id,
+    title: p.name,
+    description: p.description,
+    type: p.type,
+    city: p.city,
+
+    image: p.heroImageUrl,
+    published: p.status === 'PUBLISHED',
+
+    residencesCount: p.residencesCount,
+    propertiesCount: p.propertiesCount,
+
+    domainsCount: p.domainsCount ?? 0, // sécurité
+
+    country: p.country?.name,
+    countryFlag: p.country?.flagEmoji ?? '🏳️',
+  }))
   
   if (filters.value.propertyType) {
     // Filter projects that have properties of the selected type
@@ -1215,24 +1199,24 @@ const displayedProjects = computed(() => {
   return projects
 })
 
-const projectDomains = computed(() => {
-  if (!selectedProject.value) return []
-  return allDomains.value.filter(d => d.projectId === selectedProject.value.id && d.published)
-})
-
-const domainResidences = computed(() => {
-  if (!selectedDomain.value) return []
-  return allResidences.value.filter(r => r.domainId === selectedDomain.value.id && r.published)
-})
-
-const residenceProperties = computed(() => {
-  if (!selectedResidence.value) return []
-  return allProperties.value.filter(p => 
-    p.residenceId === selectedResidence.value.id && 
-    p.published && 
-    (p.status === 'Disponible' || p.status === 'Sous discussion cliente')
-  )
-})
+// const projectDomains = computed(() => {
+//   if (!selectedProject.value) return []
+//   return allDomains.value.filter(d => d.projectId === selectedProject.value.id && d.published)
+// })
+//
+// const domainResidences = computed(() => {
+//   if (!selectedDomain.value) return []
+//   return allResidences.value.filter(r => r.domainId === selectedDomain.value.id && r.published)
+// })
+//
+// const residenceProperties = computed(() => {
+//   if (!selectedResidence.value) return []
+//   return allProperties.value.filter(p =>
+//     p.residenceId === selectedResidence.value.id &&
+//     p.published &&
+//     (p.status === 'Disponible' || p.status === 'Sous discussion cliente')
+//   )
+// })
 
 const activeFilters = computed(() => {
   const active = []
@@ -1297,6 +1281,22 @@ const breadcrumbs = computed(() => {
 })
 
 // Methods
+const fetchProjects = async () => {
+  loadingProjects.value = true
+  errorProjects.value = null
+
+  try {
+    const response = await ProjectsService.all()
+    allProjects.value = response.data
+  } catch (error: any) {
+    errorProjects.value =
+        error.response?.data?.message || 'Erreur lors du chargement des projets'
+  } finally {
+    loadingProjects.value = false
+  }
+}
+
+
 const changeLanguage = (langCode: string) => {
   currentLanguage.value = langCode
   locale.value = langCode
@@ -1366,20 +1366,43 @@ const clearAllFilters = () => {
   }
 }
 
-const selectProject = (project: any) => {
+const selectProject = async (project: any) => {
   selectedProject.value = project
   selectedDomain.value = null
   selectedResidence.value = null
   selectedProperty.value = null
   currentView.value = 'project-detail'
+
+  try {
+    loading.value = true
+    const res = await DomainsService.all()
+    projectDomains.value = res.data.filter(it => it.projectId == project.id)
+  } catch (err) {
+    projectDomains.value = []
+  } finally {
+    loading.value = false
+  }
 }
 
-const selectDomain = (domain: any) => {
+
+const selectDomain = async (domain: any) => {
   selectedDomain.value = domain
   selectedResidence.value = null
   selectedProperty.value = null
   currentView.value = 'domain-detail'
+
+  try {
+    loading.value = true
+    const res = await ResidencesService.all()
+    domainResidences.value = res.data.filter(it => it.domainId == domain.id)
+    console.log(domainResidences.value)
+  } catch (err) {
+    domainResidences.value = []
+  } finally {
+    loading.value = false
+  }
 }
+
 
 const selectResidence = (residence: any) => {
   selectedResidence.value = residence
@@ -1429,6 +1452,8 @@ const formatPrice = (price: number) => {
 
 // Lifecycle
 onMounted(() => {
+
+  fetchProjects()
   // Initialize AOS
   AOS.init({
     duration: 800,

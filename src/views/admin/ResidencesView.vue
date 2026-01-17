@@ -265,12 +265,14 @@
 
           <div class="form-group">
             <label class="form-label">URL de l'image</label>
-            <input
-              v-model="formData.imageUrl"
-              type="url"
-              class="form-input"
-              placeholder="https://example.com/image.jpg"
-            />
+<!--            <input-->
+<!--              v-model="formData.imageUrl"-->
+<!--              type="url"-->
+<!--              class="form-input"-->
+<!--              placeholder="https://example.com/image.jpg"-->
+<!--            />-->
+
+            <Upload @uploaded="handleUploaded" />
           </div>
 
           <div class="form-group">
@@ -422,6 +424,7 @@ import { useAuthStore } from '@/stores/auth'
 import FileUpload from '@/components/ui/FileUpload.vue'
 import {ResidencesService} from "@/services/residences.service.ts";
 import { DomainsService } from '@/services/domains.service'
+import Upload from "@/components/Upload.vue";
 
 
 const router = useRouter()
@@ -478,6 +481,10 @@ const fetchDomains = async () => {
   }
 }
 
+const handleUploaded = (url: string) => {
+  console.log('Fichier uploadé :', url);
+  formData.value.imageUrl = url;
+};
 
 const fetchResidences = async () => {
   try {

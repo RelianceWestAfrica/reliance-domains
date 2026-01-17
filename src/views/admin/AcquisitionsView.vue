@@ -209,12 +209,14 @@
         <!-- Contrat -->
         <div class="form-group">
           <label class="form-label">Contrat (PDF/Image)</label>
-          <input
-              v-model="formData.contract"
-              type="url"
-              class="form-input"
-              placeholder="https://example.com/image.jpg"
-          />
+<!--          <input-->
+<!--              v-model="formData.contract"-->
+<!--              type="url"-->
+<!--              class="form-input"-->
+<!--              placeholder="https://example.com/image.jpg"-->
+<!--          />-->
+
+          <Upload @uploaded="handleUploaded" />
         </div>
 
         <div class="modal-actions">
@@ -236,6 +238,7 @@ import AppButton from '@/components/ui/AppButton.vue'
 import { AcquisitionService } from "@/services/acquisition.service.ts";
 import {ClientService} from "@/services/client.service.ts";
 import {PropertiesService} from "@/services/properties.service.ts";
+import Upload from "@/components/Upload.vue";
 
 const authStore = useAuthStore()
 const showCreateModal = ref(false)
@@ -267,6 +270,11 @@ const loadAcquisitions = async () => {
     console.error('Erreur lors du chargement des acquisitions', err)
   }
 }
+
+const handleUploaded = (url: string) => {
+  console.log('Fichier uploadé :', url);
+  formData.value.contract = url;
+};
 
 // 📝 Soumission du formulaire
 const submitForm = async () => {

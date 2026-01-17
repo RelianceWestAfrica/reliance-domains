@@ -29,7 +29,7 @@
       leave-from-class="transform scale-100 opacity-100 translate-y-0"
       leave-to-class="transform scale-95 opacity-0 translate-y-2"
     >
-      <div v-if="isOpen" class="dropdown-menu1">
+      <div v-if="isOpen" class="dropdown-menu1" style="z-index: 1 !important;">
         <!-- User Profile Section -->
         <div class="profile-section">
           <div class="profile-header">
@@ -224,7 +224,7 @@ onUnmounted(() => {
 }
 
 .dropdown-menu1 {
-  @apply absolute right-0 mt-3 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 py-3 z-[9999] overflow-hidden;
+  @apply absolute right-0 mt-3 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 py-3 overflow-hidden;
 }
 
 /* Profile Section */

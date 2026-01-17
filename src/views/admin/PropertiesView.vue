@@ -281,12 +281,14 @@
 
           <div class="form-group">
             <label class="form-label">URL de l'image</label>
-            <input
-              v-model="formData.imageUrl"
-              type="url"
-              class="form-input"
-              placeholder="https://example.com/image.jpg"
-            />
+<!--            <input-->
+<!--              v-model="formData.imageUrl"-->
+<!--              type="url"-->
+<!--              class="form-input"-->
+<!--              placeholder="https://example.com/image.jpg"-->
+<!--            />-->
+
+            <Upload @uploaded="handleUploaded" />
           </div>
 
           <div class="form-row">
@@ -476,6 +478,7 @@ import { onMounted } from 'vue'
 import { PropertiesService } from '@/services/properties.service'
 import type { Property, CreatePropertyPayload } from '@/types/properties.ts'
 import {ResidencesService} from "@/services/residences.service.ts";
+import Upload from "@/components/Upload.vue";
 
 
 // Reactive data
@@ -553,6 +556,11 @@ const fetchProperties = async () => {
     console.error("Erreur API properties", e)
   }
 }
+
+const handleUploaded = (url: string) => {
+  console.log('Fichier uploadé :', url);
+  formData.value.imageUrl = url;
+};
 
 const loadResidences = async () => {
   isLoadingResidences.value = true
