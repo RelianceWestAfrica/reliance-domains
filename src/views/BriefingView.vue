@@ -225,8 +225,8 @@
                 class="filter-select"
               >
                 <option value="">Tous les projets</option>
-                <option v-for="project in availableProjects" :key="project.id" :value="project.id">
-                  {{ project.title }}
+                <option v-for="project in allProjects_d" :key="project.id" :value="project.id">
+                  {{ project.name }}
                 </option>
               </select>
             </div>
@@ -280,18 +280,18 @@
             </div>
 
             <!-- Property Type Filter -->
-            <div class="filter-item">
-              <label class="block text-white/80 text-sm font-medium mb-2 outfit-lay">Type</label>
-              <select
-                v-model="filters.propertyType"
-                class="filter-select"
-              >
-                <option value="">Tous les types</option>
-                <option value="appartement">Appartement</option>
-                <option value="villa">Villa</option>
-                <option value="magasin">Magasin</option>
-              </select>
-            </div>
+<!--            <div class="filter-item">-->
+<!--              <label class="block text-white/80 text-sm font-medium mb-2 outfit-lay">Type</label>-->
+<!--              <select-->
+<!--                v-model="filters.propertyType"-->
+<!--                class="filter-select"-->
+<!--              >-->
+<!--                <option value="">Tous les types</option>-->
+<!--                <option value="RESIDENTIEL">RESIDENTIEL</option>-->
+<!--                <option value="VILLA">VILLA</option>-->
+<!--                <option value="MIXTE">MIXTE</option>-->
+<!--              </select>-->
+<!--            </div>-->
           </div>
 
           <!-- Active Filters -->
@@ -539,10 +539,6 @@
           </div>
         </div>
 
-
-
-
-
         <!-- Residences List -->
         <div class="space-y-8">
           <h2 class="text-2xl font-bold text-navy-900">Résidences du domaine</h2>
@@ -578,7 +574,7 @@
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden" data-aos="fade-up">
           <div class="relative h-64">
             <img
-              :src="selectedResidence.image"
+              :src="selectedResidence.imageUrl"
               :alt="selectedResidence.title"
               class="w-full h-full object-cover"
             />
@@ -628,7 +624,7 @@
             >
               <div class="relative h-40">
                 <img
-                  :src="property.image"
+                  :src="property.imageUrl"
                   :alt="property.title"
                   class="w-full h-full object-cover"
                 />
@@ -661,7 +657,7 @@
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden" data-aos="fade-up">
           <div class="relative h-64 md:h-80">
             <img
-              :src="selectedProperty.image"
+              :src="selectedProperty.imageUrl"
               :alt="selectedProperty.title"
               class="w-full h-full object-cover"
             />
@@ -688,15 +684,15 @@
                   <h3 class="text-xl font-semibold text-navy-900 mb-4">Caractéristiques</h3>
                   <div class="grid grid-cols-2 gap-4">
                     <div class="bg-gray-50 p-4 rounded-lg">
-                      <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.rooms }}</div>
+                      <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.roomsCount }}</div>
                       <div class="text-sm text-gray-600">Chambres</div>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-lg">
-                      <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.kitchens }}</div>
+                      <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.kitchensCount }}</div>
                       <div class="text-sm text-gray-600">Cuisines</div>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-lg">
-                      <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.surfaceM2 }}m²</div>
+                      <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.surface }}m²</div>
                       <div class="text-sm text-gray-600">Surface</div>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-lg">
@@ -733,7 +729,7 @@
                   <div class="space-y-3">
                     <div class="flex justify-between">
                       <span class="text-gray-600">Type:</span>
-                      <span class="font-medium capitalize">{{ selectedProperty.propertyType }}</span>
+                      <span class="font-medium capitalize">{{ selectedProperty.type }}</span>
                     </div>
                     <div class="flex justify-between">
                       <span class="text-gray-600">Statut:</span>
@@ -837,6 +833,8 @@ import 'aos/dist/aos.css'
 import { ProjectsService } from '@/services/projects.service'
 import {DomainsService} from "@/services/domains.service.ts";
 import {ResidencesService} from "@/services/residences.service.ts";
+import {PropertiesService} from "@/services/properties.service.ts";
+import {CountriesService} from "@/services/countries.service.ts";
 
 const router = useRouter()
 const appStore = useAppStore()
@@ -856,6 +854,7 @@ const selectedResidence = ref<any>(null)
 const selectedProperty = ref<any>(null)
 
 const allProjects = ref<any[]>([])
+const allProjects_d = ref<any[]>([])
 const projectDomains = ref<any[]>([])
 const domainResidences = ref<any[]>([])
 const residenceProperties = ref<any[]>([])
@@ -863,6 +862,7 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 
 // Filters
+
 const filters = ref({
   country: '',
   project: '',
@@ -899,212 +899,18 @@ const languages = ref([
 ])
 
 // Mock data with role-based filtering
-const allCountries = ref([
-  { id: '1', name: 'Côte d\'Ivoire', flag: '🇨🇮' },
-  { id: '2', name: 'Ghana', flag: '🇬🇭' },
-  { id: '3', name: 'Sénégal', flag: '🇸🇳' },
-  { id: '4', name: 'Nigeria', flag: '🇳🇬' },
-  { id: '5', name: 'Togo', flag: '🇹🇬' }
-])
+const allCountries = ref([])
 
 const loadingProjects = ref(false)
 const errorProjects = ref<string | null>(null)
 
-const allDomains = ref([
-  {
-    id: '1',
-    projectId: '1',
-    title: 'Domaine Résidentiel Étoile Nord',
-    domainType: 'Résidentiel',
-    residencesCount: 2,
-    description: 'Domaine résidentiel haut de gamme avec tours modernes et espaces verts.',
-    image: 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true
-  },
-  {
-    id: '2',
-    projectId: '1',
-    title: 'Domaine Commercial Étoile Sud',
-    domainType: 'Commercial',
-    residencesCount: 1,
-    description: 'Espace commercial avec boutiques et restaurants de prestige.',
-    image: 'https://images.pexels.com/photos/2467285/pexels-photo-2467285.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true
-  },
-  {
-    id: '3',
-    projectId: '2',
-    title: 'Domaine Villa Paradise',
-    domainType: 'Villa',
-    residencesCount: 1,
-    description: 'Domaine exclusif de villas de luxe avec jardins privés et piscines.',
-    image: 'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true
-  },
-  {
-    id: '4',
-    projectId: '3',
-    title: 'Domaine Mixte Marina',
-    domainType: 'Mixte',
-    residencesCount: 2,
-    description: 'Domaine combinant espaces résidentiels et commerciaux face à la mer.',
-    image: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true
-  }
-])
+const allDomains = ref([])
 
-const allResidences = ref([
-  {
-    id: '1',
-    domainId: '1',
-    projectId: '1',
-    title: 'Tour A - Résidence Étoile',
-    residenceType: 'Immeuble',
-    floorsCount: 15,
-    unitsCount: 24,
-    description: 'Tour résidentielle moderne de 15 étages avec appartements premium.',
-    image: 'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true
-  },
-  {
-    id: '2',
-    domainId: '1',
-    projectId: '1',
-    title: 'Tour B - Résidence Étoile',
-    residenceType: 'Immeuble',
-    floorsCount: 12,
-    unitsCount: 18,
-    description: 'Seconde tour avec vue panoramique sur la lagune.',
-    image: 'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true
-  },
-  {
-    id: '3',
-    domainId: '2',
-    projectId: '1',
-    title: 'Centre Commercial Étoile',
-    residenceType: 'Commercial',
-    floorsCount: 3,
-    unitsCount: 12,
-    description: 'Centre commercial moderne avec boutiques et espaces de restauration.',
-    image: 'https://images.pexels.com/photos/2467285/pexels-photo-2467285.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true
-  },
-  {
-    id: '4',
-    domainId: '3',
-    projectId: '2',
-    title: 'Villas Premium Golden',
-    residenceType: 'Villas',
-    floorsCount: 2,
-    unitsCount: 8,
-    description: 'Ensemble de villas individuelles avec jardins privés et vue océan.',
-    image: 'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true
-  },
-  {
-    id: '5',
-    domainId: '4',
-    projectId: '3',
-    title: 'Résidence Marina Bay A',
-    residenceType: 'Immeuble',
-    floorsCount: 10,
-    unitsCount: 20,
-    description: 'Immeuble résidentiel avec vue sur la baie.',
-    image: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true
-  },
-  {
-    id: '6',
-    domainId: '4',
-    projectId: '3',
-    title: 'Espace Commercial Marina',
-    residenceType: 'Commercial',
-    floorsCount: 2,
-    unitsCount: 15,
-    description: 'Espace commercial en bord de mer avec boutiques et restaurants.',
-    image: 'https://images.pexels.com/photos/2467285/pexels-photo-2467285.jpeg?auto=compress&cs=tinysrgb&w=800',
-    published: true
-  }
-])
+const allResidences = ref([])
 
-const allPaliers = ref([
-  { id: '1', residenceId: '1', title: 'Rez-de-chaussée', unitCount: 4 },
-  { id: '2', residenceId: '1', title: '1er étage', unitCount: 4 },
-  { id: '3', residenceId: '1', title: '2ème étage', unitCount: 4 },
-  { id: '4', residenceId: '2', title: 'Rez-de-chaussée', unitCount: 3 },
-  { id: '5', residenceId: '2', title: '1er étage', unitCount: 3 }
-])
+const allPaliers = ref([])
 
-const allProperties = ref([
-  {
-    id: '1',
-    residenceId: '1',
-    projectId: '1',
-    palierId: '1',
-    title: 'Appartement 3P - A101',
-    propertyType: 'appartement',
-    rooms: 3,
-    kitchens: 1,
-    balcony: true,
-    furnished: false,
-    surfaceM2: 85,
-    status: 'Disponible',
-    published: true,
-    price: 45000000,
-    image: 'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=800'
-  },
-  {
-    id: '2',
-    residenceId: '1',
-    projectId: '1',
-    palierId: '1',
-    title: 'Appartement 2P - A102',
-    propertyType: 'appartement',
-    rooms: 2,
-    kitchens: 1,
-    balcony: true,
-    furnished: true,
-    surfaceM2: 65,
-    status: 'Sous discussion cliente',
-    published: true,
-    price: 35000000,
-    image: 'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800'
-  },
-  {
-    id: '3',
-    residenceId: '2',
-    projectId: '1',
-    palierId: '4',
-    title: 'Appartement 4P - B101',
-    propertyType: 'appartement',
-    rooms: 4,
-    kitchens: 1,
-    balcony: true,
-    furnished: false,
-    surfaceM2: 120,
-    status: 'Réservé',
-    published: true,
-    price: 65000000,
-    image: 'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=compress&cs=tinysrgb&w=800'
-  },
-  {
-    id: '4',
-    residenceId: '3',
-    projectId: '2',
-    title: 'Villa Premium - V001',
-    propertyType: 'villa',
-    rooms: 5,
-    kitchens: 2,
-    balcony: true,
-    furnished: false,
-    surfaceM2: 250,
-    status: 'Disponible',
-    published: true,
-    price: 125000000,
-    image: 'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=800'
-  }
-])
+const allProperties = ref([])
 
 // Computed properties
 const currentLanguageFlag = computed(() => {
@@ -1129,43 +935,34 @@ const userAvatar = computed(() => {
 
 // Role-based data filtering
 const availableCountries = computed(() => {
-  if (authStore.userRole === 'COMMERCIAL') {
-    // Commercial users see countries based on their projects
-    const userProjects = allProjects.value.filter(p => p.createdBy === authStore.user?.id && p.published)
-    const countryIds = [...new Set(userProjects.map(p => p.countryId))]
-    return allCountries.value.filter(c => countryIds.includes(c.id))
-  }
-  return allCountries.value // ADMIN and SUPERADMIN see all countries
+  return allCountries.value
 })
 
 const availableProjects = computed(() => {
-  let projects = allProjects.value.filter(p => p.published)
-  
-  if (authStore.userRole === 'COMMERCIAL') {
-    projects = projects.filter(p => p.createdBy === authStore.user?.id)
-  }
-  
+  let projects = allProjects.value
+
   if (filters.value.country) {
-    projects = projects.filter(p => p.countryId === filters.value.country)
+    projects = projects.filter(p => p.country?.id === filters.value.country)
   }
-  
+
   return projects
 })
 
 const availableDomains = computed(() => {
-  if (!filters.value.project) return []
-  return allDomains.value.filter(d => d.projectId === filters.value.project && d.published)
+  return projectDomains.value
 })
 
 const availableResidences = computed(() => {
-  if (!filters.value.domain) return []
-  return allResidences.value.filter(r => r.domainId === filters.value.domain && r.published)
+  return domainResidences.value
 })
 
 const availablePaliers = computed(() => {
-  if (!filters.value.residence) return []
-  return allPaliers.value.filter(p => p.residenceId === filters.value.residence)
+  return residenceProperties.value.map(p => ({
+    id: p.palierId,
+    title: p.palierTitle
+  })).filter((v,i,a)=>a.findIndex(x=>x.id===v.id)===i) // unique
 })
+
 
 const displayedProjects = computed(() => {
   let projects = allProjects.value.map((p) => ({
@@ -1199,6 +996,81 @@ const displayedProjects = computed(() => {
   return projects
 })
 
+const onCountryChange = async () => {
+  filters.value.project = ''
+  filters.value.domain = ''
+  filters.value.residence = ''
+  filters.value.palier = ''
+
+  projectDomains.value = []
+  domainResidences.value = []
+  residenceProperties.value = []
+
+  if (filters.value.country) {
+    await fetchProjects() // reload projects du pays sélectionné
+  }
+}
+
+const onProjectChange = async () => {
+  filters.value.domain = ''
+  filters.value.residence = ''
+  filters.value.palier = ''
+
+  domainResidences.value = []
+  residenceProperties.value = []
+
+  if (filters.value.project) {
+    loading.value = true
+    allProjects.value = allProjects_d.value.filter(y => y.id == filters.value.project)
+    try {
+      const res = await DomainsService.all()
+      projectDomains.value = res.data.filter(it => it.projectId == filters.value.project)
+    } finally {
+      loading.value = false
+    }
+  } else {
+    projectDomains.value = []
+  }
+}
+
+const onDomainChange = async () => {
+  filters.value.residence = ''
+  filters.value.palier = ''
+
+  residenceProperties.value = []
+
+  if (filters.value.domain) {
+    loading.value = true
+    try {
+      const res = await ResidencesService.all()
+      domainResidences.value = res.data.filter(it => it.domainId == filters.value.domain)
+    } finally {
+      loading.value = false
+    }
+  } else {
+    domainResidences.value = []
+  }
+}
+
+const onResidenceChange = async () => {
+  filters.value.palier = ''
+
+  if (filters.value.residence) {
+    loading.value = true
+    try {
+      const res = await PropertiesService.all()
+      residenceProperties.value = res.data.filter(it => it.residenceId == filters.value.residence)
+    } finally {
+      loading.value = false
+    }
+  } else {
+    residenceProperties.value = []
+  }
+}
+
+const onPalierChange = () => {}
+
+
 // const projectDomains = computed(() => {
 //   if (!selectedProject.value) return []
 //   return allDomains.value.filter(d => d.projectId === selectedProject.value.id && d.published)
@@ -1228,7 +1100,7 @@ const activeFilters = computed(() => {
   
   if (filters.value.project) {
     const project = allProjects.value.find(p => p.id === filters.value.project)
-    if (project) active.push({ key: 'project', label: project.title })
+    if (project) active.push({ key: 'project', label: project.name })
   }
 
   if (filters.value.domain) {
@@ -1281,6 +1153,15 @@ const breadcrumbs = computed(() => {
 })
 
 // Methods
+const fetchCountries = async () => {
+  try {
+    const res = await CountriesService.all() // à créer côté backend
+    allCountries.value = res.data
+  } catch (err) {
+    allCountries.value = []
+  }
+}
+
 const fetchProjects = async () => {
   loadingProjects.value = true
   errorProjects.value = null
@@ -1288,6 +1169,7 @@ const fetchProjects = async () => {
   try {
     const response = await ProjectsService.all()
     allProjects.value = response.data
+    allProjects_d.value = response.data
   } catch (error: any) {
     errorProjects.value =
         error.response?.data?.message || 'Erreur lors du chargement des projets'
@@ -1308,31 +1190,6 @@ const logout = () => {
   router.push('/access-code')
 }
 
-const onCountryChange = () => {
-  filters.value.project = ''
-  filters.value.domain = ''
-  filters.value.residence = ''
-  filters.value.palier = ''
-}
-
-const onProjectChange = () => {
-  filters.value.domain = ''
-  filters.value.residence = ''
-  filters.value.palier = ''
-}
-
-const onDomainChange = () => {
-  filters.value.residence = ''
-  filters.value.palier = ''
-}
-
-const onResidenceChange = () => {
-  filters.value.palier = ''
-}
-
-const onPalierChange = () => {
-  // No cascading needed for palier
-}
 
 const removeFilter = (key: string) => {
   filters.value[key] = ''
@@ -1364,6 +1221,7 @@ const clearAllFilters = () => {
     palier: '',
     propertyType: ''
   }
+  fetchProjects()
 }
 
 const selectProject = async (project: any) => {
@@ -1403,12 +1261,22 @@ const selectDomain = async (domain: any) => {
   }
 }
 
-
-const selectResidence = (residence: any) => {
+const selectResidence = async (residence: any) => {
   selectedResidence.value = residence
   selectedProperty.value = null
   currentView.value = 'residence-detail'
+
+  try {
+    loading.value = true
+    const res = await PropertiesService.all()
+    residenceProperties.value = res.data.filter(it => it.residenceId == residence.id)
+  } catch (err) {
+    residenceProperties.value = []
+  } finally {
+    loading.value = false
+  }
 }
+
 
 const selectProperty = (property: any) => {
   selectedProperty.value = property
@@ -1451,9 +1319,9 @@ const formatPrice = (price: number) => {
 }
 
 // Lifecycle
-onMounted(() => {
-
-  fetchProjects()
+onMounted(async() => {
+  await fetchCountries()
+  await fetchProjects()
   // Initialize AOS
   AOS.init({
     duration: 800,
