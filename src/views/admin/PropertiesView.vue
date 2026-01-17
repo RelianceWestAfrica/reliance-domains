@@ -281,13 +281,6 @@
 
           <div class="form-group">
             <label class="form-label">URL de l'image</label>
-<!--            <input-->
-<!--              v-model="formData.imageUrl"-->
-<!--              type="url"-->
-<!--              class="form-input"-->
-<!--              placeholder="https://example.com/image.jpg"-->
-<!--            />-->
-
             <Upload @uploaded="handleUploaded" />
           </div>
 
