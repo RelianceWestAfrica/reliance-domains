@@ -115,7 +115,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { Building2, Menu, Bell, User, LayoutDashboard, Globe, Building, Hop as Home, Users, ShoppingCart, Contact as FileContract, ChartBar as BarChart3, Settings, UserCog, Layers, Files, LampFloor, Grid, Grid2X2, Grid2X2Check, SquareDashed } from 'lucide-vue-next'
+import { Building2, Menu, Bell, User, LayoutDashboard, Globe, Building, Hop as Home, Users, ShoppingCart, Contact as FileContract, ChartBar as BarChart3, Settings, UserCog, Layers, Files, LampFloor, Grid, Grid2X2, Grid2X2Check, SquareDashed, Shield } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
@@ -146,6 +146,7 @@ const currentPageTitle = computed(() => {
     'Contracts': t('navigation.contracts'),
     'Statistics': t('navigation.statistics'),
     'Users': t('navigation.users'),
+    'Autorisations': t('navigation.autorisations'),
     'Settings': t('navigation.settings')
   }
   return titleMap[routeName] || routeName
@@ -257,6 +258,15 @@ const navigationItems = computed(() => {
       to: '/users',
       icon: UserCog,
       label: 'navigation.users'
+    })
+  }
+
+  if (authStore.canAccess.autorisations) {
+    baseItems.push({
+      name: 'Autorisations',
+      to: '/autorisations',
+      icon: Shield,
+      label: 'navigation.autorisations'
     })
   }
 

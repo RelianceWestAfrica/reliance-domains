@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
   const error = ref<string | null>(null)
   const accessCodeValidated = ref(false)
 
-  const tokenValue = computed(() => token.value?.value || '')
+  const tokenValue = computed(() => token.value || '')
   const isAuthenticated = computed(() => !!token.value)
 
   /* =======================
@@ -36,6 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
     contracts: isAdmin.value || isSuperAdmin.value,
     statistics: true,
     users: isSuperAdmin.value,
+    autorisations: isSuperAdmin.value,
     settings: isSuperAdmin.value,
     publish: isSuperAdmin.value,
     finalSaleContract: isSuperAdmin.value

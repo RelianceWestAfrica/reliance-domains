@@ -90,7 +90,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ formatDate(acquisition.dateAcquisition) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <!-- <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div class="flex items-center justify-end space-x-2">
                   <AppButton
                     v-if="acquisition.status === 'Réservée' || acquisition.status === 'Soldée'"
@@ -111,7 +111,7 @@
                     </svg>
                   </AppButton>
                 </div>
-              </td>
+              </td> -->
             </tr>
           </tbody>
         </table>

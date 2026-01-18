@@ -17,7 +17,18 @@
     "reserved": "Réservé(e)",
     "sold": "Soldé(e)",
     "published": "Publié",
-    "unpublished": "Non publié"
+    "unpublished": "Non publié",
+    "noData": "Aucune donnée disponible",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "yes": "Oui",
+    "no": "Non",
+    "view": "Voir",
+    "download": "Télécharger",
+    "upload": "Téléverser",
+    "select": "Sélectionner",
+    "all": "Tout",
+    "none": "Aucun"
   },
   "auth": {
     "accessCode": "Code d'accès",
@@ -30,9 +41,9 @@
     "invalidCredentials": "Identifiants invalides",
     "invalidAccessCode": "Code d'accès invalide",
     "signin": "Connexion",
-    "forgotPassword": "Mot de passe oublé?",
-    "resetPassword": "Reinitialiser le mot de passe",
-    "reset": "Reinitialiser",
+    "forgotPassword": "Mot de passe oublié?",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "reset": "Réinitialiser",
     "newPassword": "Nouveau mot de passe",
     "confirmPassword": "Confirmer le mot de passe",
     "passwordsDontMatch": "Les mots de passe ne correspondent pas",
@@ -42,7 +53,7 @@
     "passwordsTooCommon": "Le mot de passe est trop commun",
     "passwordsTooSimilar": "Le mot de passe est trop similaire au mot de passe d'origine",
     "passwordsTooOld": "Le mot de passe est trop vieux",
-    "passwordsTooRecent": "Le mot de passe est trop recent"
+    "passwordsTooRecent": "Le mot de passe est trop récent"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -58,6 +69,7 @@
     "contracts": "Contrats",
     "statistics": "Statistiques",
     "users": "Utilisateurs",
+    "autorisations": "Autorisations",
     "settings": "Paramètres",
     "profile": "Profil",
     "logout": "Déconnexion"
@@ -175,5 +187,25 @@
       "rental": "Contrat de gestion locative",
       "sale": "Contrat de vente"
     }
+  },
+  "users": {
+    "title": "Gestion des Utilisateurs",
+    "addUser": "Ajouter un utilisateur",
+    "role": "Rôle",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "createdAt": "Date de création"
+  },
+  "autorisations": {
+    "title": "Gestion des Autorisations",
+    "selectUser": "Sélectionner un utilisateur",
+    "authorizedProjects": "Projets autorisés",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner",
+    "savePermissions": "Enregistrer les autorisations",
+    "permissionsUpdated": "Autorisations mises à jour avec succès"
+  },
+  "nav": {
+    "settings": "Paramètres"
   }
 }
