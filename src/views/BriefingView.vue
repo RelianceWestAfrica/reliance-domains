@@ -877,7 +877,7 @@ const heroSlides = ref([
   {
     id: 1,
     title: 'Espaces de Vie Sophistiqués',
-    image: '/public/photo 21 copie.png'
+    image: '/photo 21 copie.png'
   },
   {
     id: 2,
@@ -887,7 +887,7 @@ const heroSlides = ref([
   {
     id: 3,
     title: 'Luxe et Confort',
-    image: '/public/bgfd copie.png'
+    image: '/bgfd copie.png'
   }
 ])
 

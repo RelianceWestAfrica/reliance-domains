@@ -66,7 +66,7 @@ onMounted(() => {
     <div class="panel-header">
       <div class="header-content">
         <h2 class="panel-title">Bilan Visuel</h2>
-        <p v-if="residence" class="residence-name">{{ residence.name }}</p>
+        <p v-if="residence" class="residence-name">{{ residence.title }}</p>
       </div>
       <button v-if="!isLoading" class="refresh-button" @click="loadFloors" title="Actualiser">
         <svg

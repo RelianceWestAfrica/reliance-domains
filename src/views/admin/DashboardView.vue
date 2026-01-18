@@ -35,7 +35,9 @@
           <div class="stat-card-value">{{ propertyStats.reserved }}</div>
         </div>
       </div>
+    </div>
 
+    <div class="properties-stats-grid">
       <div class="property-stat-card stat-sold">
         <div class="stat-card-icon">
           <ShoppingBag class="w-7 h-7" />
@@ -217,7 +219,7 @@
 
 
 
-    <div class="dashboard-grid">
+    <!-- <div class="dashboard-grid">
       <div class="dashboard-card performance-card">
         <div class="card-header">
           <h3 class="card-title">System Performance</h3>
@@ -306,13 +308,13 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="charts-section">
       <MonthlyAcquisitionsChart
         :data="monthlyAcquisitionsData"
-        title="Monthly Property Acquisitions"
-        subtitle="Last 3 months sales overview"
+        title="Acquisitions par mois"
+        subtitle="Aperçu des acquisitions des 03 derniers mois"
       />
     </div>
 
@@ -479,7 +481,7 @@ function viewAcquisitionDetails(acquisition: any) {
 }
 
 .properties-stats-grid {
-  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5;
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5;
 }
 
 .property-stat-card {

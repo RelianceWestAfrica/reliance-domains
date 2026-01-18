@@ -105,6 +105,12 @@ const router = createRouter({
       meta: { requiresAuth: true, layout: 'admin', permission: 'users' }
     },
     {
+      path: '/autorisations',
+      name: 'Autorisations',
+      component: () => import('@/views/admin/AutorisationsView.vue'),
+      meta: { requiresAuth: true, layout: 'admin', permission: 'autorisations' }
+    },
+    {
       path: '/settings',
       name: 'Settings',
       component: () => import('@/views/admin/SettingsView.vue'),

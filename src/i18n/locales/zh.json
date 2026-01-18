@@ -17,7 +17,18 @@
     "reserved": "已预订",
     "sold": "已售出",
     "published": "已发布",
-    "unpublished": "未发布"
+    "unpublished": "未发布",
+    "noData": "无可用数据",
+    "confirm": "确认",
+    "close": "关闭",
+    "yes": "是",
+    "no": "否",
+    "view": "查看",
+    "download": "下载",
+    "upload": "上传",
+    "select": "选择",
+    "all": "全部",
+    "none": "无"
   },
   "auth": {
     "accessCode": "访问代码",
@@ -28,7 +39,21 @@
     "password": "密码",
     "login": "登录",
     "invalidCredentials": "无效凭据",
-    "invalidAccessCode": "无效访问代码"
+    "invalidAccessCode": "无效访问代码",
+    "signin": "登录",
+    "forgotPassword": "忘记密码？",
+    "resetPassword": "重置密码",
+    "reset": "重置",
+    "newPassword": "新密码",
+    "confirmPassword": "确认密码",
+    "passwordsDontMatch": "密码不匹配",
+    "passwordsTooShort": "密码必须至少8个字符",
+    "passwordsTooLong": "密码必须少于32个字符",
+    "passwordsTooWeak": "密码太弱",
+    "passwordsTooCommon": "密码太常见",
+    "passwordsTooSimilar": "密码与原密码太相似",
+    "passwordsTooOld": "密码太旧",
+    "passwordsTooRecent": "密码太新"
   },
   "navigation": {
     "dashboard": "仪表板",
@@ -36,6 +61,7 @@
     "countries": "国家",
     "projects": "项目",
     "residences": "住宅",
+    "summary": "视觉摘要",
     "paliers": "楼层",
     "properties": "房产",
     "clients": "客户",
@@ -43,6 +69,7 @@
     "contracts": "合同",
     "statistics": "统计",
     "users": "用户",
+    "autorisations": "权限",
     "settings": "设置",
     "profile": "个人资料",
     "logout": "登出"
@@ -50,6 +77,31 @@
   "briefing": {
     "title": "房地产简报",
     "subtitle": "RELIANCE WEST AFRICA 投资组合状态",
+    "premium": "高级",
+    "projects": "项目",
+    "properties": "房产",
+    "countries": "国家",
+    "findProperty": "找到您理想的房产",
+    "filterDescription": "使用我们的高级筛选器发现最佳机会",
+    "selectCountry": "选择国家",
+    "selectProject": "选择项目",
+    "selectResidence": "选择住宅",
+    "selectFloor": "选择楼层",
+    "selectPropertyType": "选择类型",
+    "activeFilters": "活动筛选器",
+    "clearAll": "清除全部",
+    "featuredProjects": "精选项目",
+    "projectsDescription": "发现我们卓越的房地产开发项目",
+    "featured": "精选",
+    "residences": "住宅",
+    "availableProperties": "可用房产",
+    "propertiesDescription": "探索我们的高级房产选择",
+    "propertiesFound": "找到的房产",
+    "rooms": "房间",
+    "balcony": "阳台",
+    "noProperties": "未找到房产",
+    "noPropertiesDescription": "没有房产符合您的搜索条件",
+    "resetFilters": "重置筛选器",
     "filters": {
       "country": "国家",
       "project": "项目",
@@ -83,6 +135,77 @@
       "appartement": "公寓",
       "villa": "别墅",
       "magasin": "商店"
+    },
+    "status": {
+      "available": "可用",
+      "discussion": "客户讨论中",
+      "reserved": "已预订",
+      "sold": "已售出",
+      "rental": "租赁管理委托中",
+      "outbid": "出价被超越"
     }
+  },
+  "clients": {
+    "title": "客户管理",
+    "addClient": "添加客户",
+    "firstName": "名",
+    "lastName": "姓",
+    "gender": "性别",
+    "phone": "电话",
+    "email": "电子邮箱",
+    "address": "地址",
+    "nationality": "国籍",
+    "idDocument": "身份证件"
+  },
+  "acquisitions": {
+    "title": "收购管理",
+    "addAcquisition": "新收购",
+    "property": "房产",
+    "client": "客户",
+    "amount": "金额",
+    "amountType": "金额类型",
+    "paymentMethod": "付款方式",
+    "note": "备注",
+    "amountTypes": {
+      "advance": "预付款",
+      "total": "总额",
+      "other": "其他"
+    },
+    "status": {
+      "discussion": "讨论中",
+      "reserved": "已预订",
+      "sold": "已售出",
+      "outbid": "出价被超越"
+    }
+  },
+  "contracts": {
+    "title": "合同管理",
+    "generateContract": "生成合同",
+    "contractType": "合同类型",
+    "types": {
+      "reservation": "预订合同",
+      "rental": "租赁管理合同",
+      "sale": "销售合同"
+    }
+  },
+  "users": {
+    "title": "用户管理",
+    "addUser": "添加用户",
+    "role": "角色",
+    "active": "活跃",
+    "inactive": "不活跃",
+    "createdAt": "创建时间"
+  },
+  "autorisations": {
+    "title": "权限管理",
+    "selectUser": "选择用户",
+    "authorizedProjects": "授权项目",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "savePermissions": "保存权限",
+    "permissionsUpdated": "权限更新成功"
+  },
+  "nav": {
+    "settings": "设置"
   }
 }

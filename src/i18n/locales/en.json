@@ -17,7 +17,18 @@
     "reserved": "Reserved",
     "sold": "Sold",
     "published": "Published",
-    "unpublished": "Unpublished"
+    "unpublished": "Unpublished",
+    "noData": "No data available",
+    "confirm": "Confirm",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "view": "View",
+    "download": "Download",
+    "upload": "Upload",
+    "select": "Select",
+    "all": "All",
+    "none": "None"
   },
   "auth": {
     "accessCode": "Access Code",
@@ -28,7 +39,21 @@
     "password": "Password",
     "login": "Login",
     "invalidCredentials": "Invalid credentials",
-    "invalidAccessCode": "Invalid access code"
+    "invalidAccessCode": "Invalid access code",
+    "signin": "Sign In",
+    "forgotPassword": "Forgot password?",
+    "resetPassword": "Reset password",
+    "reset": "Reset",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "passwordsDontMatch": "Passwords don't match",
+    "passwordsTooShort": "Password must be at least 8 characters",
+    "passwordsTooLong": "Password must be less than 32 characters",
+    "passwordsTooWeak": "Password is too weak",
+    "passwordsTooCommon": "Password is too common",
+    "passwordsTooSimilar": "Password is too similar to the original password",
+    "passwordsTooOld": "Password is too old",
+    "passwordsTooRecent": "Password is too recent"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -36,6 +61,7 @@
     "countries": "Countries",
     "projects": "Projects",
     "residences": "Residences",
+    "summary": "Visual Summary",
     "paliers": "Floors",
     "properties": "Properties",
     "clients": "Clients",
@@ -43,6 +69,7 @@
     "contracts": "Contracts",
     "statistics": "Statistics",
     "users": "Users",
+    "autorisations": "Permissions",
     "settings": "Settings",
     "profile": "Profile",
     "logout": "Logout"
@@ -50,6 +77,31 @@
   "briefing": {
     "title": "Real Estate Briefing",
     "subtitle": "RELIANCE WEST AFRICA Portfolio Status",
+    "premium": "Premium",
+    "projects": "Projects",
+    "properties": "Properties",
+    "countries": "Countries",
+    "findProperty": "Find your ideal property",
+    "filterDescription": "Use our advanced filters to discover the best opportunities",
+    "selectCountry": "Select a country",
+    "selectProject": "Select a project",
+    "selectResidence": "Select a residence",
+    "selectFloor": "Select a floor",
+    "selectPropertyType": "Select a type",
+    "activeFilters": "Active filters",
+    "clearAll": "Clear all",
+    "featuredProjects": "Featured Projects",
+    "projectsDescription": "Discover our exceptional real estate developments",
+    "featured": "Featured",
+    "residences": "residences",
+    "availableProperties": "Available Properties",
+    "propertiesDescription": "Explore our selection of premium properties",
+    "propertiesFound": "properties found",
+    "rooms": "rooms",
+    "balcony": "Balcony",
+    "noProperties": "No properties found",
+    "noPropertiesDescription": "No properties match your search criteria",
+    "resetFilters": "Reset filters",
     "filters": {
       "country": "Country",
       "project": "Project",
@@ -83,6 +135,77 @@
       "appartement": "Apartment",
       "villa": "Villa",
       "magasin": "Shop"
+    },
+    "status": {
+      "available": "Available",
+      "discussion": "Under client discussion",
+      "reserved": "Reserved",
+      "sold": "Sold",
+      "rental": "Under rental management mandate",
+      "outbid": "Outbid offer"
     }
+  },
+  "clients": {
+    "title": "Client Management",
+    "addClient": "Add Client",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "gender": "Gender",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "nationality": "Nationality",
+    "idDocument": "ID Document"
+  },
+  "acquisitions": {
+    "title": "Acquisition Management",
+    "addAcquisition": "New Acquisition",
+    "property": "Property",
+    "client": "Client",
+    "amount": "Amount",
+    "amountType": "Amount Type",
+    "paymentMethod": "Payment Method",
+    "note": "Note",
+    "amountTypes": {
+      "advance": "Advance",
+      "total": "Total",
+      "other": "Other"
+    },
+    "status": {
+      "discussion": "Under discussion",
+      "reserved": "Reserved",
+      "sold": "Sold",
+      "outbid": "Outbid offer"
+    }
+  },
+  "contracts": {
+    "title": "Contract Management",
+    "generateContract": "Generate Contract",
+    "contractType": "Contract Type",
+    "types": {
+      "reservation": "Reservation Contract",
+      "rental": "Rental Management Contract",
+      "sale": "Sale Contract"
+    }
+  },
+  "users": {
+    "title": "User Management",
+    "addUser": "Add User",
+    "role": "Role",
+    "active": "Active",
+    "inactive": "Inactive",
+    "createdAt": "Created At"
+  },
+  "autorisations": {
+    "title": "Permission Management",
+    "selectUser": "Select a user",
+    "authorizedProjects": "Authorized Projects",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "savePermissions": "Save Permissions",
+    "permissionsUpdated": "Permissions updated successfully"
+  },
+  "nav": {
+    "settings": "Settings"
   }
 }
