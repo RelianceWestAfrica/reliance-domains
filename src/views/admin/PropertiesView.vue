@@ -347,7 +347,7 @@
             <div class="form-group">
               <label class="form-checkbox">
                 <input
-                  v-model="formData.balcony"
+                  v-model="formData.hasBalcony"
                   type="checkbox"
                   class="checkbox-input"
                 />
@@ -357,7 +357,7 @@
             <div class="form-group">
               <label class="form-checkbox">
                 <input
-                  v-model="formData.furnished"
+                  v-model="formData.isFurnished"
                   type="checkbox"
                   class="checkbox-input"
                 />
@@ -369,7 +369,7 @@
           <div class="form-group">
             <label class="form-checkbox">
               <input
-                v-model="formData.published"
+                v-model="formData.isPublished"
                 type="checkbox"
                 class="checkbox-input"
               />
@@ -571,9 +571,9 @@ const formData = ref<any>({
   price: 0,
   imageUrl: '',
   imagePlan: '',
-  balcony: false,
-  furnished: false,
-  published: false
+  hasBalcony: false,
+  isFurnished: false,
+  isPublished: false
 })
 
 // Mock data

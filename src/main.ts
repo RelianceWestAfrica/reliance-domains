@@ -10,8 +10,6 @@ import Antd from 'ant-design-vue';
 
 import 'ant-design-vue/dist/reset.css';
 
-import Toast from 'vue-toastification'
-// import 'vue-toastification/dist/index.css'
 
 import { createNotivue } from 'notivue'
 import 'notivue/animations.css'
