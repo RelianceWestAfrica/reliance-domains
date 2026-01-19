@@ -441,11 +441,11 @@
                 </div>
                 <div class="detail-item">
                   <label>Balcon</label>
-                  <span>{{ selectedProperty.balcony ? 'Oui' : 'Non' }}</span>
+                  <span>{{ selectedProperty.hasBalcony ? 'Oui' : 'Non' }}</span>
                 </div>
                 <div class="detail-item">
                   <label>Meublé</label>
-                  <span>{{ selectedProperty.furnished ? 'Oui' : 'Non' }}</span>
+                  <span>{{ selectedProperty.isFurnished ? 'Oui' : 'Non' }}</span>
                 </div>
               </div>
             </div>
@@ -463,7 +463,7 @@
                 </div>
                 <div class="detail-item">
                   <label>Publié</label>
-                  <span>{{ selectedProperty.published ? 'Oui' : 'Non' }}</span>
+                  <span>{{ selectedProperty.isPublished ? 'Oui' : 'Non' }}</span>
                 </div>
               </div>
             </div>
@@ -546,7 +546,7 @@ const showViewModal = ref(false)
 const showDeleteModal = ref(false)
 const isSubmitting = ref(false)
 const isDeleting = ref(false)
-const selectedProperty = ref<Property | null>(null)
+const selectedProperty = ref<any | null>(null)
 const residences = ref<any[]>([])
 const isLoadingResidences = ref(false)
 

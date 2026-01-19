@@ -94,11 +94,11 @@
         </div>
 
         <!-- Demo credentials -->
-        <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <p class="text-xs text-gray-600 mb-2 font-semibold">Identifiants de démonstration :</p>
-          <p class="text-xs text-gray-600">Email: admin@example.com</p>
-          <p class="text-xs text-gray-600">Mot de passe: password123</p>
-        </div>
+<!--        <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">-->
+<!--          <p class="text-xs text-gray-600 mb-2 font-semibold">Identifiants de démonstration :</p>-->
+<!--          <p class="text-xs text-gray-600">Email: admin@example.com</p>-->
+<!--          <p class="text-xs text-gray-600">Mot de passe: password123</p>-->
+<!--        </div>-->
       </div>
     </div>
   </div>
