@@ -4,6 +4,7 @@ import FloorPlan from './FloorPlan.vue';
 import StatusModal from './StatusModal.vue';
 import { useApartmentStore } from '@/stores/apartmentStore';
 import type { Apartment } from '@/types/apartment';
+import {ResidencesService} from "@/services/residences.service.ts";
 
 const props = defineProps<{
   residenceId: string;
@@ -19,22 +20,31 @@ const isModalOpen = ref(false);
 
 const residence = computed(() => apartmentStore.getResidenceById(props.residenceId));
 
-const floors = computed(() => apartmentStore.getFloorsByResidence(props.residenceId));
+const floors = ref<any[]>([])
 
 const isEmpty = computed(() => floors.value.length === 0 && !isLoading.value);
 
 const loadFloors = async () => {
-  isLoading.value = true;
-  error.value = null;
+  isLoading.value = true
+  error.value = null
 
   try {
-    await apartmentStore.fetchResidenceFloors(props.residenceId);
+    const response = await ResidencesService.getPaliers(
+        Number(props.residenceId)
+    )
+
+    floors.value = Array.isArray(response.data)
+        ? response.data
+        : response.data.data ?? []
+
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Failed to load floors';
+    console.error(err)
+    error.value = 'Impossible de charger les paliers'
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
-};
+}
+
 
 const handleApartmentClick = (apartment: Apartment) => {
   if (props.canEdit) {
@@ -133,7 +143,7 @@ onMounted(() => {
     <div v-else class="floors-container">
       <FloorPlan
         v-for="floor in floors"
-        :key="floor.floorNumber"
+        :key="floor.id"
         :floor="floor"
         :can-edit="canEdit"
         @apartment-click="handleApartmentClick"

@@ -178,7 +178,7 @@
 
         <div class="view-content">
           <div class="domain-view-header">
-            <img :src="selectedDomain.image" :alt="selectedDomain.title" class="domain-image-large"/>
+            <img :src="selectedDomain.imageUrl" :alt="selectedDomain.title" class="domain-image-large"/>
             <div class="domain-info-large">
               <h4 class="domain-title-large">{{ selectedDomain.title }}</h4>
               <p class="domain-type-large">{{ getDomainTypeLabel(selectedDomain.domainType) }}</p>

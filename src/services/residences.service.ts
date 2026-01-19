@@ -9,6 +9,10 @@ export const ResidencesService = {
         return api.get(`/residences/${id}`)
     },
 
+    getPaliers(id?: number) {
+        return api.get('/floors/' + id + '/residence')
+    },
+
     create(data: any) {
         return api.post('/residences', data)
     },

@@ -3,7 +3,7 @@ import ApartmentMarker from './ApartmentMarker.vue';
 import type { Floor, Apartment } from '@/types/apartment';
 
 defineProps<{
-  floor: Floor;
+  floor: any;
   canEdit?: boolean;
 }>();
 
@@ -26,8 +26,8 @@ const getColumnClass = (index: number): string => {
 <template>
   <div class="floor-plan-section">
     <div class="floor-header">
-      <h3 class="floor-title">{{ floor.floorName }}</h3>
-      <div class="apartment-count-badge">{{ floor.apartments.length }} appartements</div>
+      <h3 class="floor-title">{{ floor.name }}</h3>
+      <div class="apartment-count-badge">{{ floor.unitsCount }} appartements</div>
     </div>
 
     <div class="container-fluid px-0">

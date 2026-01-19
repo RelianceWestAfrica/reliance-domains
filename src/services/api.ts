@@ -12,9 +12,9 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
     const authStore = useAuthStore()
 
-    console.log(authStore.tokenValue)
+    console.log(authStore.isAuthenticated)
     if (authStore.isAuthenticated) {
-        config.headers.Authorization = `Bearer ${authStore.tokenValue}`
+        config.headers.Authorization = `Bearer ${authStore.tokenValue.value!}`
     }
 
     return config

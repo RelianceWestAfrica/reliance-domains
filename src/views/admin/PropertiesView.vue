@@ -226,6 +226,7 @@
                   v-model="formData.residenceId"
                   class="form-input"
                   :disabled="isVilla || isLoadingResidences"
+                  @change="residenceSelected()"
                   required
               >
                 <option value="" disabled>Sélectionner une résidence</option>
@@ -550,6 +551,7 @@ const residences = ref<any[]>([])
 const isLoadingResidences = ref(false)
 
 const floors = ref<any[]>([])
+const floors_d = ref<any[]>([])
 const projects = ref<any[]>([])
 
 const isLoadingFloors = ref(false)
@@ -560,7 +562,7 @@ const formData = ref<any>({
   title: '',
   type: '',
   residenceId: 0,
-  residenceFloorId: 0,
+  floorId: 0,
   projectId: 0,
   status: '',
   roomsCount: 1,
@@ -573,7 +575,6 @@ const formData = ref<any>({
   furnished: false,
   published: false
 })
-
 
 // Mock data
 const properties = ref<Property[]>([])
@@ -604,11 +605,16 @@ const filteredProperties = computed(() => {
   return filtered
 })
 
+const residenceSelected = () => {
+  floors.value = floors_d.value.filter(it => it.residenceId === formData.value.residenceId)
+}
+
 const loadFloors = async () => {
   isLoadingFloors.value = true
   try {
     const { data } = await FloorsService.all()
     floors.value = data.data || data
+    floors_d.value = data.data || data
   } catch (e) {
     console.error('Erreur API floors', e)
   } finally {

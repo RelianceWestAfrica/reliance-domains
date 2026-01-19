@@ -57,7 +57,7 @@
                   </div>
                   <div>
                     <div class="text-sm font-medium text-gray-900">{{ palier.name }}</div>
-                    <div class="text-sm text-gray-500">{{ palier.description }}</div>
+                    <div class="text-sm text-gray-500">{{ palier.description.substr(0, 80) }} ...</div>
                   </div>
                 </div>
               </td>
