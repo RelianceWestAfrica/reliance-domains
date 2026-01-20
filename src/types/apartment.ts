@@ -1,5 +1,5 @@
 export enum ApartmentStatus {
-  AVAILABLE = 'available',
+  AVAILABLE = 'AVAILABLE',
   SIGNED_WITH_DEPOSIT = 'signed_with_deposit',
   RESERVED_UNSIGNED = 'reserved_unsigned',
   RESERVED_WITH_DEPOSIT = 'reserved_with_deposit',

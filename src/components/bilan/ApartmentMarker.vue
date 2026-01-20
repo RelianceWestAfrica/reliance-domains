@@ -6,7 +6,7 @@ import { STATUS_COLORS } from '@/types/apartment';
 
 
 const props = defineProps<{
-  apartment: Apartment;
+  apartment: any;
   canEdit?: boolean;
 }>();
 
@@ -16,7 +16,7 @@ const emit = defineEmits<{
 
 const statusInfo = computed(() => STATUS_COLORS[props.apartment.status]);
 
-const backgroundColor = computed(() => statusInfo.value.color);
+const backgroundColor = computed(() => statusInfo.value?.color);
 
 const handleClick = () => {
   if (props.canEdit) {
@@ -27,6 +27,7 @@ const handleClick = () => {
 const floorPlanImage = computed(() => {
   return `/public/plan.png`;
 });
+
 </script>
 
 <template>
@@ -36,19 +37,19 @@ const floorPlanImage = computed(() => {
       :class="{ 'can-edit': canEdit }"
       :style="{ backgroundColor }"
       @click="handleClick"
-      :title="`${apartment.code} - ${statusInfo.label}`"
+      :title="`${apartment.title} - ${statusInfo?.label}`"
     >
-      <div class="apartment-code">{{ apartment.code }}</div>
+      <div class="apartment-code">{{ apartment.title }}</div>
 
       <div class="tooltip-content">
         <div class="tooltip-header">
-          <strong>{{ apartment.code }}</strong>
+          <strong>{{ apartment.title }}</strong>
         </div>
         <div class="tooltip-status">
           <span class="status-dot" :style="{ backgroundColor }"></span>
-          {{ statusInfo.label }}
+          {{ apartment.type }}
         </div>
-        <div class="tooltip-description">{{ statusInfo.description }}</div>
+        <div class="tooltip-description">{{ apartment.description }}</div>
         <div v-if="apartment.client" class="tooltip-client">
           <div><strong>Client:</strong> {{ apartment.client.name }}</div>
           <div v-if="apartment.client.phone">Tél: {{ apartment.client.phone }}</div>
@@ -77,13 +78,13 @@ const floorPlanImage = computed(() => {
 
     <div class="apartment-plan">
       <img
-        :src="floorPlanImage"
-        :alt="`Plan appartement ${apartment.code}`"
+        :src="apartment?.imagePlan"
+        :alt="`Plan appartement ${apartment.title}`"
         class="plan-image"
         loading="lazy"
       />
       <div class="plan-overlay">
-        <span class="plan-label">{{ apartment.code }}</span>
+        <span class="plan-label">{{ apartment.surface }} m²</span>
       </div>
     </div>
   </div>

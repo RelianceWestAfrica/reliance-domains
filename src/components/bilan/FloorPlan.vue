@@ -17,7 +17,7 @@ const handleApartmentClick = (apartment: Apartment) => {
 
 const getColumnClass = (index: number): string => {
   if (index === 0) return 'col-lg-2 col-md-3 col-sm-4 col-6';
-  if (index >= 1 && index <= 6) return 'col-lg-1 col-md-2 col-sm-4 col-6';
+  if (index >= 1 && index <= 6) return 'col-lg-2 col-md-2 col-sm-4 col-6';
   if (index >= 7 && index <= 8) return 'col-lg-2 col-md-3 col-sm-4 col-6';
   return 'col-lg-1 col-md-2 col-sm-4 col-6';
 };
@@ -31,9 +31,9 @@ const getColumnClass = (index: number): string => {
     </div>
 
     <div class="container-fluid px-0">
-      <div class="row g-1 apartments-bootstrap-grid">
+      <div class="row apartments-bootstrap-grid">
         <div
-          v-for="(apartment, index) in floor.apartments"
+          v-for="(apartment, index) in floor?.properties"
           :key="apartment.id"
           :class="getColumnClass(index)"
           class="apartment-column"
