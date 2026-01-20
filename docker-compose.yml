@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
     # reliance_domains:
-    reliance_domains:
+    app:
       container_name: reliance_domains
       #hostname: dp-senyo
       # image: esmc-web:v1
