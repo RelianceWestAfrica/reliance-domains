@@ -13,8 +13,8 @@
               <Building2 class="w-5 h-5 text-white" />
             </div>
             <div class="ml-3">
-              <h1 class="text-lg font-bold text-gray-900" style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">DOMAINS</h1>
-              <p class="text-xs text-gray-600">Reliance West Africa</p>
+              <h1 class="text-lg font-bold text-gray-900 mb-0 mt-1" style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">DOMAINS</h1>
+              <p class="text-xs text-gray-600 mb-2">Reliance West Africa</p>
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { Building2, Menu, Bell, User, LayoutDashboard, Globe, Building, Hop as Home, Users, ShoppingCart, Contact as FileContract, ChartBar as BarChart3, Settings, UserCog, Layers, Files, LampFloor, Grid, Grid2X2, Grid2X2Check, SquareDashed, Shield } from 'lucide-vue-next'
+import { Building2, Menu, Bell, User, LayoutDashboard, Globe, Building, Hop as Home, Users, ShoppingCart, Contact as FileContract, ChartBar as BarChart3, Settings, UserCog, Layers, Files, LampFloor, Grid, Grid2X2, Grid2X2Check, SquareDashed, Shield, LandPlotIcon } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
@@ -181,7 +181,7 @@ const navigationItems = computed(() => {
   baseItems.push({
     name: 'Domains',
     to: '/domains',
-    icon: SquareDashed,
+    icon: LandPlotIcon,
     label: 'Domaines'
   })
 
@@ -203,14 +203,6 @@ const navigationItems = computed(() => {
     })
   }
 
-  baseItems.push({
-    name: 'Properties',
-    to: '/properties',
-    icon: Grid,
-    label: 'navigation.properties'
-  })
-
-
   if (authStore.canAccess.summary) {
     baseItems.push({
       name: 'Bilan Visuel',
@@ -219,6 +211,14 @@ const navigationItems = computed(() => {
       label: 'navigation.summary'
     })
   }
+
+
+  baseItems.push({
+    name: 'Properties',
+    to: '/properties',
+    icon: Grid,
+    label: 'navigation.properties'
+  })
 
   baseItems.push({
     name: 'Clients',

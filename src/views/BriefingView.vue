@@ -12,8 +12,8 @@
               </svg>
             </div>
             <div>
-              <h1 class="text-xl font-bold text-white" style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">DOMAINS</h1>
-              <p class="text-xs text-gray-300">Reliance West Africa</p>
+              <h1 class="text-xl font-bold text-white mb-1" style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">DOMAINS</h1>
+              <p class="text-xs text-gray-300 mb-1">Reliance West Africa</p>
             </div>
           </div>
 
@@ -408,8 +408,8 @@
               <p class="text-gray-600 text-md mb-4 line-clamp-2 outfit-tin">{{ project.description }}</p>
               <div class="flex items-center justify-between text-sm text-gray-500">
                 <span class="outfit-lay">{{ project.city }}</span>
-                <span class="outfit-lay">{{ project.domainsCount }} domaines</span>
-                <!-- <span class="outfit-lay">{{ project.residencesCount }} résidences</span> -->
+                <!-- <span class="outfit-lay">{{ project.domainsCount }} domaines</span> -->
+                <span class="outfit-lay">{{ project.residencesCount }} {{ project.residencesCount > 1 ? ' résidences' : ' résidence' }}</span>
               </div>
             </div>
           </div>
@@ -442,21 +442,25 @@
                 <h3 class="text-xl font-semibold text-navy-900 mb-4">Informations</h3>
                 <div class="space-y-3">
                   <div class="flex justify-between">
-                    <span class="text-gray-600">Type:</span>
+                    <span class="text-gray-600">Type :</span>
                     <span class="font-medium">{{ selectedProject.type }}</span>
                   </div>
                   <!-- <div class="flex justify-between">
                     <span class="text-gray-600">Résidences:</span>
                     <span class="font-medium">{{ selectedProject.residencesCount }}</span>
                   </div> -->
+                  <!-- <div class="flex justify-between">
+                    <span class="text-gray-600">Domaines :</span>
+                    <span class="font-medium">{{ selectedProject.domainsCount }}</span> 
+                  </div> -->
                   <div class="flex justify-between">
-                    <span class="text-gray-600">Domaines:</span>
-                    <span class="font-medium">{{ selectedProject.domainsCount }}</span>
+                    <span class="text-gray-600">Résidences :</span>
+                    <span class="font-medium">{{ selectedProject.residencesCount }}</span>
                   </div>
-                  <div class="flex justify-between">
+                  <!-- <div class="flex justify-between">
                     <span class="text-gray-600">Propriétés:</span>
                     <span class="font-medium">{{ selectedProject.propertiesCount }}</span>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -492,7 +496,7 @@
                 <h3 class="font-semibold text-navy-900 mb-2">{{ domain.title }}</h3>
                 <p class="text-sm text-gray-600 mb-3">{{ domain.description }}</p>
                 <div class="flex justify-between text-sm text-gray-500">
-                  <span>{{ domain.residencesCount }} résidences</span>
+                  <span>{{domain.residencesCount}} {{ domain.residencesCount > 1 ? ' résidences' : ' résidence' }}</span>
                 </div>
               </div>
             </div>
@@ -526,11 +530,11 @@
                 <h3 class="text-xl font-semibold text-navy-900 mb-4">Caractéristiques</h3>
                 <div class="space-y-3">
                   <div class="flex justify-between">
-                    <span class="text-gray-600">Type:</span>
+                    <span class="text-gray-600">Type :</span>
                     <span class="font-medium">{{ selectedDomain.domainType }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-600">Résidences:</span>
+                    <span class="text-gray-600">Résidences :</span>
                     <span class="font-medium">{{ selectedDomain.residencesCount }}</span>
                   </div>
                 </div>
@@ -595,16 +599,16 @@
                 <h3 class="text-xl font-semibold text-navy-900 mb-4">Caractéristiques</h3>
                 <div class="space-y-3">
                   <div class="flex justify-between">
-                    <span class="text-gray-600">Étages:</span>
+                    <span class="text-gray-600">Étages :</span>
                     <span class="font-medium">{{ selectedResidence.floorsCount }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-600">Unités totales:</span>
+                    <span class="text-gray-600">Unités totales :</span>
                     <span class="font-medium">{{ selectedResidence.unitsCount }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-600">Type:</span>
-                    <span class="font-medium">{{ selectedResidence.residenceType }}</span>
+                    <span class="text-gray-600">Type :</span>
+                    <span class="font-medium">{{ selectedResidence.type }}</span>
                   </div>
                 </div>
               </div>
@@ -640,8 +644,8 @@
               <div class="p-4">
                 <h3 class="font-semibold text-navy-900 mb-2">{{ property.title }}</h3>
                 <div class="flex items-center space-x-3 text-sm text-gray-600 mb-3">
-                  <span>{{ property.rooms }} pièces</span>
-                  <span>{{ property.surfaceM2 }}m²</span>
+                  <!-- <span>{{ property.roomsCount > 1 ? 'pièce' : 'pièces'}} </span> -->
+                  <span>{{ property.surface }} m²</span>
                 </div>
                 <div class="text-lg font-bold text-navy-600">
                   {{ formatPrice(property.price) }} FCFA
@@ -679,7 +683,7 @@
 
           <div class="p-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div class="space-y-6">
+              <div class="space-y-6 mb-3">
                 <div>
                   <h3 class="text-xl font-semibold text-navy-900 mb-4">Caractéristiques</h3>
                   <div class="grid grid-cols-2 gap-4">
@@ -689,20 +693,20 @@
                     </div>
                     <div class="bg-gray-50 p-4 rounded-lg">
                       <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.kitchensCount }}</div>
-                      <div class="text-sm text-gray-600">Cuisines</div>
+                      <div class="text-sm text-gray-600">Cuisine</div>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-lg">
-                      <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.surface }}m²</div>
+                      <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.surface }} m²</div>
                       <div class="text-sm text-gray-600">Surface</div>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-lg">
-                      <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.balcony ? 'Oui' : 'Non' }}</div>
+                      <div class="text-2xl font-bold text-navy-600">{{ selectedProperty.balcony ? 'Non' : 'Oui' }}</div>
                       <div class="text-sm text-gray-600">Balcon</div>
                     </div>
                   </div>
                 </div>
 
-                <div>
+                <!-- <div>
                   <h3 class="text-xl font-semibold text-navy-900 mb-4">Équipements</h3>
                   <div class="flex flex-wrap gap-2">
                     <span v-if="selectedProperty.furnished" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
@@ -712,7 +716,7 @@
                       Balcon
                     </span>
                   </div>
-                </div>
+                </div> -->
               </div>
 
               <div class="space-y-6">
@@ -728,15 +732,15 @@
                   <h3 class="text-xl font-semibold text-navy-900 mb-4">Informations</h3>
                   <div class="space-y-3">
                     <div class="flex justify-between">
-                      <span class="text-gray-600">Type:</span>
+                      <span class="text-gray-600">Type :</span>
                       <span class="font-medium capitalize">{{ selectedProperty.type }}</span>
                     </div>
                     <div class="flex justify-between">
-                      <span class="text-gray-600">Statut:</span>
+                      <span class="text-gray-600">Statut :</span>
                       <span class="font-medium">{{ selectedProperty.status }}</span>
                     </div>
                     <div class="flex justify-between">
-                      <span class="text-gray-600">Publié:</span>
+                      <span class="text-gray-600">Publié :</span>
                       <span class="font-medium">{{ selectedProperty.published ? 'Oui' : 'Non' }}</span>
                     </div>
                   </div>
@@ -833,6 +837,7 @@ import 'aos/dist/aos.css'
 import { ProjectsService } from '@/services/projects.service'
 import {DomainsService} from "@/services/domains.service.ts";
 import {ResidencesService} from "@/services/residences.service.ts";
+import {FloorService} from "@/services/floors.service.ts";
 import {PropertiesService} from "@/services/properties.service.ts";
 import {CountriesService} from "@/services/countries.service.ts";
 

@@ -12,8 +12,8 @@
 
             </div>
             <div>
-              <h1 class="text-xl font-bold">DOMAINS</h1>
-              <p class="text-sm text-gray-300">Reliance West Africa</p>
+              <h1 class="text-xl font-bold mb-1">DOMAINS</h1>
+              <p class="text-sm text-gray-300 mb-1">Reliance West Africa</p>
               <!-- <h1 class="text-xl font-bold">{{ $t('app.title') }}</h1>
               <p class="text-sm text-gray-300">{{ $t('app.subtitle') }}</p> -->
             </div>

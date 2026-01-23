@@ -428,16 +428,16 @@
               <h5 class="detail-title">Caractéristiques</h5>
               <div class="detail-grid">
                 <div class="detail-item">
-                  <label>Pièces</label>
+                  <label>Pièce</label>
                   <span>{{ selectedProperty.roomsCount }}</span>
                 </div>
                 <div class="detail-item">
-                  <label>Cuisines</label>
+                  <label>Cuisine</label>
                   <span>{{ selectedProperty.kitchensCount }}</span>
                 </div>
                 <div class="detail-item">
                   <label>Surface</label>
-                  <span>{{ selectedProperty.surface }}m²</span>
+                  <span>{{ selectedProperty.surface }} m²</span>
                 </div>
                 <div class="detail-item">
                   <label>Balcon</label>

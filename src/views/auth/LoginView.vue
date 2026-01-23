@@ -11,8 +11,8 @@
               </svg>
             </div>
             <div>
-              <h1 class="text-xl font-bold">DOMAINS</h1>
-              <p class="text-sm text-gray-300">Reliance West Africa</p>
+              <h1 class="text-xl font-bold mb-1">DOMAINS</h1>
+              <p class="text-sm text-gray-300 mb-1">Reliance West Africa</p>
             </div>
           </div>
           <LanguageSwitcher />
@@ -88,9 +88,9 @@
         </form>
 
         <div class="mt-6 text-center">
-          <a href="#" class="text-sm text-accent-600 hover:text-accent-800 transition-colors">
+          <!-- <a href="#" class="text-sm text-accent-600 hover:text-accent-800 transition-colors">
             {{ $t('auth.forgotPassword') }}
-          </a>
+          </a> -->
         </div>
 
         <!-- Demo credentials -->

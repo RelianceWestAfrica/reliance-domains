@@ -54,7 +54,7 @@
             </div>
             <div class="menu-content">
               <div class="menu-title">Dashboard</div>
-              <div class="menu-description">Overview & analytics</div>
+              <div class="menu-description">Etats globqux & statistiques</div>
             </div>
             <ArrowRight class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
           </router-link>
@@ -69,12 +69,12 @@
             </div>
             <div class="menu-content">
               <div class="menu-title">Briefing</div>
-              <div class="menu-description">Property showcase</div>
+              <div class="menu-description">Aperçu des projets & propriétés</div>
             </div>
             <ArrowRight class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
           </router-link>
 
-          <button class="menu-item" @click="handleProfileClick">
+          <!-- <button class="menu-item" @click="handleProfileClick">
             <div class="menu-icon profile">
               <User class="w-5 h-5" />
             </div>
@@ -94,7 +94,7 @@
               <div class="menu-description">Customize experience</div>
             </div>
             <ArrowRight class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
-          </button>
+          </button> -->
         </div>
 
         <!-- Logout Section -->

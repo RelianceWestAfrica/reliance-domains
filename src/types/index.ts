@@ -51,6 +51,7 @@ export interface Domains {
   title: string;
   type: string;
   countryId: string;
+  projectId: string;
   city: string;
   locationAddress: string;
   description: string;

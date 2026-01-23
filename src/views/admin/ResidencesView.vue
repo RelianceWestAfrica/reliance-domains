@@ -99,16 +99,16 @@
           <div class="residence-stats">
             <div class="stat-item">
               <span class="stat-value">{{ residence.floorsCount }}</span>
-              <span class="stat-label">étages</span>
+              <span class="stat-label"> étages</span>
             </div>
             <div class="stat-item">
               <span class="stat-value">{{ residence.unitsCount }}</span>
-              <span class="stat-label">unités</span>
+              <span class="stat-label"> unités</span>
             </div>
           </div>
 
           <div class="residence-actions">
-            <button
+            <!-- <button
               v-if="canAccessBilanVisuel"
               @click.stop="viewBilanVisuel(residence)"
               class="btn-action btn-bilan"
@@ -117,7 +117,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
               </svg>
-            </button>
+            </button> -->
             <button
               @click.stop="editResidence(residence)"
               class="btn-action btn-edit"
@@ -313,7 +313,7 @@
 
         <div class="view-content">
           <div class="residence-view-header">
-            <img :src="selectedResidence.image" :alt="selectedResidence.title" class="residence-image-large"/>
+            <img :src="selectedResidence.imageUrl" :alt="selectedResidence.title" class="residence-image-large"/>
             <div class="residence-info-large">
               <h4 class="residence-title-large">{{ selectedResidence.title }}</h4>
               <p class="residence-type-large">{{ selectedResidence.type }}</p>
@@ -348,13 +348,13 @@
               <h5 class="detail-title">Informations</h5>
               <div class="detail-grid">
                 <div class="detail-item">
-                  <label>Type</label>
+                  <label class="mb-3">Type</label>
                   <span>{{ selectedResidence.type }}</span>
                 </div>
-                <div class="detail-item">
+                <!-- <div class="detail-item">
                   <label>Projet</label>
                   <span>{{ selectedResidence.projectTitle }}</span>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
