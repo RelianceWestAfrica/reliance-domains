@@ -585,7 +585,7 @@
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
             <div class="absolute bottom-6 left-6 text-white">
               <h1 class="text-3xl font-bold mb-2">{{ selectedResidence.title }}</h1>
-              <p class="text-lg opacity-90">{{ selectedResidence.residenceType }}</p>
+              <p class="text-lg opacity-90">{{ selectedResidence.type }}</p>
             </div>
           </div>
 
@@ -616,12 +616,99 @@
           </div>
         </div>
 
+        <!-- Floors List -->
+        <div class="space-y-8">
+          <h2 class="text-2xl font-bold text-navy-900">Paliers et Etages</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+            <div
+              v-for="floor in residenceFloors"
+              :key="floor.id"
+              class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
+              @click="selectFloor(floor)"
+            >
+              <div class="relative h-20">
+                <img
+                  :src="selectedResidence.imageUrl"
+                  :alt="floor.name"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/40"></div>
+                <div class="absolute bottom-6 left-6 text-white">
+                  <h1 class="text-2xl font-semibold mb-1" style="font-family:outfit;">{{ floor.name }}</h1>
+                  <!-- <p class="text-lg opacity-90">{{ selectedResidence.type }}</p> -->
+                </div>
+              </div>
+              <div class="p-4">
+                <!-- <h3 class="font-semibold text-navy-900 mb-2">{{ floor.name }}</h3> -->
+                <div class="flex items-center space-x-3 text-sm text-gray-600 mb-3">
+                  <!-- <span>{{ property.roomsCount > 1 ? 'pièce' : 'pièces'}} </span>
+                  <span>{{ floor.availableUnits }} </span> -->
+                </div>
+                <div class="text-lg font-normal text-navy-600" style="font-family:outfit;">
+                  Unités disponibles : {{ (floor.availableUnits) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+      <!-- floor Detail View -->
+      <div v-else-if="currentView === 'floor-detail'" class="space-y-12">
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden" data-aos="fade-up">
+          <div class="relative h-36">
+            <img
+              :src="selectedResidence.imageUrl"
+              :alt="selectedResidence.title"
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            <div class="absolute bottom-6 left-6 text-white">
+              <h1 class="text-3xl font-bold mb-2">{{ selectedFloor.name }}</h1>
+              <p class="text-lg opacity-90">Unités disponibles : {{ selectedFloor.availableUnits }}</p>
+            </div>
+          </div>
+
+          <div class="p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <h3 class="text-xl font-semibold text-navy-900 mb-4">Description</h3>
+                <p class="text-gray-600 leading-relaxed">{{ selectedFloor.description }}</p>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-navy-900 mb-4">Caractéristiques</h3>
+                <div class="space-y-3">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Unités disponibles :</span>
+                    <span class="font-medium">{{ selectedFloor.availableUnits }}</span>
+                  </div>
+                  <!-- <div class="flex justify-between">
+                    <span class="text-gray-600">Unités totales :</span>
+                    <span class="font-medium">{{ selectedResidence.unitsCount }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Type :</span>
+                    <span class="font-medium">{{ selectedResidence.type }}</span>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Properties List -->
         <div class="space-y-8">
           <h2 class="text-2xl font-bold text-navy-900">Appartements et Villas</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <div
-              v-for="property in residenceProperties"
+              v-for="property in floorProperties"
               :key="property.id"
               class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
               @click="selectProperty(property)"
@@ -655,6 +742,13 @@
           </div>
         </div>
       </div>
+
+
+
+
+
+
+
 
       <!-- Property Detail View -->
       <div v-else-if="currentView === 'property-detail'" class="space-y-12">
@@ -837,7 +931,7 @@ import 'aos/dist/aos.css'
 import { ProjectsService } from '@/services/projects.service'
 import {DomainsService} from "@/services/domains.service.ts";
 import {ResidencesService} from "@/services/residences.service.ts";
-import {FloorService} from "@/services/floors.service.ts";
+import {FloorsService} from "@/services/floors.service.ts";
 import {PropertiesService} from "@/services/properties.service.ts";
 import {CountriesService} from "@/services/countries.service.ts";
 
@@ -856,6 +950,7 @@ const currentView = ref('projects')
 const selectedProject = ref<any>(null)
 const selectedDomain = ref<any>(null)
 const selectedResidence = ref<any>(null)
+const selectedFloor = ref<any>(null)
 const selectedProperty = ref<any>(null)
 
 const allProjects = ref<any[]>([])
@@ -863,6 +958,8 @@ const allProjects_d = ref<any[]>([])
 const projectDomains = ref<any[]>([])
 const domainResidences = ref<any[]>([])
 const residenceProperties = ref<any[]>([])
+const residenceFloors = ref<any[]>([])
+const floorProperties = ref<any[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
 
@@ -981,6 +1078,8 @@ const displayedProjects = computed(() => {
     published: p.status === 'PUBLISHED',
 
     residencesCount: p.residencesCount,
+    floorsCount: p.floorsCount,
+
     propertiesCount: p.propertiesCount,
 
     domainsCount: p.domainsCount ?? 0, // sécurité
@@ -1150,6 +1249,10 @@ const breadcrumbs = computed(() => {
     crumbs.push({ title: selectedResidence.value.title, view: 'residence-detail' })
   }
 
+  if (selectedFloor.value) {
+    crumbs.push({ title: selectedFloor.value.name, view: 'floor-detail' })
+  }
+
   if (selectedProperty.value) {
     crumbs.push({ title: selectedProperty.value.title, view: 'property-detail' })
   }
@@ -1233,6 +1336,7 @@ const selectProject = async (project: any) => {
   selectedProject.value = project
   selectedDomain.value = null
   selectedResidence.value = null
+  selectedFloor.value = null
   selectedProperty.value = null
   currentView.value = 'project-detail'
 
@@ -1251,6 +1355,7 @@ const selectProject = async (project: any) => {
 const selectDomain = async (domain: any) => {
   selectedDomain.value = domain
   selectedResidence.value = null
+  selectedFloor.value = null
   selectedProperty.value = null
   currentView.value = 'domain-detail'
 
@@ -1268,15 +1373,32 @@ const selectDomain = async (domain: any) => {
 
 const selectResidence = async (residence: any) => {
   selectedResidence.value = residence
+  selectedFloor.value = null
   selectedProperty.value = null
   currentView.value = 'residence-detail'
 
   try {
     loading.value = true
-    const res = await PropertiesService.all()
-    residenceProperties.value = res.data.filter(it => it.residenceId == residence.id)
+    const res = await FloorsService.all()
+    residenceFloors.value = res.data.filter(it => it.residenceId == residence.id)
   } catch (err) {
-    residenceProperties.value = []
+    residenceFloors.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+const selectFloor = async (floor: any) => {
+  selectedFloor.value = floor
+  selectedProperty.value = null
+  currentView.value = 'floor-detail'
+
+  try {
+    loading.value = true
+    const res = await PropertiesService.all()
+    floorProperties.value = res.data.filter(it => it.palierId == floor.id)
+  } catch (err) {
+    floorProperties.value = []
   } finally {
     loading.value = false
   }
@@ -1296,15 +1418,21 @@ const navigateToBreadcrumb = (index: number) => {
     selectedProject.value = null
     selectedDomain.value = null
     selectedResidence.value = null
+    selectedFloor.value = null
     selectedProperty.value = null
   } else if (index === 1) {
     selectedDomain.value = null
     selectedResidence.value = null
+    selectedFloor.value = null
     selectedProperty.value = null
   } else if (index === 2) {
     selectedResidence.value = null
+    selectedFloor.value = null
     selectedProperty.value = null
   } else if (index === 3) {
+    selectedFloor.value = null
+    selectedProperty.value = null
+  } else if (index === 4) {
     selectedProperty.value = null
   }
 }

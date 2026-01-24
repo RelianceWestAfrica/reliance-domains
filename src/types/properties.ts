@@ -4,6 +4,8 @@ export interface Property {
     type: 'appartement' | 'villa' | 'magasin'
     residenceId: number
     residenceTitle?: string
+    palierId: number;
+    palierTitle?: string
     status: string
     roomsCount: number
     kitchensCount: number
@@ -21,6 +23,7 @@ export interface CreatePropertyPayload {
     title: string
     type: string
     residenceId: number
+    palierId: number;
     status: string
     roomsCount: number
     kitchensCount: number
