@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import ApartmentMarker from './ApartmentMarker.vue';
 import type { Floor, Apartment } from '@/types/apartment';
 
-defineProps<{
+const props = defineProps<{
   floor: any;
   canEdit?: boolean;
 }>();
@@ -21,6 +22,10 @@ const getColumnClass = (index: number): string => {
   if (index >= 7 && index <= 8) return 'col-lg-2 col-md-3 col-sm-4 col-6';
   return 'col-lg-1 col-md-2 col-sm-4 col-6';
 };
+
+// onMounted(() => {
+//   console.log(props.floor)
+// })
 </script>
 
 <template>
@@ -80,6 +85,8 @@ const getColumnClass = (index: number): string => {
   margin: 0;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  position: relative;
+  z-index: 0;
 }
 
 .apartment-count-badge {
@@ -101,6 +108,8 @@ const getColumnClass = (index: number): string => {
   flex-direction: column;
   padding-left: 2px;
   padding-right: 2px;
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 992px) {

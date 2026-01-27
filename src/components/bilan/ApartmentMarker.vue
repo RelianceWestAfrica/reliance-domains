@@ -50,10 +50,11 @@ const floorPlanImage = computed(() => {
           {{ apartment.type }}
         </div>
         <div class="tooltip-description">{{ apartment.description }}</div>
-        <div v-if="apartment.client" class="tooltip-client">
-          <div><strong>Client:</strong> {{ apartment.client.name }}</div>
-          <div v-if="apartment.client.phone">Tél: {{ apartment.client.phone }}</div>
-          <div v-if="apartment.client.email">Email: {{ apartment.client.email }}</div>
+        <div v-if="apartment.lastAcquisition" class="tooltip-client">
+          <div><strong>Client:</strong> {{ apartment.lastAcquisition.client.firstName }} {{ apartment.lastAcquisition.client.lastName }}</div>
+          <div v-if="apartment.lastAcquisition.client.phone">Tél: {{ apartment.lastAcquisition.client.phone }}</div>
+          <div v-if="apartment.lastAcquisition.client.email">Email: {{ apartment.lastAcquisition.client.email }}</div>
+          <div v-if="apartment.lastAcquisition.dateAcquisition">Date Acquisition: {{ apartment.lastAcquisition.dateAcquisition}}</div>
         </div>
         <div v-else class="tooltip-available">
           <svg
@@ -181,7 +182,6 @@ const floorPlanImage = computed(() => {
   position: absolute;
   bottom: calc(100% + 12px);
   left: 50%;
-  transform: translateX(-50%);
   background: white;
   border: 1px solid #E5E7EB;
   border-radius: 10px;
@@ -191,7 +191,7 @@ const floorPlanImage = computed(() => {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 1000;
+  z-index: 100000;
   transform: translateX(-50%) translateY(-5px);
 }
 

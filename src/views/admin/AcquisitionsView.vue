@@ -164,19 +164,22 @@
         </div>
         </div>
 
-        <!-- Commercial -->
-        <div class="form-group">
-          <label class="form-label">Commercial *</label>
-
-          <input v-model="formData.agent" type="text" class="form-input" required />
-        </div>
-
-        <!-- Montant -->
         <div class="form-row">
+        <!-- Commercial -->
+          <div class="form-group">
+            <label class="form-label">Commercial *</label>
+
+            <input v-model="formData.agent" type="text" class="form-input" required />
+          </div>
+
           <div class="form-group">
             <label class="form-label">Montant (FCFA) *</label>
             <input v-model="formData.amount" type="number" class="form-input" required />
           </div>
+        </div>
+
+        <!-- Montant -->
+        <div class="form-row2">
 
           <div class="form-group">
             <label class="form-label">Paiement *</label>
@@ -185,25 +188,21 @@
               <option value="ADVANCE">Avance</option>
             </select>
           </div>
-        </div>
-
-
-        <div class="form-row">
         <!-- Statut -->
-        <div class="form-group">
-          <label class="form-label">Statut *</label>
-          <select v-model="formData.status" class="form-input">
-            <option value="RESERVED">Réservée</option>
-            <option value="UNDER_DISCUSSION">Sous discussion</option>
-            <option value="SOLD">Soldée</option>
-          </select>
-        </div>
+          <div class="form-group">
+            <label class="form-label">Statut *</label>
+            <select v-model="formData.status" class="form-input">
+              <option value="RESERVED">Réservée</option>
+              <option value="UNDER_DISCUSSION">Sous discussion</option>
+              <option value="SOLD">Soldée</option>
+            </select>
+          </div>
 
         <!-- Date -->
-        <div class="form-group">
-          <label class="form-label">Date *</label>
-          <input v-model="formData.date" type="date" class="form-input" required />
-        </div>
+          <div class="form-group">
+            <label class="form-label">Date *</label>
+            <input v-model="formData.date" type="date" class="form-input" required />
+          </div>
         </div>
 
         <!-- Contrat -->
@@ -591,6 +590,11 @@ onMounted(() => {
 
 .form-row {
   @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+
+.form-row2 {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-4;
 }
 
 .form-label {
