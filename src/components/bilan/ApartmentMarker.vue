@@ -14,7 +14,7 @@ const emit = defineEmits<{
   click: [apartment: Apartment];
 }>();
 
-const statusInfo = computed(() => STATUS_COLORS[props.apartment.status]);
+const statusInfo = computed(() => STATUS_COLORS[props.apartment.lastAcquisition?.status]);
 
 const backgroundColor = computed(() => statusInfo.value?.color);
 
@@ -47,14 +47,14 @@ const floorPlanImage = computed(() => {
         </div>
         <div class="tooltip-status">
           <span class="status-dot" :style="{ backgroundColor }"></span>
-          {{ apartment.type }}
+          {{ apartment.lastAcquisition?.status ?? 'En Attente d\'acquisition' }}
         </div>
         <div class="tooltip-description">{{ apartment.description }}</div>
         <div v-if="apartment.lastAcquisition" class="tooltip-client">
-          <div><strong>Client:</strong> {{ apartment.lastAcquisition.client.firstName }} {{ apartment.lastAcquisition.client.lastName }}</div>
-          <div v-if="apartment.lastAcquisition.client.phone">Tél: {{ apartment.lastAcquisition.client.phone }}</div>
-          <div v-if="apartment.lastAcquisition.client.email">Email: {{ apartment.lastAcquisition.client.email }}</div>
-          <div v-if="apartment.lastAcquisition.dateAcquisition">Date Acquisition: {{ apartment.lastAcquisition.dateAcquisition}}</div>
+          <div><strong>Client:</strong> {{ apartment.lastAcquisition?.client.firstName }} {{ apartment.lastAcquisition?.client.lastName }}</div>
+          <div v-if="apartment.lastAcquisition?.client.phone">Tél: {{ apartment.lastAcquisition?.client.phone }}</div>
+          <div v-if="apartment.lastAcquisition?.client.email">Email: {{ apartment.lastAcquisition?.client.email }}</div>
+          <div v-if="apartment.lastAcquisition?.dateAcquisition">Date Acquisition: {{ apartment.lastAcquisition?.dateAcquisition}}</div>
         </div>
         <div v-else class="tooltip-available">
           <svg

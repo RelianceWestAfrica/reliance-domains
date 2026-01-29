@@ -1,9 +1,9 @@
 export enum ApartmentStatus {
   AVAILABLE = 'AVAILABLE',
-  SIGNED_WITH_DEPOSIT = 'signed_with_deposit',
-  RESERVED_UNSIGNED = 'reserved_unsigned',
-  RESERVED_WITH_DEPOSIT = 'reserved_with_deposit',
-  TEMP_RESERVED = 'temp_reserved'
+  SIGNED_WITH_DEPOSIT = 'SIGNED_WITH_DEPOSIT',
+  RESERVED_UNSIGNED = 'RESERVED_UNSIGNED',
+  RESERVED_WITH_DEPOSIT = 'RESERVED_WITH_DEPOSIT',
+  TEMP_RESERVED = 'TEMP_RESERVED'
 }
 
 export interface Client {

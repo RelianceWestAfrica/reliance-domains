@@ -653,13 +653,6 @@
         </div>
       </div>
 
-
-
-
-
-
-
-
       <!-- floor Detail View -->
       <div v-else-if="currentView === 'floor-detail'" class="space-y-12">
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden" data-aos="fade-up">
@@ -1396,7 +1389,8 @@ const selectFloor = async (floor: any) => {
   try {
     loading.value = true
     const res = await PropertiesService.all()
-    floorProperties.value = res.data.filter(it => it.palierId == floor.id)
+    console.log(res)
+    floorProperties.value = res.data.filter(it => it.residenceFloorId == floor.id)
   } catch (err) {
     floorProperties.value = []
   } finally {
