@@ -129,16 +129,66 @@
 
   <!-- Create/Edit Sale Modal -->
   <div v-if="showCreateModal || showEditModal" class="modal-overlay" @click="closeModals">
-    <div class="modal-container" @click.stop>
+    <div class="modal-container modal-xl" @click.stop>
 
       <div class="modal-header">
         <h3 class="modal-title">
-          {{ showCreateModal ? 'Nouveau Contrat' : 'Modifier le Contrat' }}
+          {{ showCreateModal ? 'Nouvelle acquisition' : 'Modifier l\'acquisition' }}
         </h3>
         <button @click="closeModals" class="modal-close">✕</button>
       </div>
 
       <form @submit.prevent="submitForm" class="modal-form">
+
+        <div class="form-row">
+
+          <!-- Projet -->
+          <div class="form-group">
+            <label class="form-label">Projet *</label>
+            <select
+                v-model="formData.projectId"
+                class="form-input"
+                :disabled="isLoadingProjects"
+                @change="projectSelected()"
+                required
+            >
+              <option value="" disabled>Sélectionner un projet</option>
+              <option v-if="isLoadingProjects" disabled>
+                Chargement des projets...
+              </option>
+              <option
+                  v-for="project in projects"
+                  :key="project.id"
+                  :value="project.id"
+              >
+                {{ project.title || project.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Résidence *</label>
+            <select
+                v-model="formData.residenceId"
+                class="form-input"
+                :disabled="isLoadingResidences"
+                @change="residenceSelected()"
+                required
+            >
+              <option value="" disabled>Sélectionner une résidence</option>
+              <option v-if="isLoadingResidences" disabled>
+                Chargement des résidences...
+              </option>
+              <option
+                  v-for="residence in residences"
+                  :key="residence.id"
+                  :value="residence.id"
+              >
+                {{ residence.title }}
+              </option>
+            </select>
+          </div>
+        </div>
 
         <div class="form-row">
         <!-- Propriété -->
@@ -239,13 +289,34 @@ import {ClientService} from "@/services/client.service.ts";
 import {PropertiesService} from "@/services/properties.service.ts";
 import Upload from "@/components/Upload.vue";
 
+import {ResidencesService} from "@/services/residences.service.ts";
+
+import { FloorsService } from '@/services/floors.service'
+import { ProjectsService } from '@/services/projects.service'
+
 const authStore = useAuthStore()
 const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const acquisitions = ref<any[]>([])
 
+
+const selectedProperty = ref<any | null>(null)
+const residences = ref<any[]>([])
+const residences_s = ref<any[]>([])
+const isLoadingResidences = ref(false)
+
+const floors = ref<any[]>([])
+const floors_d = ref<any[]>([])
+const projects = ref<any[]>([])
+
+const isLoadingFloors = ref(false)
+const isLoadingProjects = ref(false)
+
 // Formulaire
 const formData = ref({
+    residenceId: 0,
+    floorId: 0,
+    projectId: 0,
   property_id: '',
   client_id: '',
   agent: '',
@@ -258,6 +329,7 @@ const formData = ref({
 
 // 👀 Options pour select
 const properties = ref<any[]>([])
+const properties_s = ref<any[]>([])
 const clients = ref<any[]>([])
 
 // ⚡ Récupération des acquisitions
@@ -326,6 +398,15 @@ const viewAcquisition = (acq: any) => {
   console.log('View acquisition:', acq)
 }
 
+const residenceSelected = () => {
+  properties.value = properties_s.value.filter(it => it.residenceId === formData.value.residenceId)
+}
+
+const projectSelected = () => {
+  residences.value = residences_s.value.filter(it => it.domain.projectId === formData.value.projectId)
+}
+
+
 // 📄 Générer contrat
 const generateContract = (acq: any) => {
   console.log('Generate contract for:', acq)
@@ -349,6 +430,7 @@ const loadProperties = async () => {
   try {
     const { data } = await PropertiesService.all()
     properties.value = data
+    properties_s.value = data
   } catch (err) {
     console.error('Erreur chargement propriétés:', err)
   }
@@ -363,13 +445,38 @@ const loadClients = async () => {
   }
 }
 
+const loadProjects = async () => {
+  isLoadingProjects.value = true
+  try {
+    const { data } = await ProjectsService.all()
+    projects.value = data.data || data
+  } catch (e) {
+    console.error('Erreur API projects', e)
+  } finally {
+    isLoadingProjects.value = false
+  }
+}
 
+const loadResidences = async () => {
+  isLoadingResidences.value = true
+  try {
+    const { data } = await ResidencesService.all()
+    residences.value = data.data || data
+    residences_s.value = data.data || data
+  } catch (e) {
+    console.error("Erreur API residences", e)
+  } finally {
+    isLoadingResidences.value = false
+  }
+}
 
 // 🔥 Initialisation
 onMounted(() => {
   loadAcquisitions()
   loadProperties()
   loadClients()
+  loadProjects()
+  loadResidences()
   // TODO: charger properties, clients, agents depuis API si besoin
 })
 </script>
@@ -557,7 +664,7 @@ onMounted(() => {
 }
 
 .modal-container {
-  @apply bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden;
+  @apply bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[95vh] overflow-hidden;
 }
 
 .modal-sm {
