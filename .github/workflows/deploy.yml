@@ -1,0 +1,48 @@
+name: Deploy to VPS (Docker)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Deploy via SSH
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_PATH: ${{ secrets.VPS_PATH }}
+        run: |
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
+            set -e
+
+            cd reliance-domains/
+
+            echo "Pulling latest code..."
+            git pull
+
+            echo "Stopping old containers..."
+            docker compose down || true
+
+            echo "Building & starting containers..."
+            docker compose build
+            docker compose up -d
+
+            echo "Cleaning unused images..."
+            docker image prune -f
+
+            echo "Deployment finished successfully."
+          EOF
+
+
