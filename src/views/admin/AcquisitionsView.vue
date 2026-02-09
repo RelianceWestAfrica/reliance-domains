@@ -139,9 +139,7 @@
       </div>
 
       <form @submit.prevent="submitForm" class="modal-form">
-
         <div class="form-row">
-
           <!-- Projet -->
           <div class="form-group">
             <label class="form-label">Projet *</label>
